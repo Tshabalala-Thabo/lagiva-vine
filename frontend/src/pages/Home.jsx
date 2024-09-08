@@ -23,11 +23,18 @@ const happyClients = [
   { name: "Michael", image: "/placeholder.svg?height=300&width=300", quote: "Knowledgeable staff and great recommendations." },
 ];
 
+const heroImages = [
+  '/assets/hero_images/hero_1.webp',
+  '/assets/hero_images/hero_2.webp',
+  '/assets/hero_images/hero_3.webp',
+];
+
 const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [displayedWines, setDisplayedWines] = useState(wines);
   const [selectedWine, setSelectedWine] = useState(null);
   const wineGridRef = useRef(null);
+  const [currentHeroImage, setCurrentHeroImage] = useState(0);
 
   const categories = ["All", ...new Set(wines.map(wine => wine.type))];
 
@@ -38,6 +45,14 @@ const Home = () => {
     
     setDisplayedWines(filteredWines);
   }, [selectedCategory]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentHeroImage((prev) => (prev + 1) % heroImages.length);
+    }, 13000); // Change image every 8 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 1 },
@@ -75,14 +90,46 @@ const Home = () => {
     }
   };
 
+  const fadeVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { duration: 1.5, ease: 'easeInOut' }
+    },
+    exit: { 
+      opacity: 0,
+      transition: { duration: 1.5, ease: 'easeInOut' }
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen font-sans">
       <main className="flex-grow">
-        <section className="w-full bg-gradient-to-r from-primary to-primary-foreground text-white py-20">
-          <div className="container mx-auto px-4 text-center">
+        <section 
+          className="w-full bg-black text-white py-20 relative overflow-hidden"
+          style={{ height: '500px' }}
+        >
+          <AnimatePresence initial={false} mode="wait">
+            <motion.div
+              key={currentHeroImage}
+              variants={fadeVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="absolute inset-0"
+              style={{ 
+                backgroundImage: `url(${heroImages[currentHeroImage]})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+              }}
+            />
+          </AnimatePresence>
+          <div className="absolute inset-0 bg-black opacity-50"></div>
+          <div className="container mx-auto px-4 text-center relative z-10 h-full flex flex-col justify-center">
             <h1 className="text-4xl font-bold mb-4 font-frank-ruhl">Discover Exquisite Wines</h1>
             <p className="text-xl mb-8">Indulge in our carefully curated selection of fine wines from around the world.</p>
-            <button className="bg-white text-primary px-6 py-2 rounded-md text-lg font-semibold hover:bg-opacity-90 transition-colors duration-300">
+            <button className="bg-white text-primary px-6 py-2 rounded-sm text-lg font-semibold hover:bg-opacity-90 transition-colors duration-300">
               Explore Our Collection
             </button>
           </div>
@@ -130,7 +177,7 @@ const Home = () => {
                   onClick={() => setSelectedCategory(category)}
                   className={`px-4 py-2 text-sm font-medium transition-colors duration-300 ease-in-out ${
                     selectedCategory === category ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-200'
-                  } rounded-md mr-2 mb-2`}
+                  } rounded-sm mr-2 mb-2`}
                 >
                   {category}
                 </button>
@@ -152,7 +199,7 @@ const Home = () => {
                     animate="visible"
                     exit="hidden"
                     layout
-                    className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
+                    className="bg-white rounded-sm shadow-md overflow-hidden cursor-pointer"
                     onClick={() => setSelectedWine(wine)}
                   >
                     <div className="relative w-full pt-[100%]"> {/* This creates a square aspect ratio */}
@@ -233,7 +280,7 @@ const Home = () => {
             onClick={() => setSelectedWine(null)}
           >
             <motion.div
-              className="bg-white rounded-lg p-6 max-w-lg w-full"
+              className="bg-white rounded-sm p-6 max-w-lg w-full"
               variants={modalVariants}
               initial="hidden"
               animate="visible"
@@ -250,7 +297,7 @@ const Home = () => {
                 <img 
                   src={selectedWine.image} 
                   alt={selectedWine.name} 
-                  className="absolute inset-0 w-full h-full object-contain rounded-lg"
+                  className="absolute inset-0 w-full h-full object-contain rounded-sm"
                 />
               </div>
               <p className="text-gray-600 mb-2">{selectedWine.type}</p>
@@ -276,7 +323,7 @@ function ClientTestimonial({ client, index }) {
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
-      <div className="w-40 h-40 rounded-full overflow-hidden mb-4">
+      <div className="w-40 h-40 rounded-sm overflow-hidden mb-4">
         <img 
           src={client.image} 
           alt={`${client.name}, a happy client`} 
@@ -296,7 +343,7 @@ function FeatureCard({ icon, title, description, index }) {
   return (
     <motion.div
       ref={ref}
-      className="bg-white rounded-lg shadow-lg p-6 h-full"
+      className="bg-white rounded-sm shadow-lg p-6 h-full"
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
       transition={{ duration: 0.8, delay: index * 0.2, ease: [0.25, 0.1, 0.25, 1] }}
