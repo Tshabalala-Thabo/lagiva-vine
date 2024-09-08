@@ -138,7 +138,7 @@ const Home = () => {
             </div>
             <motion.div 
               ref={wineGridRef}
-              className="flex flex-wrap justify-center gap-6"
+              className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -152,10 +152,10 @@ const Home = () => {
                     animate="visible"
                     exit="hidden"
                     layout
-                    className="bg-white rounded-lg shadow-md overflow-hidden w-full sm:w-64 md:w-72 lg:w-80 cursor-pointer"
+                    className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
                     onClick={() => setSelectedWine(wine)}
                   >
-                    <div className="relative w-full h-64">
+                    <div className="relative w-full pt-[100%]"> {/* This creates a square aspect ratio */}
                       <img 
                         src={wine.image} 
                         alt={wine.name} 
@@ -163,9 +163,9 @@ const Home = () => {
                       />
                     </div>
                     <div className="p-4">
-                      <h3 className="text-lg font-frank-ruhl font-semibold truncate">{wine.name}</h3>
-                      <p className="text-sm text-gray-600 truncate">{wine.type}</p>
-                      <p className="text-lg font-semibold mt-2">R{wine.price.toFixed(2)}</p>
+                      <h3 className="text-sm sm:text-base font-frank-ruhl font-semibold truncate">{wine.name}</h3>
+                      <p className="text-xs sm:text-sm text-gray-600 truncate">{wine.type}</p>
+                      <p className="text-sm sm:text-base font-semibold mt-2">R{wine.price.toFixed(2)}</p>
                     </div>
                   </motion.div>
                 ))}
