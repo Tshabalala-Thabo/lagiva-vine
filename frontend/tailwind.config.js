@@ -13,7 +13,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Roboto', 'sans-serif'],
-        serif: ['Playfair Display', 'serif'],
+        'frank-ruhl': ['"Frank Ruhl Libre"', 'serif'], // Updated this line
       },
       animation: {
         fadeIn: 'fadeIn 0.5s ease-out forwards',

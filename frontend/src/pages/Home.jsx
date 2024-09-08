@@ -80,7 +80,7 @@ const Home = () => {
       <main className="flex-grow">
         <section className="w-full bg-gradient-to-r from-primary to-primary-foreground text-white py-20">
           <div className="container mx-auto px-4 text-center">
-            <h1 className="text-4xl font-bold mb-4 font-serif">Discover Exquisite Wines</h1>
+            <h1 className="text-4xl font-bold mb-4 font-frank-ruhl">Discover Exquisite Wines</h1>
             <p className="text-xl mb-8">Indulge in our carefully curated selection of fine wines from around the world.</p>
             <button className="bg-white text-primary px-6 py-2 rounded-md text-lg font-semibold hover:bg-opacity-90 transition-colors duration-300">
               Explore Our Collection
@@ -90,7 +90,7 @@ const Home = () => {
 
         <section className="w-full bg-gradient-to-r from-amber-50 to-red-50 py-12">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12 font-serif text-primary">Why Choose Our Wines?</h2>
+            <h2 className="text-3xl font-bold text-center mb-12 font-frank-ruhl text-primary">Why Choose Our Wines?</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               <FeatureCard
                 icon={<Wine className="w-10 h-10 text-red-600" />}
@@ -122,7 +122,7 @@ const Home = () => {
 
         <section className="w-full bg-gray-100 py-16">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12 font-serif text-primary">Featured Wines</h2>
+            <h2 className="text-3xl font-bold text-center mb-12 font-frank-ruhl text-primary">Featured Wines</h2>
             <div className="flex justify-center mb-8 flex-wrap">
               {categories.map((category) => (
                 <button
@@ -155,15 +155,15 @@ const Home = () => {
                     className="bg-white rounded-lg shadow-md overflow-hidden w-full sm:w-64 md:w-72 lg:w-80 cursor-pointer"
                     onClick={() => setSelectedWine(wine)}
                   >
-                    <div className="relative w-full" style={{ paddingBottom: "106.67%" }}>
+                    <div className="relative w-full h-64">
                       <img 
                         src={wine.image} 
                         alt={wine.name} 
-                        className="absolute inset-0 w-full h-full object-cover"
+                        className="absolute inset-0 w-full h-full object-contain p-4"
                       />
                     </div>
                     <div className="p-4">
-                      <h3 className="text-lg font-serif font-semibold truncate">{wine.name}</h3>
+                      <h3 className="text-lg font-frank-ruhl font-semibold truncate">{wine.name}</h3>
                       <p className="text-sm text-gray-600 truncate">{wine.type}</p>
                       <p className="text-lg font-semibold mt-2">R{wine.price.toFixed(2)}</p>
                     </div>
@@ -176,7 +176,7 @@ const Home = () => {
 
         <section className="w-full bg-white py-16">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12 font-serif text-primary">Our Happy Clients</h2>
+            <h2 className="text-3xl font-bold text-center mb-12 font-frank-ruhl text-primary">Our Happy Clients</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {happyClients.map((client, index) => (
                 <ClientTestimonial key={index} client={client} index={index} />
@@ -185,35 +185,36 @@ const Home = () => {
           </div>
         </section>
 
-        <section className="w-full bg-gray-100 py-16">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12 font-serif text-primary">Connect with Us</h2>
+        <section className="w-full bg-cover bg-center py-16 relative" style={{ backgroundImage: "url('/images/contact.jpeg')" }}>
+          <div className="absolute inset-0 bg-black opacity-70"></div>
+          <div className="container mx-auto px-4 relative z-10">
+            <h2 className="text-3xl font-bold text-center mb-12 font-frank-ruhl text-white">Connect with Us</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-2xl font-semibold mb-4">Social Media</h3>
+                <h3 className="text-2xl font-semibold mb-4 text-white">Social Media</h3>
                 <div className="flex space-x-4">
-                  <a href="https://www.tiktok.com/@wineelegance" target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-primary transition-colors">
+                  <a href="https://www.tiktok.com/@wineelegance" target="_blank" rel="noopener noreferrer" className="text-white hover:text-primary transition-colors">
                     <BrandTiktok size={24} />
                   </a>
-                  <a href="https://www.facebook.com/wineelegance" target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-primary transition-colors">
+                  <a href="https://www.facebook.com/wineelegance" target="_blank" rel="noopener noreferrer" className="text-white hover:text-primary transition-colors">
                     <Facebook size={24} />
                   </a>
                 </div>
               </div>
               <div>
-                <h3 className="text-2xl font-semibold mb-4">Contact Us</h3>
+                <h3 className="text-2xl font-semibold mb-4 text-white">Contact Us</h3>
                 <ul className="space-y-2">
                   <li className="flex items-center">
-                    <MessageCircle size={20} className="mr-2 text-primary" />
-                    <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">WhatsApp: +1 (234) 567-890</a>
+                    <MessageCircle size={20} className="mr-2 text-white" />
+                    <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="text-white hover:text-primary transition-colors">WhatsApp: +1 (234) 567-890</a>
                   </li>
                   <li className="flex items-center">
-                    <Mail size={20} className="mr-2 text-primary" />
-                    <a href="mailto:info@wineelegance.com" className="hover:text-primary transition-colors">info@wineelegance.com</a>
+                    <Mail size={20} className="mr-2 text-white" />
+                    <a href="mailto:info@wineelegance.com" className="text-white hover:text-primary transition-colors">info@wineelegance.com</a>
                   </li>
                   <li className="flex items-center">
-                    <Phone size={20} className="mr-2 text-primary" />
-                    <a href="tel:+12345678901" className="hover:text-primary transition-colors">+1 (234) 567-8901</a>
+                    <Phone size={20} className="mr-2 text-white" />
+                    <a href="tel:+12345678901" className="text-white hover:text-primary transition-colors">+1 (234) 567-8901</a>
                   </li>
                 </ul>
               </div>
@@ -240,16 +241,18 @@ const Home = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between items-start mb-4">
-                <h2 className="text-2xl font-bold font-serif">{selectedWine.name}</h2>
+                <h2 className="text-2xl font-bold font-frank-ruhl">{selectedWine.name}</h2>
                 <button onClick={() => setSelectedWine(null)} className="text-gray-500 hover:text-gray-700">
                   <X size={24} />
                 </button>
               </div>
-              <img 
-                src={selectedWine.image} 
-                alt={selectedWine.name} 
-                className="w-full h-64 object-cover rounded-lg mb-4"
-              />
+              <div className="w-full h-64 relative mb-4">
+                <img 
+                  src={selectedWine.image} 
+                  alt={selectedWine.name} 
+                  className="absolute inset-0 w-full h-full object-contain rounded-lg"
+                />
+              </div>
               <p className="text-gray-600 mb-2">{selectedWine.type}</p>
               <p className="text-xl font-semibold mb-4">R{selectedWine.price.toFixed(2)}</p>
               <p className="text-gray-700">{selectedWine.description}</p>
@@ -280,7 +283,7 @@ function ClientTestimonial({ client, index }) {
           className="w-full h-full object-cover"
         />
       </div>
-      <h3 className="text-xl font-semibold mb-2 font-serif">{client.name}</h3>
+      <h3 className="text-xl font-semibold mb-2 font-frank-ruhl">{client.name}</h3>
       <p className="text-gray-600 italic">&ldquo;{client.quote}&rdquo;</p>
     </motion.div>
   );
