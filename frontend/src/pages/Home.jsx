@@ -200,7 +200,7 @@ const Home = () => {
                     animate="visible"
                     exit="hidden"
                     layout
-                    className="rounded-sm overflow-hidden cursor-pointer w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1.125rem)] max-w-xs"
+                    className="rounded-sm overflow-hidden cursor-pointer w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1.125rem)] max-w-xs"
                     onClick={() => setSelectedWine(wine)}
                   >
                     <div className="relative bg-stale w-full pt-[100%]">
