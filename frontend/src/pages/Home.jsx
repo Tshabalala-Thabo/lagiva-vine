@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Wine, Leaf, UserCheck, Truck, Facebook, Phone, Mail, MessageCircle, X } from "lucide-react";
+import { Wine, Leaf, UserCheck, Truck, Facebook, Phone, Mail, MessageCircle, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { BrandTiktok } from 'tabler-icons-react';
 import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useMediaQuery } from 'react-responsive';
 
 const wines = [
   { id: 1, name: "MCC Brut Blanc DE Noir", type: "Sparkling", price: 178.00, image: "./assets/wine/mcc_brut_blanc_de_noi.png", description: "A crisp and elegant sparkling wine with notes of citrus and brioche." },
@@ -17,10 +18,10 @@ const wines = [
 ];
 
 const happyClients = [
-  { name: "Sarah", image: "/placeholder.svg?height=300&width=300", quote: "The perfect wine for every occasion!" },
-  { name: "John", image: "/placeholder.svg?height=300&width=300", quote: "Exceptional selection and service." },
-  { name: "Emma", image: "/placeholder.svg?height=300&width=300", quote: "My go-to place for fine wines." },
-  { name: "Michael", image: "/placeholder.svg?height=300&width=300", quote: "Knowledgeable staff and great recommendations." },
+  { name: "Sarah", image: "/assets/testimonials/1.jpeg", quote: "The perfect wine for every occasion!" },
+  { name: "John", image: "/assets/testimonials/2.jpeg", quote: "Exceptional selection and service." },
+  { name: "Emma", image: "/assets/testimonials/3.jpeg", quote: "My go-to place for fine wines." },
+  { name: "Michael", image: "/assets/testimonials/4.jpeg", quote: "Knowledgeable staff and great recommendations." },
 ];
 
 const heroImages = [
@@ -35,6 +36,8 @@ const Home = () => {
   const [selectedWine, setSelectedWine] = useState(null);
   const wineGridRef = useRef(null);
   const [currentHeroImage, setCurrentHeroImage] = useState(0);
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
   const categories = ["All", ...new Set(wines.map(wine => wine.type))];
 
@@ -100,6 +103,33 @@ const Home = () => {
       opacity: 0,
       transition: { duration: 1.5, ease: 'easeInOut' }
     }
+  };
+
+  const slideVariants = {
+    enter: (direction) => ({
+      x: direction > 0 ? '100%' : '-100%',
+      opacity: 0,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+    },
+    exit: (direction) => ({
+      x: direction < 0 ? '100%' : '-100%',
+      opacity: 0,
+    }),
+  };
+
+  const [slideDirection, setSlideDirection] = useState(0);
+
+  const nextTestimonial = () => {
+    setSlideDirection(1);
+    setCurrentTestimonial((prev) => (prev + 1) % happyClients.length);
+  };
+
+  const prevTestimonial = () => {
+    setSlideDirection(-1);
+    setCurrentTestimonial((prev) => (prev - 1 + happyClients.length) % happyClients.length);
   };
 
   return (
@@ -203,7 +233,7 @@ const Home = () => {
                     className="rounded-sm overflow-hidden cursor-pointer w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1.125rem)] max-w-xs"
                     onClick={() => setSelectedWine(wine)}
                   >
-                    <div className="relative bg-stale w-full pt-[100%]">
+                    <div className="relative bg-stale w-full pt-[125%]">
                       <img 
                         src={wine.image} 
                         alt={wine.name} 
@@ -227,11 +257,59 @@ const Home = () => {
         <section className="w-full bg-stale py-16">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12 font-frank-ruhl text-primary">Our Happy Clients</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {happyClients.map((client, index) => (
-                <ClientTestimonial key={index} client={client} index={index} />
-              ))}
-            </div>
+            {isMobile ? (
+              <div className="relative h-[400px]"> {/* Fixed height container */}
+                <div className="absolute inset-0 overflow-hidden">
+                  <AnimatePresence initial={false} custom={slideDirection} mode="wait">
+                    <motion.div
+                      key={currentTestimonial}
+                      custom={slideDirection}
+                      variants={slideVariants}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="absolute inset-0 flex items-center justify-center"
+                    >
+                      <ClientTestimonial client={happyClients[currentTestimonial]} index={currentTestimonial} />
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+                <button 
+                  onClick={prevTestimonial} 
+                  className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md z-10"
+                >
+                  <ChevronLeft size={24} />
+                </button>
+                <button 
+                  onClick={nextTestimonial} 
+                  className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md z-10"
+                >
+                  <ChevronRight size={24} />
+                </button>
+                <div className="absolute bottom-0 left-0 right-0 flex justify-center mt-4">
+                  {happyClients.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        setSlideDirection(index > currentTestimonial ? 1 : -1);
+                        setCurrentTestimonial(index);
+                      }}
+                      className={`h-2 w-2 rounded-full mx-1 ${
+                        index === currentTestimonial ? 'bg-primary' : 'bg-gray-300'
+                      }`}
+                      aria-label={`Go to testimonial ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {happyClients.map((client, index) => (
+                  <ClientTestimonial key={index} client={client} index={index} />
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
@@ -330,7 +408,7 @@ function ClientTestimonial({ client, index }) {
         <img 
           src={client.image} 
           alt={`${client.name}, a happy client`} 
-          className="w-full h-full object-cover"
+          className="w-full h-full rounded-full object-cover"
         />
       </div>
       <h3 className="text-xl font-semibold mb-2 font-frank-ruhl">{client.name}</h3>

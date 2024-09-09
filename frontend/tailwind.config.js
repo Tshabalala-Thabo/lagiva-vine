@@ -12,7 +12,7 @@ module.exports = {
         'primary-foreground': '#a52a2a',
         muted: '#f3f4f6',
         'muted-foreground': '#4b5563',
-        'stale': '#f2f2f2', // New color for card backgrounds
+        stale: '#f2f2f2', // Renamed from 'card' to 'stale'
       },
       backgroundColor: {
         'default': '#ffffff', // Set default background color to white

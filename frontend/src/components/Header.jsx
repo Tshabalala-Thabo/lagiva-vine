@@ -17,12 +17,12 @@ const Header = () => {
             <img 
               src="/assets/logo/design.png" 
               alt="Wine Elegance Design" 
-              className="h-8 w-auto mr-2 sm:h-9"
+              className="h-8 w-auto mr-2 sm:h-12"
             />
             <img 
               src="/assets/logo/text.png" 
               alt="Wine Elegance Text" 
-              className="h-8 ml-1 w-auto sm:h-6"
+              className="h-8 w-auto sm:h-12"
             />
           </div>
         </Link>
