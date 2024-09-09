@@ -6,14 +6,20 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        black: '#121212', // Set default black to #121212
+        white: '#ffffff', // Explicitly set white
         primary: '#c5322c',
         'primary-foreground': '#a52a2a',
         muted: '#f3f4f6',
         'muted-foreground': '#4b5563',
+        'stale': '#f2f2f2', // New color for card backgrounds
+      },
+      backgroundColor: {
+        'default': '#ffffff', // Set default background color to white
       },
       fontFamily: {
         sans: ['Roboto', 'sans-serif'],
-        'frank-ruhl': ['"Frank Ruhl Libre"', 'serif'], // Updated this line
+        'frank-ruhl': ['"Frank Ruhl Libre"', 'serif'],
       },
       animation: {
         fadeIn: 'fadeIn 0.5s ease-out forwards',
@@ -36,5 +42,14 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function({ addBase, theme }) {
+      addBase({
+        'html': { 
+          color: theme('colors.black'),
+          backgroundColor: theme('backgroundColor.default'),
+        },
+      })
+    }
+  ],
 }
