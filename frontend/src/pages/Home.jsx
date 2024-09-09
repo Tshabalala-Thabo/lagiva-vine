@@ -315,35 +315,36 @@ const Home = () => {
 
         <section className="w-full bg-cover bg-center py-16 relative" style={{ backgroundImage: "url('/images/contact.jpeg')" }}>
           <div className="absolute inset-0 bg-black opacity-70"></div>
-          <div className="container mx-auto px-4 relative z-10">
+          <div className="container mx-auto px-4 md:text-center relative z-10">
             <h2 className="text-3xl font-bold text-center mb-12 font-frank-ruhl text-white">Connect with Us</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="md:flex md:justify-center gap-8 space-y-6 md:space-y-0">
               <div>
                 <h3 className="text-2xl font-semibold mb-4 text-white">Social Media</h3>
-                <div className="flex space-x-4">
-                  <a href="https://www.tiktok.com/@wineelegance" target="_blank" rel="noopener noreferrer" className="text-white hover:text-primary transition-colors">
-                    <BrandTiktok size={24} />
+                <div className="space-y-2 flex flex-col md:items-center">
+                  <a href="https://www.tiktok.com/@wineelegance" target="_blank" rel="noopener noreferrer" className="text-white flex hover:text-primary transition-colors">
+                    <BrandTiktok size={26} /> lagivavinery
                   </a>
-                  <a href="https://www.facebook.com/wineelegance" target="_blank" rel="noopener noreferrer" className="text-white hover:text-primary transition-colors">
-                    <Facebook size={24} />
+                  <a href="https://www.facebook.com/wineelegance" target="_blank" rel="noopener noreferrer" className="text-white flex hover:text-primary transition-colors">
+                    <Facebook size={26} /> lagivavinery
                   </a>
                 </div>
               </div>
               <div>
                 <h3 className="text-2xl font-semibold mb-4 text-white">Contact Us</h3>
-                <ul className="space-y-2">
+                <ul className="space-y-2 flex flex-col md:items-center">
                   <li className="flex items-center">
-                    <MessageCircle size={20} className="mr-2 text-white" />
-                    <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="text-white hover:text-primary transition-colors">WhatsApp: +1 (234) 567-890</a>
+                    <MessageCircle size={24} className="mr-2 text-white" />
+                    <a href="https://wa.me/27814498919" target="_blank" rel="noopener noreferrer" className="text-white hover:text-primary transition-colors">081 449 8919</a>
                   </li>
                   <li className="flex items-center">
-                    <Mail size={20} className="mr-2 text-white" />
-                    <a href="mailto:info@wineelegance.com" className="text-white hover:text-primary transition-colors">info@wineelegance.com</a>
+                    <Phone size={24} className="mr-2 text-white" />
+                    <a href="tel:+27814498919" className="text-white hover:text-primary transition-colors">081 449 8919</a>
                   </li>
                   <li className="flex items-center">
-                    <Phone size={20} className="mr-2 text-white" />
-                    <a href="tel:+12345678901" className="text-white hover:text-primary transition-colors">+1 (234) 567-8901</a>
+                    <Mail size={24} className="mr-2 text-white" />
+                    <a href="mailto:admin@lagivavinery.co.za" className="text-white hover:text-primary transition-colors">admin@lagivavinery.com</a>
                   </li>
+                  
                 </ul>
               </div>
             </div>
