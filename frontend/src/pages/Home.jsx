@@ -135,7 +135,7 @@ const Home = () => {
           </div>
         </section>
 
-        <section className="w-full bg-gradient-to-r from-amber-50 to-red-50 py-12">
+        <section className="w-full bg-gray-100 py-12">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12 font-frank-ruhl text-primary">Why Choose Our Wines?</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -167,7 +167,7 @@ const Home = () => {
           </div>
         </section>
 
-        <section className="w-full bg-gray-100 py-16">
+        <section className="w-full bg-white py-16">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12 font-frank-ruhl text-primary">Featured Wines</h2>
             <div className="flex justify-center mb-8 flex-wrap">
@@ -199,17 +199,17 @@ const Home = () => {
                     animate="visible"
                     exit="hidden"
                     layout
-                    className="bg-white rounded-sm shadow-md overflow-hidden cursor-pointer"
+                    className=" rounded-sm  overflow-hidden cursor-pointer"
                     onClick={() => setSelectedWine(wine)}
                   >
-                    <div className="relative w-full pt-[100%]"> {/* This creates a square aspect ratio */}
+                    <div className="relative bg-stale w-full pt-[100%]"> {/* This creates a square aspect ratio */}
                       <img 
                         src={wine.image} 
                         alt={wine.name} 
                         className="absolute inset-0 w-full h-full object-contain p-4"
                       />
                     </div>
-                    <div className="p-4">
+                    <div className="p-4 text-center">
                       <h3 className="text-sm sm:text-base font-frank-ruhl font-semibold truncate">{wine.name}</h3>
                       <p className="text-xs sm:text-sm text-gray-600 truncate">{wine.type}</p>
                       <p className="text-sm sm:text-base font-semibold mt-2">R{wine.price.toFixed(2)}</p>
@@ -221,7 +221,7 @@ const Home = () => {
           </div>
         </section>
 
-        <section className="w-full bg-white py-16">
+        <section className="w-full bg-stale py-16">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12 font-frank-ruhl text-primary">Our Happy Clients</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
