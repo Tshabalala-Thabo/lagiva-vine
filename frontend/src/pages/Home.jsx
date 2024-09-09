@@ -135,8 +135,9 @@ const Home = () => {
           </div>
         </section>
 
-        <section className="w-full bg-gray-100 py-12">
-          <div className="container mx-auto px-4">
+        <section className="w-full bg-gray-200 bg-repeat py-12 relative" style={{ backgroundImage: "url('/assets/wine_bg.png')" }}>
+          <div className="absolute inset-0 bg-white opacity-50"></div>
+          <div className="container mx-auto px-4 py-8 rounded-sm relative z-10">
             <h2 className="text-3xl font-bold text-center mb-12 font-frank-ruhl text-primary">Why Choose Our Wines?</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               <FeatureCard
@@ -185,7 +186,7 @@ const Home = () => {
             </div>
             <motion.div 
               ref={wineGridRef}
-              className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+              className="flex flex-wrap justify-center gap-4 sm:gap-6"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -199,20 +200,22 @@ const Home = () => {
                     animate="visible"
                     exit="hidden"
                     layout
-                    className=" rounded-sm  overflow-hidden cursor-pointer"
+                    className="rounded-sm overflow-hidden cursor-pointer w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1.125rem)] max-w-xs"
                     onClick={() => setSelectedWine(wine)}
                   >
-                    <div className="relative bg-stale w-full pt-[100%]"> {/* This creates a square aspect ratio */}
+                    <div className="relative bg-stale w-full pt-[100%]">
                       <img 
                         src={wine.image} 
                         alt={wine.name} 
                         className="absolute inset-0 w-full h-full object-contain p-4"
                       />
+                      <div className="absolute top-2 left-2 bg-gray-300 text-gray-800 text-xs px-2 py-1 rounded-sm">
+                        {wine.type}
+                      </div>
                     </div>
                     <div className="p-4 text-center">
                       <h3 className="text-sm sm:text-base font-frank-ruhl font-semibold truncate">{wine.name}</h3>
-                      <p className="text-xs sm:text-sm text-gray-600 truncate">{wine.type}</p>
-                      <p className="text-sm sm:text-base font-semibold mt-2">R{wine.price.toFixed(2)}</p>
+                      <p className="text-sm sm:text-base font-semibold mt-0">R{wine.price.toFixed(2)}</p>
                     </div>
                   </motion.div>
                 ))}
@@ -343,7 +346,7 @@ function FeatureCard({ icon, title, description, index }) {
   return (
     <motion.div
       ref={ref}
-      className="bg-white rounded-sm shadow-lg p-6 h-full"
+      className="bg-white rounded-sm shadow-md   p-6 h-full"
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
       transition={{ duration: 0.8, delay: index * 0.2, ease: [0.25, 0.1, 0.25, 1] }}
