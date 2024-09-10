@@ -25,9 +25,9 @@ const happyClients = [
 ];
 
 const heroImages = [
-  '/assets/hero_images/hero_1.webp',
-  '/assets/hero_images/hero_2.webp',
   '/assets/hero_images/hero_3.webp',
+  // '/assets/hero_images/hero_1.webp',
+  // '/assets/hero_images/hero_2.webp',
 ];
 
 const Home = () => {
@@ -38,24 +38,25 @@ const Home = () => {
   const [currentHeroImage, setCurrentHeroImage] = useState(0);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+  const [isVisible, setIsVisible] = useState(false);
 
   const categories = ["All", ...new Set(wines.map(wine => wine.type))];
 
   useEffect(() => {
-    const filteredWines = selectedCategory === "All" 
-      ? wines 
+    const filteredWines = selectedCategory === "All"
+      ? wines
       : wines.filter(wine => wine.type === selectedCategory);
-    
+
     setDisplayedWines(filteredWines);
   }, [selectedCategory]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentHeroImage((prev) => (prev + 1) % heroImages.length);
-    }, 13000); // Change image every 8 seconds
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCurrentHeroImage((prev) => (prev + 1) % heroImages.length);
+  //   }, 13000); // Change image every 8 seconds
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const containerVariants = {
     hidden: { opacity: 1 },
@@ -77,15 +78,15 @@ const Home = () => {
 
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.8 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       scale: 1,
       transition: {
         duration: 0.3
       }
     },
-    exit: { 
-      opacity: 0, 
+    exit: {
+      opacity: 0,
       scale: 0.8,
       transition: {
         duration: 0.3
@@ -95,11 +96,11 @@ const Home = () => {
 
   const fadeVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
       transition: { duration: 1.5, ease: 'easeInOut' }
     },
-    exit: { 
+    exit: {
       opacity: 0,
       transition: { duration: 1.5, ease: 'easeInOut' }
     }
@@ -132,12 +133,17 @@ const Home = () => {
     setCurrentTestimonial((prev) => (prev - 1 + happyClients.length) % happyClients.length);
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 100)
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
     <div className="flex flex-col min-h-screen font-sans">
       <main className="flex-grow">
-        <section 
+        <section
           className="w-full bg-black text-white py-20 relative overflow-hidden"
-          style={{ height: '500px' }}
+          style={{ height: '600px' }}
         >
           <AnimatePresence initial={false} mode="wait">
             <motion.div
@@ -147,7 +153,7 @@ const Home = () => {
               animate="visible"
               exit="exit"
               className="absolute inset-0"
-              style={{ 
+              style={{
                 backgroundImage: `url(${heroImages[currentHeroImage]})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -156,42 +162,55 @@ const Home = () => {
             />
           </AnimatePresence>
           <div className="absolute inset-0 bg-black opacity-50"></div>
-          <div className="container mx-auto px-4 text-center relative z-10 h-full flex flex-col justify-center">
-            <h1 className="text-4xl font-bold mb-4 font-frank-ruhl">Discover Exquisite Wines</h1>
-            <p className="text-xl mb-8">Indulge in our carefully curated selection of fine wines from around the world.</p>
-            <button className="bg-white text-primary px-6 py-2 rounded-sm text-lg font-semibold hover:bg-opacity-90 transition-colors duration-300">
-              Explore Our Collection
-            </button>
+          <div className="container mx-auto px-4 relative z-10 h-full flex flex-col justify-center">
+            <div className="flex flex-col items-start md:w-5/12">
+              <h1 
+                className={`text-4xl font-bold mb-4 font-frank-ruhl transition-opacity duration-1000 ease-in-out ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+              >
+                Discover Exquisite Wines
+              </h1>
+              <p 
+                className={`text-xl text-gray-300 mb-8 transition-opacity duration-1000 ease-in-out delay-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+              >
+                Indulge in our carefully curated selection of fine wines.
+              </p>
+              <Link 
+                to="/explore" 
+                className={`text-primary px-6 py-2 border border-primary rounded-sm text-lg font-semibold hover:bg-opacity-90 transition-all duration-1000 ease-in-out delay-600 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              >
+                Explore Our Collection
+              </Link>
+            </div>
           </div>
         </section>
 
-        <section className="w-full bg-gray-200 bg-repeat py-12 relative" style={{ backgroundImage: "url('/assets/wine_bg.png')" }}>
-          <div className="absolute inset-0 bg-white opacity-50"></div>
+        <section className="w-full bg-black bg-cover bg-no-repeat py-12 relative" style={{ backgroundImage: "url('/assets/section/overview.jpg')" }}>
+          <div className="absolute inset-0 bg-black opacity-50"></div>
           <div className="container mx-auto px-4 py-8 rounded-sm relative z-10">
-            <h2 className="text-3xl font-bold text-center mb-12 font-frank-ruhl text-primary">Why Choose Our Wines?</h2>
+            <h2 className="text-3xl font-bold text-center mb-12 font-frank-ruhl text-white">Why Choose Our Wines?</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               <FeatureCard
-                icon={<Wine className="w-10 h-10 text-red-600" />}
+                icon={<Wine className="w-10 h-10 text-primary" />}
                 title="Exceptional Quality"
                 description="Carefully crafted wines from the finest handpicked grapes worldwide."
                 index={0}
               />
               <FeatureCard
-                icon={<Leaf className="w-10 h-10 text-green-600" />}
+                icon={<Leaf className="w-10 h-10 text-primary" />}
                 title="Sustainable Practices"
                 description="Environmentally-friendly production methods to ensure a greener future."
                 index={1}
               />
               <FeatureCard
-                icon={<UserCheck className="w-10 h-10 text-blue-600" />}
+                icon={<UserCheck className="w-10 h-10 text-primary" />}
                 title="Expert Curation"
                 description="Exclusive selections made by experienced sommeliers for every wine lover."
                 index={2}
               />
               <FeatureCard
-                icon={<Truck className="w-10 h-10 text-purple-600" />}
-                title="Worldwide Delivery"
-                description="Delivering premium wines globally, directly to your doorstep."
+                icon={<Truck className="w-10 h-10 text-primary" />}
+                title="Delivery"
+                description="We deliver our premium wines directly to your doorstep."
                 index={3}
               />
             </div>
@@ -206,15 +225,14 @@ const Home = () => {
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 text-sm font-medium transition-colors duration-300 ease-in-out ${
-                    selectedCategory === category ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-200'
-                  } rounded-sm mr-2 mb-2`}
+                  className={`px-4 py-2 text-sm font-medium transition-colors duration-300 ease-in-out ${selectedCategory === category ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-200'
+                    } rounded-sm mr-2 mb-2`}
                 >
                   {category}
                 </button>
               ))}
             </div>
-            <motion.div 
+            <motion.div
               ref={wineGridRef}
               className="flex flex-wrap justify-center gap-4 sm:gap-6"
               variants={containerVariants}
@@ -234,9 +252,9 @@ const Home = () => {
                     onClick={() => setSelectedWine(wine)}
                   >
                     <div className="relative bg-stale w-full pt-[125%]">
-                      <img 
-                        src={wine.image} 
-                        alt={wine.name} 
+                      <img
+                        src={wine.image}
+                        alt={wine.name}
                         className="absolute inset-0 w-full h-full object-contain p-4"
                       />
                       <div className="absolute top-2 left-2 bg-gray-300 text-gray-800 text-xs px-2 py-1 rounded-sm">
@@ -275,14 +293,14 @@ const Home = () => {
                     </motion.div>
                   </AnimatePresence>
                 </div>
-                <button 
-                  onClick={prevTestimonial} 
+                <button
+                  onClick={prevTestimonial}
                   className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md z-10"
                 >
                   <ChevronLeft size={24} />
                 </button>
-                <button 
-                  onClick={nextTestimonial} 
+                <button
+                  onClick={nextTestimonial}
                   className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md z-10"
                 >
                   <ChevronRight size={24} />
@@ -295,9 +313,8 @@ const Home = () => {
                         setSlideDirection(index > currentTestimonial ? 1 : -1);
                         setCurrentTestimonial(index);
                       }}
-                      className={`h-2 w-2 rounded-full mx-1 ${
-                        index === currentTestimonial ? 'bg-primary' : 'bg-gray-300'
-                      }`}
+                      className={`h-2 w-2 rounded-full mx-1 ${index === currentTestimonial ? 'bg-primary' : 'bg-gray-300'
+                        }`}
                       aria-label={`Go to testimonial ${index + 1}`}
                     />
                   ))}
@@ -344,7 +361,7 @@ const Home = () => {
                     <Mail size={24} className="mr-2 text-white" />
                     <a href="mailto:admin@lagivavinery.co.za" className="text-white hover:text-primary transition-colors">admin@lagivavinery.com</a>
                   </li>
-                  
+
                 </ul>
               </div>
             </div>
@@ -376,9 +393,9 @@ const Home = () => {
                 </button>
               </div>
               <div className="w-full h-64 relative mb-4">
-                <img 
-                  src={selectedWine.image} 
-                  alt={selectedWine.name} 
+                <img
+                  src={selectedWine.image}
+                  alt={selectedWine.name}
                   className="absolute inset-0 w-full h-full object-contain rounded-sm"
                 />
               </div>
@@ -406,9 +423,9 @@ function ClientTestimonial({ client, index }) {
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
       <div className="w-40 h-40 rounded-sm overflow-hidden mb-4">
-        <img 
-          src={client.image} 
-          alt={`${client.name}, a happy client`} 
+        <img
+          src={client.image}
+          alt={`${client.name}, a happy client`}
           className="w-full h-full rounded-full object-cover"
         />
       </div>
@@ -425,14 +442,14 @@ function FeatureCard({ icon, title, description, index }) {
   return (
     <motion.div
       ref={ref}
-      className="bg-white rounded-sm shadow-md   p-6 h-full"
+      className="bg-[#282828] rounded-sm shadow-md   p-6 h-full"
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
       transition={{ duration: 0.8, delay: index * 0.2, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <div className="flex items-center justify-center mb-4">{icon}</div>
-      <h3 className="text-xl font-semibold text-gray-800 mb-2 text-center">{title}</h3>
-      <p className="text-gray-600 text-center">{description}</p>
+      <h3 className="text-xl font-semibold text-white mb-2 text-center">{title}</h3>
+      <p className="text-gray-300 text-center">{description}</p>
     </motion.div>
   );
 }
