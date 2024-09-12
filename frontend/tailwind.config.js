@@ -8,11 +8,11 @@ module.exports = {
       colors: {
         black: '#121212', // Set default black to #121212
         white: '#ffffff', // Explicitly set white
-        primary: '#c5322c',
+        primary: '#b40100',
         'primary-foreground': '#a52a2a',
         muted: '#f3f4f6',
         'muted-foreground': '#4b5563',
-        stale: '#f2f2f2', // Renamed from 'card' to 'stale'
+        stale: '#f8f8f8', // Renamed from 'card' to 'stale'
       },
       backgroundColor: {
         'default': '#ffffff', // Set default background color to white
