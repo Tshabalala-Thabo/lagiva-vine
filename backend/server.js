@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import mongoose from 'mongoose' // Import mongoose
 import connectDB from './config/db.js' // Import the connectDB function
 import productRoutes from './routes/productRoutes.js' // Import the Product routes
+import userRoutes from './routes/userRoutes.js' // Import the User routes
 
 dotenv.config()
 
@@ -23,6 +24,8 @@ app.get('/', (req, res) => {
 
 // Use product routes
 app.use('/api/products', productRoutes)
+// Use user routes
+app.use('/api/users', userRoutes)
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)
