@@ -4,59 +4,42 @@ import { Wine, Leaf, UserCheck, Truck, Facebook, Phone, Mail, MessageCircle, X, 
 import { BrandTiktok } from 'tabler-icons-react';
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useMediaQuery } from 'react-responsive';
-
-const wines = [
-  { id: 1, name: "MCC Brut Blanc DE Noir", type: "Sparkling", price: 178.00, image: "./assets/wine/mcc_brut_blanc_de_noi.png", description: "A crisp and elegant sparkling wine with notes of citrus and brioche." },
-  { id: 2, name: "Syrah", type: "Red", price: 157.00, image: "./assets/wine/syrah.png", description: "A bold and spicy red wine with flavors of blackberry and pepper." },
-  { id: 3, name: "Sauvignon Blanc", type: "White", price: 110.00, image: "./assets/wine/sauvignon_blanc.png", description: "A refreshing white wine with vibrant notes of grapefruit and green apple." },
-  { id: 4, name: "Pinot Noir", type: "Red-Dry", price: 244.00, image: "./assets/wine/pinot_noir.png", description: "A delicate red wine with aromas of cherry and earthy undertones." },
-  { id: 5, name: "Merlot", type: "Red", price: 110.00, image: "./assets/wine/merlot.png", description: "A smooth red wine with flavors of plum and chocolate." },
-  { id: 6, name: "Cabernet Sauvignon", type: "Red", price: 110.00, image: "./assets/wine/cabernet_sauvignon.png", description: "A full-bodied red wine with rich flavors of blackcurrant and oak." },
-  { id: 7, name: "Chardonnay", type: "White", price: 110.00, image: "./assets/wine/chardonnay.png", description: "A buttery white wine with notes of vanilla and tropical fruits." },
-  { id: 14, name: "Sweet Red", type: "Sweet", price: 110.00, image: "./assets/wine/sweet_red.png", description: "A luscious sweet red wine with flavors of ripe berries and a smooth finish." },
-  { id: 15, name: "Custom", type: "Custom", price: 200.00, image: "./assets/wine/custom.png", description: "A unique blend crafted to your specific taste preferences." },
-];
-
-const happyClients = [
-  { name: "Sarah", image: "/assets/testimonials/1.jpeg", quote: "The perfect wine for every occasion!" },
-  { name: "John", image: "/assets/testimonials/2.jpeg", quote: "Exceptional selection and service." },
-  { name: "Emma", image: "/assets/testimonials/3.jpeg", quote: "My go-to place for fine wines." },
-  { name: "Michael", image: "/assets/testimonials/4.jpeg", quote: "Knowledgeable staff and great recommendations." },
-];
-
-const heroImages = [
-  '/assets/hero_images/hero_3.webp',
-  // '/assets/hero_images/hero_1.webp',
-  // '/assets/hero_images/hero_2.webp',
-];
+import happyClients from '../data/happyClients.js'; // Import happy clients data
+import heroImages from '../data/heroImages.js'; // Import hero images data
 
 const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [displayedWines, setDisplayedWines] = useState(wines);
+  const [displayedWines, setDisplayedWines] = useState([]);
   const [selectedWine, setSelectedWine] = useState(null);
   const wineGridRef = useRef(null);
   const [currentHeroImage, setCurrentHeroImage] = useState(0);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const [isVisible, setIsVisible] = useState(false);
-
-  const categories = ["All", ...new Set(wines.map(wine => wine.type))];
+  const [isLoading, setIsLoading] = useState(true); // Loading state
 
   useEffect(() => {
-    const filteredWines = selectedCategory === "All"
-      ? wines
-      : wines.filter(wine => wine.type === selectedCategory);
+    const fetchWines = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/products'); // Fetch from the backend
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        setDisplayedWines(data); // Set the fetched wines
+      } catch (error) {
+        console.error('Error fetching wines:', error);
+      } finally {
+        setIsLoading(false); // Set loading to false after fetching
+      }
+    };
 
-    setDisplayedWines(filteredWines);
-  }, [selectedCategory]);
+    fetchWines();
+  }, []);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCurrentHeroImage((prev) => (prev + 1) % heroImages.length);
-  //   }, 13000); // Change image every 8 seconds
+  const categories = ["All", ...new Set(displayedWines.map(wine => wine.type))];
 
-  //   return () => clearInterval(interval);
-  // }, []);
+  const filteredWines = selectedCategory === "All"
+    ? displayedWines
+    : displayedWines.filter(wine => wine.type === selectedCategory);
 
   const containerVariants = {
     hidden: { opacity: 1 },
@@ -232,43 +215,47 @@ const Home = () => {
                 </button>
               ))}
             </div>
-            <motion.div
-              ref={wineGridRef}
-              className="flex flex-wrap justify-center gap-4 sm:gap-6"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <AnimatePresence>
-                {displayedWines.map((wine) => (
-                  <motion.div
-                    key={wine.id}
-                    variants={itemVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="hidden"
-                    layout
-                    className="rounded-sm overflow-hidden cursor-pointer w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1.125rem)] max-w-xs"
-                    onClick={() => setSelectedWine(wine)}
-                  >
-                    <div className="relative bg-stale w-full pt-[125%]">
-                      <img
-                        src={wine.image}
-                        alt={wine.name}
-                        className="absolute inset-0 w-full h-full object-contain p-4"
-                      />
-                      <div className="absolute top-2 left-2 bg-gray-300 text-gray-800 text-xs px-2 py-1 rounded-sm">
-                        {wine.type}
+            {isLoading ? ( // Show loading state
+              <p>Loading wines...</p>
+            ) : (
+              <motion.div
+                ref={wineGridRef}
+                className="flex flex-wrap justify-center gap-4 sm:gap-6"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                <AnimatePresence>
+                  {filteredWines.map((wine) => (
+                    <motion.div
+                      key={wine.id}
+                      variants={itemVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="hidden"
+                      layout
+                      className="rounded-sm overflow-hidden cursor-pointer w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1.125rem)] max-w-xs"
+                      onClick={() => setSelectedWine(wine)}
+                    >
+                      <div className="relative bg-stale w-full pt-[125%]">
+                        <img
+                          src={wine.image}
+                          alt={wine.name}
+                          className="absolute inset-0 w-full h-full object-contain p-4"
+                        />
+                        <div className="absolute top-2 left-2 bg-gray-300 text-gray-800 text-xs px-2 py-1 rounded-sm">
+                          {wine.type}
+                        </div>
                       </div>
-                    </div>
-                    <div className="p-4 text-center">
-                      <h3 className="text-sm sm:text-base font-frank-ruhl font-semibold truncate">{wine.name}</h3>
-                      <p className="text-sm sm:text-base font-semibold mt-0">R{wine.price.toFixed(2)}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </motion.div>
+                      <div className="p-4 text-center">
+                        <h3 className="text-sm sm:text-base font-frank-ruhl font-semibold truncate">{wine.name}</h3>
+                        <p className="text-sm sm:text-base font-semibold mt-0">R{wine.price.toFixed(2)}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+            )}
           </div>
         </section>
 

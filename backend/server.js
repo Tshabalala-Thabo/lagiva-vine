@@ -23,11 +23,6 @@ app.get('/', (req, res) => {
 
 // Use product routes
 app.use('/api/products', productRoutes)
-// GET /api/products to fetch all products.
-// POST /api/products to add a new product.
-// GET /api/products/:id to fetch a specific product by ID.
-// PUT /api/products/:id to update a specific product by ID.
-// DELETE /api/products/:id to delete a specific product by ID.
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)
