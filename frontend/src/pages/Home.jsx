@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useMediaQuery } from 'react-responsive';
 import happyClients from '../data/happyClients.js'; // Import happy clients data
 import heroImages from '../data/heroImages.js'; // Import hero images data
+import SkeletonLoader from '../components/SkeletonLoader'; // Import SkeletonLoader
 
 const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -216,7 +217,7 @@ const Home = () => {
               ))}
             </div>
             {isLoading ? ( // Show loading state
-              <p>Loading wines...</p>
+              <SkeletonLoader /> // Use SkeletonLoader while loading
             ) : (
               <motion.div
                 ref={wineGridRef}
