@@ -7,34 +7,18 @@ import { useMediaQuery } from 'react-responsive';
 import happyClients from '../data/happyClients.js'; // Import happy clients data
 import heroImages from '../data/heroImages.js'; // Import hero images data
 import SkeletonLoader from '../components/SkeletonLoader'; // Import SkeletonLoader
+import useFetchProducts from '../hooks/useFetchProducts'; // Import the custom hook
 
 const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [displayedWines, setDisplayedWines] = useState([]);
   const [selectedWine, setSelectedWine] = useState(null);
   const wineGridRef = useRef(null);
   const [currentHeroImage, setCurrentHeroImage] = useState(0);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const [isVisible, setIsVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // Loading state
 
-  useEffect(() => {
-    const fetchWines = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/products'); // Fetch from the backend
-        if (!response.ok) throw new Error('Network response was not ok');
-        const data = await response.json();
-        setDisplayedWines(data); // Set the fetched wines
-      } catch (error) {
-        console.error('Error fetching wines:', error);
-      } finally {
-        setIsLoading(false); // Set loading to false after fetching
-      }
-    };
-
-    fetchWines();
-  }, []);
+  const { products: displayedWines, isLoading } = useFetchProducts(); // Use the custom hook
 
   const categories = ["All", ...new Set(displayedWines.map(wine => wine.type))];
 
