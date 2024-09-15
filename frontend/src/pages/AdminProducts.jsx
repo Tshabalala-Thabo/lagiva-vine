@@ -9,8 +9,8 @@ const Products = () => {
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for delete confirmation modal
-  const [productToDelete, setProductToDelete] = useState(null); // State for the product to be deleted
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -58,11 +58,11 @@ const Products = () => {
 
   const deleteProduct = async () => {
     try {
-      await axios.delete(`/api/products/${productToDelete._id}`); // Send DELETE request
-      setProducts((prevProducts) => prevProducts.filter((product) => product._id !== productToDelete._id)); // Remove product from state
-      closeDeleteModal(); // Close the delete modal
+      await axios.delete(`/api/products/${productToDelete._id}`);
+      setProducts((prevProducts) => prevProducts.filter((product) => product._id !== productToDelete._id));
+      closeDeleteModal();
     } catch (err) {
-      setError('Failed to delete product. Please try again.'); // Handle error
+      setError('Failed to delete product. Please try again.');
     }
   };
 
@@ -89,7 +89,6 @@ const Products = () => {
       <table className="min-w-full border-collapse border border-gray-300">
         <thead>
           <tr>
-            <th className="border border-gray-300 p-2">ID</th>
             <th className="border border-gray-300 p-2">Name</th>
             <th className="border border-gray-300 p-2">Price</th>
             <th className="border border-gray-300 p-2">Description</th>
@@ -99,7 +98,6 @@ const Products = () => {
         <tbody>
           {products.map((product) => (
             <tr key={product._id}>
-              <td className="border border-gray-300 p-2">{product._id}</td>
               <td className="border border-gray-300 p-2">{product.name}</td>
               <td className="border border-gray-300 p-2">${product.price}</td>
               <td className="border border-gray-300 p-2">{product.description}</td>
@@ -111,7 +109,7 @@ const Products = () => {
                   Edit
                 </button>
                 <button
-                  onClick={() => openDeleteModal(product)} // Open delete confirmation modal
+                  onClick={() => openDeleteModal(product)}
                   className="bg-red-500 text-white p-1 rounded"
                 >
                   Delete
