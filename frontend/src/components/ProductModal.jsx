@@ -6,6 +6,7 @@ const ProductModal = ({ onClose, addProduct, product, updateProduct }) => {
   const [type, setType] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
+  const [image, setImage] = useState(null); // State for the image file
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -15,12 +16,14 @@ const ProductModal = ({ onClose, addProduct, product, updateProduct }) => {
       setType(product.type);
       setPrice(product.price);
       setDescription(product.description);
+      setImage(null); // Reset image when editing
     } else {
       // Reset form for adding a new product
       setName('');
       setType('');
       setPrice('');
       setDescription('');
+      setImage(null); // Reset image for new product
     }
   }, [product]);
 
@@ -28,20 +31,36 @@ const ProductModal = ({ onClose, addProduct, product, updateProduct }) => {
     e.preventDefault();
     setError(null); // Reset error state
 
+    const formData = new FormData(); // Create a FormData object
+    formData.append('name', name);
+    formData.append('type', type);
+    formData.append('price', price);
+    formData.append('description', description);
+    if (image) {
+      formData.append('image', image); // Append the image file if it exists
+    }
+
     try {
       if (product) {
         // If editing, send PUT request
-        const updatedProduct = { name, type, price, description };
-        const response = await axios.put(`/api/products/${product._id}`, updatedProduct);
-        updateProduct(response.data.product); // Update the product in the state
+        const response = await axios.put(`/api/products/${product._id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data', // Set the content type for file upload
+          },
+        });
+        updateProduct(response.data); // Update the product in the state
       } else {
         // If adding, send POST request
-        const newProduct = { name, type, price, description };
-        const response = await axios.post('/api/products', newProduct);
-        addProduct(response.data.product); // Add the created product to the state
+        const response = await axios.post('/api/products', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        addProduct(response.data); // Add the created product to the state
       }
       onClose(); // Close the modal after successful submission
     } catch (err) {
+      console.error(err); // Log the error for debugging
       setError('Failed to save product. Please try again.'); // Handle error
     }
   };
@@ -88,6 +107,14 @@ const ProductModal = ({ onClose, addProduct, product, updateProduct }) => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
+              className="border p-2 w-full rounded"
+            />
+          </label>
+          <label className="block mb-2">
+            Image:
+            <input
+              type="file"
+              onChange={(e) => setImage(e.target.files[0])} // Set the image file
               className="border p-2 w-full rounded"
             />
           </label>

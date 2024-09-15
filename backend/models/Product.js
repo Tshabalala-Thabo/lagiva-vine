@@ -15,8 +15,8 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   image: {
-    type: String,
-    required: false, // Changed from true to false
+    type: String, // Store the path to the image
+    required: false,
   },
   description: {
     type: String,
