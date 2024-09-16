@@ -1,23 +1,30 @@
 import express from 'express';
 import multer from 'multer';
-import path from 'path';
+import multerS3 from 'multer-s3';
+import AWS from 'aws-sdk';
 import Product from '../models/Product.js';
 import { addProduct, getAllProducts, getProductById, updateProduct, deleteProduct } from '../controllers/productController.js';
 
 const router = express.Router();
 
-// Set up multer storage to include the original file extension
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Set the destination for uploaded files
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9); // Create a unique suffix
-    cb(null, uniqueSuffix + path.extname(file.originalname)); // Save the file with the original extension
-  }
+// Configure AWS S3
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
 });
 
-const upload = multer({ storage }); // Use the custom storage configuration
+// Set up multer storage to use S3
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: process.env.S3_BUCKET_NAME,
+    acl: 'public-read', // Set the ACL for the uploaded files
+    key: (req, file, cb) => {
+      cb(null, `products/${Date.now().toString()}-${file.originalname}`); // Set the file name
+    },
+  }),
+});
 
 // Define routes
 router.get('/', getAllProducts); // Get all products
@@ -25,7 +32,7 @@ router.post('/', upload.single('image'), async (req, res) => { // Use multer to 
   try {
     const newProduct = new Product(req.body);
     if (req.file) {
-      newProduct.image = req.file.path; // Set the image path from the uploaded file
+      newProduct.image = req.file.location; // Set the image URL from S3
     }
     const savedProduct = await newProduct.save();
     res.status(201).json(savedProduct); // Return the saved product

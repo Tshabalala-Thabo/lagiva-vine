@@ -13,7 +13,7 @@ export const getAllProducts = async (req, res) => {
 // Add a new product
 export const addProduct = async (req, res) => {
   const { name, type, price, description } = req.body;
-  const image = req.file ? req.file.path : null; // Get the image path from the uploaded file
+  const image = req.file ? req.file.location : null; // Get the image URL from S3
   try {
     const newProduct = new Product({ name, type, price, image, description });
     const savedProduct = await newProduct.save();
