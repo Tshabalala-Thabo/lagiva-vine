@@ -98,7 +98,10 @@ const Products = () => {
         <tbody>
           {products.map((product) => (
             <tr key={product._id}>
-              <td className="border border-gray-300 p-2">{product.name}</td>
+              <td className="border border-gray-300 p-2 flex items-center">
+                {product.imageUrl && <img src={product.imageUrl} alt={product.name} className="w-10 h-10 mr-2" />} {/* Display image */}
+                {product.name}
+              </td>
               <td className="border border-gray-300 p-2">${product.price}</td>
               <td className="border border-gray-300 p-2">{product.description}</td>
               <td className="border border-gray-300 p-2">
