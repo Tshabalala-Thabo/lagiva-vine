@@ -20,9 +20,9 @@ export const getAllProducts = async (req, res) => {
       if (product.image) {
         const command = new GetObjectCommand({
           Bucket: process.env.S3_BUCKET_NAME,
-          Key: product.image, // This should be the key stored in the database
+          Key: product.image,
         });
-        imageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 }); // URL valid for 1 hour
+        imageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
       }
       return {
         ...product.toObject(),
