@@ -9,7 +9,7 @@ const useFetchProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('/api/products'); // Fetch products from the backend
+        const response = await axios.get('/products'); // Fetch products from the backend
         setProducts(response.data);
       } catch (err) {
         setError(err);

@@ -20,9 +20,9 @@ export const getAllProducts = async (req, res) => {
       if (product.image) {
         const command = new GetObjectCommand({
           Bucket: process.env.S3_BUCKET_NAME,
-          Key: product.image,
+          Key: product.image, // This should be the key stored in the database
         });
-        imageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
+        imageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 }); // URL valid for 1 hour
       }
       return {
         ...product.toObject(),
@@ -71,15 +71,7 @@ export const updateProduct = async (req, res) => {
 
     const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
     if (!updatedProduct) return res.status(404).json({ message: 'Product not found' });
-
-    // Generate the signed URL for the updated image
-    const command = new GetObjectCommand({
-      Bucket: process.env.S3_BUCKET_NAME,
-      Key: updatedProduct.image,
-    });
-    const imageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 }); // URL valid for 1 hour
-
-    res.status(200).json({ message: 'Product updated successfully', product: { ...updatedProduct.toObject(), imageUrl } });
+    res.status(200).json({ message: 'Product updated successfully', product: updatedProduct });
   } catch (error) {
     res.status(400).json({ message: 'Error updating product', error: error.message });
   }

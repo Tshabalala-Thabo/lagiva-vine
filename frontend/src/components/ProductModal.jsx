@@ -48,7 +48,7 @@ const ProductModal = ({ onClose, addProduct, product, updateProduct }) => {
             'Content-Type': 'multipart/form-data', // Set the content type for file upload
           },
         });
-        updateProduct(response.data.product); // Update the product in the state with the new data
+        updateProduct(response.data); // Update the product in the state
       } else {
         // If adding, send POST request
         const response = await axios.post('/api/products', formData, {
