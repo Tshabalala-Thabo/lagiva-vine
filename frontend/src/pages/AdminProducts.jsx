@@ -52,7 +52,11 @@ const Products = () => {
 
   const updateProduct = (updatedProduct) => {
     setProducts((prevProducts) =>
-      prevProducts.map((product) => (product._id === updatedProduct._id ? updatedProduct : product))
+      prevProducts.map((product) => 
+        product._id === updatedProduct._id 
+          ? { ...product, ...updatedProduct } // Update the product with the new data
+          : product
+      )
     );
   };
 
