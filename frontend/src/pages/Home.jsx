@@ -213,7 +213,7 @@ const Home = () => {
                 <AnimatePresence>
                   {filteredWines.map((wine) => (
                     <motion.div
-                      key={wine.id}
+                      key={wine._id}
                       variants={itemVariants}
                       initial="hidden"
                       animate="visible"
@@ -224,7 +224,7 @@ const Home = () => {
                     >
                       <div className="relative bg-stale w-full pt-[125%]">
                         <img
-                          src={wine.image}
+                          src={wine.imageUrl} // Use the imageUrl from the fetched product
                           alt={wine.name}
                           className="absolute inset-0 w-full h-full object-contain p-4"
                         />
@@ -366,7 +366,7 @@ const Home = () => {
               </div>
               <div className="w-full h-64 relative mb-4">
                 <img
-                  src={selectedWine.image}
+                  src={selectedWine.imageUrl}
                   alt={selectedWine.name}
                   className="absolute inset-0 w-full h-full object-contain rounded-sm"
                 />
