@@ -12,7 +12,7 @@ const useAuth = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post('/api/auth/register', { email, password });
+      const response = await axios.post('/auth/register', { email, password });
       return response.data; // Return the response data
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
@@ -26,7 +26,7 @@ const useAuth = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post('/api/auth/login', { email, password });
+      const response = await axios.post('/auth/login', { email, password });
       localStorage.setItem('token', response.data.token); // Store token
       return response.data; // Return the response data
     } catch (err) {
