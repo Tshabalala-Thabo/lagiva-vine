@@ -43,7 +43,7 @@ const ProductModal = ({ onClose, addProduct, product, updateProduct }) => {
     try {
       if (product) {
         // If editing, send PUT request
-        const response = await axios.put(`/api/products/${product._id}`, formData, {
+        const response = await axios.put(`/products/${product._id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data', // Set the content type for file upload
           },
@@ -51,7 +51,7 @@ const ProductModal = ({ onClose, addProduct, product, updateProduct }) => {
         updateProduct(response.data); // Update the product in the state
       } else {
         // If adding, send POST request
-        const response = await axios.post('/api/products', formData, {
+        const response = await axios.post('/products', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
