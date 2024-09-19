@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose' // Import mongoose
-import connectDB from './config/db.js' // Import the connectDB function
+import connectDB from './src/config/db.js' // Import the connectDB function
 import productRoutes from './src/routes/productRoutes.js' // Import the Product routes
 import authRoutes from './src/routes/authRoutes.js' // Import the Auth routes
 
