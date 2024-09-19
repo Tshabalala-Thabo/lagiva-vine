@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
   //baseURL: 'http://localhost:5000/api', // Set your backend base URL here
-  baseURL: 'https://mrn-b453.vercel.app/api', // Update with your deployed backend URL
+  baseURL: process.env.REACT_APP_API_BASE_URL, // Use the base URL from the .env file
   timeout: 10000, // Optional: Set a timeout for requests
 });
 

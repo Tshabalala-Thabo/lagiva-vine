@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 
 // Set the base URL for Axios
-axios.defaults.baseURL = 'http://localhost:5000'; // Update this if your backend runs on a different port
+axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL; // Update this if your backend runs on a different port
 
 const useAuth = () => {
   const [error, setError] = useState(null);
