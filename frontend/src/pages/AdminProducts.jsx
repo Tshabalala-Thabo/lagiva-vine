@@ -15,7 +15,7 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('/api/products');
+        const response = await axios.get('/products');
         setProducts(response.data);
       } catch (err) {
         setError('Failed to fetch products');
@@ -58,7 +58,7 @@ const Products = () => {
 
   const deleteProduct = async () => {
     try {
-      await axios.delete(`/api/products/${productToDelete._id}`);
+      await axios.delete(`/products/${productToDelete._id}`);
       setProducts((prevProducts) => prevProducts.filter((product) => product._id !== productToDelete._id));
       closeDeleteModal();
     } catch (err) {
