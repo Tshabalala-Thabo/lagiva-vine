@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // Remove the token from local storage
+    navigate('/login'); // Redirect to login page
+  };
+
+  const isLoggedIn = !!localStorage.getItem('token'); // Check if the user is logged in
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
@@ -30,6 +38,16 @@ const Header = () => {
           <ul className="flex space-x-6">
             <li><Link to="/" className="text-gray-700 hover:text-primary">Home</Link></li>
             <li><Link to="/gallery" className="text-gray-700 hover:text-primary">Gallery</Link></li>
+            {isLoggedIn ? (
+              <li>
+                <button onClick={handleLogout} className="text-gray-700 hover:text-primary">Logout</button>
+              </li>
+            ) : (
+              <>
+                <li><Link to="/login" className="text-gray-700 hover:text-primary">Login</Link></li>
+                <li><Link to="/register" className="text-gray-700 hover:text-primary">Register</Link></li>
+              </>
+            )}
           </ul>
         </nav>
         <button onClick={toggleMenu} className="md:hidden text-gray-700">
@@ -45,6 +63,16 @@ const Header = () => {
           <ul className="space-y-2">
             <li><Link to="/" className="block py-2 text-gray-700 hover:text-primary" onClick={toggleMenu}>Home</Link></li>
             <li><Link to="/gallery" className="block py-2 text-gray-700 hover:text-primary" onClick={toggleMenu}>Gallery</Link></li>
+            {isLoggedIn ? (
+              <li>
+                <button onClick={handleLogout} className="block py-2 text-gray-700 hover:text-primary" onClick={toggleMenu}>Logout</button>
+              </li>
+            ) : (
+              <>
+                <li><Link to="/login" className="block py-2 text-gray-700 hover:text-primary" onClick={toggleMenu}>Login</Link></li>
+                <li><Link to="/register" className="block py-2 text-gray-700 hover:text-primary" onClick={toggleMenu}>Register</Link></li>
+              </>
+            )}
           </ul>
         </nav>
       </div>
