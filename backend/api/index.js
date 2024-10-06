@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 import connectDB from '../src/config/db.js'
 import productRoutes from '../src/routes/productRoutes.js'
 import authRoutes from '../src/routes/authRoutes.js' // Import the Auth routes
+import categoryRoutes from '../src/routes/categoryRoutes.js' // Import the Category routes
+
 dotenv.config()
 
 const app = express()
@@ -25,6 +27,9 @@ app.use('/api/products', productRoutes)
 
 // Use auth routes
 app.use('/api/auth', authRoutes) // Added auth routes
+
+// Use category routes
+app.use('/api/categories', categoryRoutes) // Added category routes
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)

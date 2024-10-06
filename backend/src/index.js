@@ -1,10 +1,10 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
-import mongoose from 'mongoose' // Import mongoose
-import connectDB from './config/db.js' // Import the connectDB function
-import productRoutes from './routes/productRoutes.js' // Import the Product routes
-import authRoutes from './routes/authRoutes.js' // Import the Auth routes
+import connectDB from '../src/config/db.js'
+import productRoutes from '../src/routes/productRoutes.js'
+import authRoutes from '../src/routes/authRoutes.js' // Import the Auth routes
+import categoryRoutes from '../src/routes/categoryRoutes.js' // Import the Category routes
 
 dotenv.config()
 
@@ -27,6 +27,9 @@ app.use('/api/products', productRoutes)
 
 // Use auth routes
 app.use('/api/auth', authRoutes) // Added auth routes
+
+// Use category routes
+app.use('/api/categories', categoryRoutes) // Added category routes
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)

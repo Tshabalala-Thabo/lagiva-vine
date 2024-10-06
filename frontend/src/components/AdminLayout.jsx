@@ -28,6 +28,9 @@ const AdminLayout = () => {
               <Link to="/admin/products" className="hover:underline">Products</Link> {/* Link to Admin Products */}
             </li>
             <li className="mb-2">
+              <Link to="/admin/categories" className="hover:underline">Categories</Link> {/* Link to Admin Products */}
+            </li>
+            <li className="mb-2">
               <button onClick={handleLogout} className="hover:underline text-white">Logout</button>
             </li>
             {/* Add more admin links as needed */}
