@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import useFetchCategories from '../hooks/useFetchCategories'; // Updated import
+import useFetchCategories from '../../hooks/useFetchCategories'; // Updated import
 import axios from 'axios'; // Import axios
 
 const CategoriesPage = () => {

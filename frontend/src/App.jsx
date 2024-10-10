@@ -11,7 +11,7 @@ import AdminProducts from './pages/admin/AdminProducts'; // Import Admin Product
 import ProtectedRoute from './components/ProtectedRoute'; // Import Protected Route
 import AdminLayout from './components/AdminLayout'; // Import Admin Layout
 import Layout from './components/Layout'; // Import Layout for main routes
-import CategoriesPage from './pages/CategoriesPage'; // Import the CategoriesPage
+import CategoriesPage from './pages/admin/CategoriesPage'; // Import the CategoriesPage
 
 const App = () => {
   return (
