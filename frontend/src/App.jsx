@@ -5,9 +5,9 @@ import WineDetails from './pages/WineDetails';
 import Gallery from './pages/Gallery';
 import Login from './pages/Login'; // Import Login page
 import Register from './pages/Register'; // Import Register page
-import AdminDashboard from './pages/AdminDashboard'; // Import Admin Dashboard
-import AdminLogin from './pages/AdminLogin'; // Import Admin Login page
-import AdminProducts from './pages/AdminProducts'; // Import Admin Products page
+import AdminDashboard from './pages/admin/AdminDashboard'; // Import Admin Dashboard
+import AdminLogin from './pages/admin/AdminLogin'; // Import Admin Login page
+import AdminProducts from './pages/admin/AdminProducts'; // Import Admin Products page
 import ProtectedRoute from './components/ProtectedRoute'; // Import Protected Route
 import AdminLayout from './components/AdminLayout'; // Import Admin Layout
 import Layout from './components/Layout'; // Import Layout for main routes

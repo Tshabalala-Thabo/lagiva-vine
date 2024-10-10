@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import AdminTableSkeletonLoader from '../components/AdminTableSkeletonLoader';
-import ProductModal from '../components/ProductModal';
+import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader';
+import ProductModal from '../../components/ProductModal';
 
 const Products = () => {
   const [products, setProducts] = useState([]);

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAuth from '../hooks/useAuth'; // Import the custom hook
+import useAuth from '../../hooks/useAuth'; // Import the custom hook
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
