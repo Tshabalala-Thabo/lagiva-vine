@@ -2,17 +2,13 @@ import React, { useState } from 'react';
 import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader';
 import useProducts from '../../hooks/useProducts'; // Import the useProducts hook
 import ConfirmDeleteModal from '../../components/ConfirmDeleteModal'; // Import the ConfirmDeleteModal
+import CreateModal from '../../components/CreateModal'; // Import the CreateModal
 
 const Products = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
-  const [name, setName] = useState('');
-  const [type, setType] = useState('');
-  const [price, setPrice] = useState('');
-  const [description, setDescription] = useState('');
-  const [image, setImage] = useState(null);
   const [error, setError] = useState(null);
 
   const { products, isLoading, error: fetchError, deleteProduct, createProduct, updateProduct } = useProducts(); // Use the useProducts hook
@@ -24,26 +20,11 @@ const Products = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setEditingProduct(null);
-    setName('');
-    setType('');
-    setPrice('');
-    setDescription('');
-    setImage(null);
     setError(null);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (formData) => {
     setError(null); // Reset error state
-
-    const formData = new FormData(); // Create a FormData object
-    formData.append('name', name);
-    formData.append('type', type);
-    formData.append('price', price);
-    formData.append('description', description);
-    if (image) {
-      formData.append('image', image); // Append the image file if it exists
-    }
 
     try {
       if (editingProduct) {
@@ -62,11 +43,6 @@ const Products = () => {
 
   const handleEdit = (product) => {
     setEditingProduct(product);
-    setName(product.name);
-    setType(product.type);
-    setPrice(product.price);
-    setDescription(product.description);
-    setImage(null);
     openModal();
   };
 
@@ -97,6 +73,14 @@ const Products = () => {
   }
 
   if (fetchError) return <p className="text-red-500">{fetchError}</p>;
+
+  const formFields = [
+    { name: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Enter product name' },
+    { name: 'type', label: 'Type', type: 'text', required: true, placeholder: 'Enter product type' },
+    { name: 'price', label: 'Price', type: 'number', required: true, placeholder: 'Enter product price' },
+    { name: 'description', label: 'Description', type: 'text', required: true, placeholder: 'Enter product description' },
+    { name: 'image', label: 'Image', type: 'file', required: false, placeholder: '' },
+  ];
 
   return (
     <div>
@@ -139,63 +123,14 @@ const Products = () => {
         </tbody>
       </table>
 
-      {isModalOpen && (
-        <form onSubmit={handleSubmit}>
-          <h2 className="text-xl mb-4">{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
-          {error && <p className="text-red-500">{error}</p>} {/* Display error message */}
-          <label className="block mb-2">
-            Name:
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="border p-2 w-full rounded"
-            />
-          </label>
-          <label className="block mb-2">
-            Type:
-            <input
-              type="text"
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              required
-              className="border p-2 w-full rounded"
-            />
-          </label>
-          <label className="block mb-2">
-            Price:
-            <input
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              required
-              className="border p-2 w-full rounded"
-            />
-          </label>
-          <label className="block mb-2">
-            Description:
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-              className="border p-2 w-full rounded"
-            />
-          </label>
-          <label className="block mb-2">
-            Image:
-            <input
-              type="file"
-              onChange={(e) => setImage(e.target.files[0])} // Set the image file
-              className="border p-2 w-full rounded"
-            />
-          </label>
-          <div className="flex justify-end mt-4">
-            <button type="submit" className="bg-blue-500 text-white p-2 rounded mr-2">Save</button>
-            <button type="button" onClick={closeModal} className="bg-gray-500 text-white p-2 rounded">Cancel</button>
-          </div>
-        </form>
-      )}
+      <CreateModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onSubmit={handleSubmit}
+        formFields={formFields}
+        heading={editingProduct ? 'Edit Product' : 'Add New Product'}
+        initialData={editingProduct}
+      />
 
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}

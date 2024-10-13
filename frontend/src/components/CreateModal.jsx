@@ -14,8 +14,12 @@ const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialDa
     }, [formFields, initialData, isOpen]);
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const { name, value, type, files } = e.target;
+        if (type === 'file') {
+            setFormData({ ...formData, [name]: files[0] }); // Store the file object
+        } else {
+            setFormData({ ...formData, [name]: value });
+        }
     };
 
     const handleSubmit = (e) => {
@@ -45,7 +49,7 @@ const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialDa
                                         <input
                                             type={field.type}
                                             name={field.name}
-                                            value={formData[field.name] || ''} // Ensure value is set correctly
+                                            value={field.type === 'file' ? '' : formData[field.name] || ''} // Ensure value is set correctly for non-file inputs
                                             onChange={handleInputChange}
                                             placeholder={field.placeholder}
                                             required={field.required}
