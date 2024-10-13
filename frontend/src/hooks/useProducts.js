@@ -54,7 +54,7 @@ const useProducts = () => {
         },
       });
       setProducts((prevProducts) =>
-        prevProducts.map((product) => (product._id === productId ? response.data : product))
+        prevProducts.map((product) => (product._id === productId ? response.data.product : product))
       ); // Update the product in the state
     } catch (err) {
       setError('Failed to update product. Please try again.');
