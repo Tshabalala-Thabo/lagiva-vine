@@ -92,6 +92,8 @@ const CategoriesPage = () => {
                 isOpen={isDeleteModalOpen} 
                 onClose={() => setIsDeleteModalOpen(false)} 
                 onConfirm={handleDelete} 
+                heading={"Confirm delete"}
+                description={"Are you sure you want to delete this category?"}
             />
 
             {/* Create/Edit Modal */}

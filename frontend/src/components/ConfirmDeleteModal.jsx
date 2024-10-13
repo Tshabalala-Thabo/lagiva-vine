@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ConfirmDeleteModal = ({ isOpen, onClose, onConfirm }) => {
+const ConfirmDeleteModal = ({ isOpen, heading, description, onClose, onConfirm }) => {
     return (
         <AnimatePresence>
             {isOpen && (
@@ -15,8 +15,8 @@ const ConfirmDeleteModal = ({ isOpen, onClose, onConfirm }) => {
                         transition={{ duration: 0.3 }} // Transition duration
                     >
                         <div className="bg-white p-6 rounded shadow-md">
-                            <h2 className="text-lg font-bold">Confirm Deletion</h2>
-                            <p>Are you sure you want to delete this category?</p>
+                            <h2 className="text-lg font-bold">{heading}</h2>
+                            <p>{description}</p>
                             <div className="mt-4">
                                 <button 
                                     className="bg-red-500 text-white px-4 py-2 rounded mr-2" 

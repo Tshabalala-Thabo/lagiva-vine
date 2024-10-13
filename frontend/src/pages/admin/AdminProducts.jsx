@@ -102,7 +102,7 @@ const Products = () => {
                 {product.imageUrl && <img src={product.imageUrl} alt={product.name} className="w-10 h-10 mr-2" />} {/* Display image */}
                 {product.name}
               </td>
-              <td className="border border-gray-300 p-2">${product.price}</td>
+              <td className="border border-gray-300 p-2">R{product.price}</td>
               <td className="border border-gray-300 p-2">{product.description}</td>
               <td className="border border-gray-300 p-2">
                 <button
