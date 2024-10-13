@@ -1,52 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import useFetchCategories from '../../hooks/useFetchCategories'; // Updated import
-import axios from 'axios'; // Import axios
+import useCategories from '../../hooks/useCategories'; // Updated import
 import ConfirmDeleteModal from '../../components/ConfirmDeleteModal'; // Import the delete modal component
 import CreateModal from '../../components/CreateModal'; // Import the create/edit modal component
 
 const CategoriesPage = () => {
-    const [categories, setCategories] = useState([]);
-    const { data, error } = useFetchCategories('/categories'); // Fetch categories from the backend
+    const { categories, error, loading, addCategory, updateCategory, deleteCategory } = useCategories(); // Use the custom hook to fetch categories
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for delete modal visibility
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); // State for create/edit modal visibility
     const [categoryToDelete, setCategoryToDelete] = useState(null); // State to hold the category to delete
     const [categoryToEdit, setCategoryToEdit] = useState(null); // State to hold the category to edit
 
-    useEffect(() => {
-        if (data) {
-            setCategories(data);
-        }
-    }, [data]);
-
     const handleAddOrUpdateCategory = async (category) => {
-        try {
-            let response;
-            if (categoryToEdit) {
-                // Update existing category
-                response = await axios.put(`/categories/${categoryToEdit._id}`, category);
-                setCategories(categories.map(cat => (cat._id === categoryToEdit._id ? response.data : cat))); // Update the category in the list
-            } else {
-                // Add new category
-                response = await axios.post('/categories', category);
-                setCategories([...categories, response.data]); // Update categories with the new category
-            }
-            setIsCreateModalOpen(false); // Close the modal
-            setCategoryToEdit(null); // Reset category to edit
-        } catch (error) {
-            console.error('Error saving category:', error);
+        if (categoryToEdit) {
+            await updateCategory(categoryToEdit._id, category); // Update existing category
+        } else {
+            await addCategory(category); // Add new category
         }
+        setIsCreateModalOpen(false); // Close the modal
+        setCategoryToEdit(null); // Reset category to edit
     };
 
-    const handleDelete = async () => {
+    const handleDelete = () => {
         if (categoryToDelete) {
-            try {
-                await axios.delete(`/categories/${categoryToDelete}`); // Send DELETE request to the backend
-                setCategories(categories.filter(category => category._id !== categoryToDelete)); // Update state to remove the deleted category
-                setIsDeleteModalOpen(false); // Close the delete modal
-                setCategoryToDelete(null); // Reset category to delete
-            } catch (error) {
-                console.error('Error deleting category:', error);
-            }
+            deleteCategory(categoryToDelete); // Call the delete function from the hook
+            setIsDeleteModalOpen(false); // Close the delete modal
+            setCategoryToDelete(null); // Reset category to delete
         }
     };
 
@@ -64,7 +42,8 @@ const CategoriesPage = () => {
             >
                 Add Category
             </button>
-            {error && <p>Error fetching categories: {error.message}</p>}
+            {loading && <p>Loading categories...</p>}
+            {error && <p>Error fetching categories: {error}</p>}
             <table>
                 <thead>
                     <tr>
