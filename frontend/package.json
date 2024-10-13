@@ -9,6 +9,7 @@
     "react-router-dom": "^6.26.1",
     "react-scripts": "5.0.1",
     "react-spinners": "^0.14.1",
+    "react-toastify": "^10.0.6",
     "tabler-icons-react": "^1.56.0"
   },
   "scripts": {

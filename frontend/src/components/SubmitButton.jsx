@@ -1,16 +1,16 @@
 import React from 'react'
-import ClipLoader from 'react-spinners/ClipLoader' // Import the spinner
+import { PulseLoader } from 'react-spinners' // Updated to import PulseLoader
 
-const SubmitButton = ({ loading }) => (
+const SubmitButton = ({ loading, text = 'Submit', width = 'w-24' }) => ( // Added width prop with default value
     <button
         type="submit"
-        className={`bg-blue-500 text-white px-4 py-2 rounded ${loading ? 'opacity-50 cursor-not-allowed' : ''} w-24`} // Fixed width
+        className={`bg-blue-500 text-white px-4 py-2 rounded ${loading ? 'opacity-50 cursor-not-allowed' : ''} ${width}`} // Use the width prop
         disabled={loading} // Disable button while loading
     >
         {loading ? (
-            <ClipLoader size={20} color={"#ffffff"} loading={loading} /> // Spinner component
+            <PulseLoader size={10} color={"#ffffff"} loading={loading} /> // Updated to use PulseLoader
         ) : (
-            'Submit'
+            text // Use the text prop instead of hardcoded 'Submit'
         )}
     </button>
 )

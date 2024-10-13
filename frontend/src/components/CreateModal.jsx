@@ -101,7 +101,7 @@ const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialDa
                                     >
                                         Cancel
                                     </button>
-                                    <SubmitButton loading={loading} /> {/* Use the new SubmitButton component */}
+                                    <SubmitButton loading={loading} text="Save" width="w-20" /> {/* Pass the desired button width */}
                                 </div>
                             </form>
                         </div>

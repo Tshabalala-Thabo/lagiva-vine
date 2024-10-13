@@ -5,7 +5,7 @@ export const createCategory = async (req, res) => {
     try {
         const category = new Category(req.body);
         await category.save();
-        res.status(201).send(category);
+        res.status(201).send({ message: 'Category created successfully', category }); // Return message and category
     } catch (error) {
         res.status(400).send(error);
     }
@@ -29,7 +29,7 @@ export const updateCategory = async (req, res) => {
         if (!updatedCategory) {
             return res.status(404).send({ message: 'Category not found' });
         }
-        res.status(200).send(updatedCategory);
+        res.status(200).send({ message: 'Category updated successfully', category: updatedCategory }); // Return message and updated category
     } catch (error) {
         res.status(400).send(error);
     }

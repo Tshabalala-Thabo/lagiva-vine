@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth'; // Import the custom hook
+import SubmitButton from '../../components/SubmitButton'; // Import the SubmitButton component
+import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
+import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toast notifications
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const { login, error, loading } = useAuth(); // Use the custom hook
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitLoading(true);
     try {
       const response = await login(email, password); // Call the login function
       const userRole = JSON.parse(atob(response.token.split('.')[1])).role; // Decode the JWT to get the role
@@ -20,8 +25,10 @@ const AdminLogin = () => {
         alert('You do not have admin access.'); // Alert if not an admin
         localStorage.removeItem('token'); // Remove token if not admin
       }
-    } catch (error) {
-      alert(error.message); // Show error message
+    } catch (err) {
+      toast.error(error); // Show error message as a toast
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
@@ -49,11 +56,9 @@ const AdminLogin = () => {
             className="border p-2 w-full"
           />
         </div>
-        <button type="submit" className="bg-blue-500 text-white p-2" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-        {error && <p className="text-red-500">{error}</p>} {/* Display error message */}
+        <SubmitButton loading={submitLoading} text="Login" width="w-20" />
       </form>
+      <ToastContainer position="bottom-right" /> {/* Position the toast at the bottom right */}
     </div>
   );
 };

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import useCategories from '../../hooks/useCategories'; // Updated import
 import ConfirmDeleteModal from '../../components/ConfirmDeleteModal'; // Import the delete modal component
 import CreateModal from '../../components/CreateModal'; // Import the create/edit modal component
+import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
+import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toast notifications
 
 const CategoriesPage = () => {
     const { categories, error, loading, addCategory, updateCategory, deleteCategory } = useCategories(); // Use the custom hook to fetch categories
@@ -11,18 +13,29 @@ const CategoriesPage = () => {
     const [categoryToEdit, setCategoryToEdit] = useState(null); // State to hold the category to edit
 
     const handleAddOrUpdateCategory = async (category) => {
+        let message;
         if (categoryToEdit) {
-            await updateCategory(categoryToEdit._id, category); // Update existing category
+            message = await updateCategory(categoryToEdit._id, category); // Update existing category
         } else {
-            await addCategory(category); // Add new category
+            message = await addCategory(category); // Add new category
+        }
+        if (message) {
+            toast.success(message); // Display success message
+        } else {
+            toast.error('An error occurred while processing your request.'); // Display generic error message
         }
         setIsCreateModalOpen(false); // Close the modal
         setCategoryToEdit(null); // Reset category to edit
     };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         if (categoryToDelete) {
-            deleteCategory(categoryToDelete); // Call the delete function from the hook
+            const message = await deleteCategory(categoryToDelete); // Call the delete function from the hook
+            if (message) {
+                toast.success(message); // Display success message
+            } else {
+                toast.error('An error occurred while processing your request.'); // Display generic error message
+            }
             setIsDeleteModalOpen(false); // Close the delete modal
             setCategoryToDelete(null); // Reset category to delete
         }
@@ -84,6 +97,7 @@ const CategoriesPage = () => {
                 heading={categoryToEdit ? 'Edit Category' : 'Add New Category'} // Dynamic heading
                 initialData={categoryToEdit} // Pass the current category data for editing
             />
+                  <ToastContainer position="bottom-right" /> {/* Position the toast at the bottom right */}
         </div>
     );
 };
