@@ -42,9 +42,9 @@ export const addProduct = async (req, res) => {
   try {
     const newProduct = new Product({ name, type, price, image, description });
     const savedProduct = await newProduct.save();
-    res.status(201).json(savedProduct); // Return the saved product
+    res.status(200).json({ message: 'Product added successfully', product: savedProduct }); // Return success message and the saved product
   } catch (error) {
-    res.status(400).json({ message: 'Error adding product', error: error.message });
+    res.status(400).json({ message: 'Error adding product: ' + error.message }); // Return specific error message
   }
 };
 
@@ -73,7 +73,7 @@ export const updateProduct = async (req, res) => {
     if (!updatedProduct) return res.status(404).json({ message: 'Product not found' });
     res.status(200).json({ message: 'Product updated successfully', product: updatedProduct });
   } catch (error) {
-    res.status(400).json({ message: 'Error updating product', error: error.message });
+    res.status(400).json({ message: 'Error updating product: ' + error.message }); // Return specific error message
   }
 };
 
@@ -84,6 +84,6 @@ export const deleteProduct = async (req, res) => {
     if (!deletedProduct) return res.status(404).json({ message: 'Product not found' });
     res.status(200).json({ message: 'Product deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting product', error: error.message });
+    res.status(500).json({ message: 'Error deleting product: ' + error.message }); // Return specific error message
   }
 };

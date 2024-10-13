@@ -24,11 +24,13 @@ const useProducts = () => {
 
   const deleteProduct = async (productId) => {
     try {
-      await axios.delete(`/products/${productId}`); // Delete the product from the backend
+      const response = await axios.delete(`/products/${productId}`); // Delete the product from the backend
       setProducts((prevProducts) => prevProducts.filter((product) => product._id !== productId)); // Update state
+      return response.data.message; // Return success message
     } catch (err) {
-      setError('Failed to delete product. Please try again.');
+      setError(err.response?.data?.message || 'Failed to delete product. Please try again.'); // Fetch error from backend
       console.error('Error deleting product:', err);
+      throw new Error(err.response?.data?.message || 'Failed to delete product. Please try again.'); // Throw error for handling in the component
     }
   };
 
@@ -39,10 +41,12 @@ const useProducts = () => {
           'Content-Type': 'multipart/form-data', // Set the content type for file upload
         },
       });
-      setProducts((prevProducts) => [...prevProducts, response.data]); // Add the created product to the state
+      setProducts((prevProducts) => [...prevProducts, response.data.product]); // Add the created product to the state
+      return response.data.message // Return success message and the created product
     } catch (err) {
-      setError('Failed to create product. Please try again.');
+      setError(err.response?.data?.message || 'Failed to create product. Please try again.'); // Fetch error from backend
       console.error('Error creating product:', err);
+      throw new Error(err.response?.data?.message || 'Failed to create product. Please try again.'); // Throw error for handling in the component
     }
   };
 
@@ -56,9 +60,11 @@ const useProducts = () => {
       setProducts((prevProducts) =>
         prevProducts.map((product) => (product._id === productId ? response.data.product : product))
       ); // Update the product in the state
+      return response.data.message; // Return success message
     } catch (err) {
-      setError('Failed to update product. Please try again.');
+      setError(err.response?.data?.message || 'Failed to update product. Please try again.'); // Fetch error from backend
       console.error('Error updating product:', err);
+      throw new Error(err.response?.data?.message || 'Failed to update product. Please try again.'); // Throw error for handling in the component
     }
   };
 

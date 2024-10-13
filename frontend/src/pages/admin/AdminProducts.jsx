@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
+import { toast } from 'react-toastify' // Import toast
 import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader'
 import useProducts from '../../hooks/useProducts' // Import the useProducts hook
 import ConfirmDeleteModal from '../../components/ConfirmDeleteModal' // Import the ConfirmDeleteModal
 import CreateModal from '../../components/CreateModal' // Import the CreateModal
+import ToastNotifications from '../../components/ToastNotifications' // Import ToastNotifications
 
 const Products = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState(null)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [productToDelete, setProductToDelete] = useState(null)
-  const [error, setError] = useState(null)
-
   const { products, isLoading, error: fetchError, deleteProduct, createProduct, updateProduct } = useProducts()
 
   const openModal = () => {
@@ -20,24 +20,23 @@ const Products = () => {
   const closeModal = () => {
     setIsModalOpen(false)
     setEditingProduct(null)
-    setError(null)
   }
 
   const handleSubmit = async (formData) => {
-    setError(null) // Reset error state
-
     try {
+      let message
       if (editingProduct) {
         // If editing, call updateProduct
-        await updateProduct(editingProduct._id, formData)
+        message = await updateProduct(editingProduct._id, formData)
       } else {
         // If adding, call createProduct
-        await createProduct(formData)
+        message = await createProduct(formData)
       }
+      toast.success(message) // Show success message
       closeModal() // Close the modal after successful submission
     } catch (err) {
       console.error(err) // Log the error for debugging
-      setError('Failed to save product. Please try again.') // Handle error
+      toast.error(err.message) // Show error message
     }
   }
 
@@ -56,9 +55,14 @@ const Products = () => {
     setProductToDelete(null)
   }
 
-  const handleDeleteProduct = () => {
+  const handleDeleteProduct = async () => {
     if (productToDelete) {
-      deleteProduct(productToDelete._id) // Call deleteProduct from the hook
+      try {
+        const message = await deleteProduct(productToDelete._id) // Call deleteProduct from the hook
+        toast.success(message) // Show success message
+      } catch (err) {
+        toast.error(err.message) // Show error message
+      }
       closeDeleteModal()
     }
   }
@@ -84,6 +88,7 @@ const Products = () => {
 
   return (
     <div>
+      <ToastNotifications /> {/* Include ToastNotifications component */}
       <h2 className="text-2xl mb-4">Products</h2>
       <button onClick={openModal} className="mb-4 bg-blue-500 text-white p-2 rounded">Add New Product</button>
       <table className="min-w-full border-collapse border border-gray-300">
