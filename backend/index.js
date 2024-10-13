@@ -5,6 +5,7 @@ import mongoose from 'mongoose' // Import mongoose
 import connectDB from './src/config/db.js' // Import the connectDB function
 import productRoutes from './src/routes/productRoutes.js' // Import the Product routes
 import authRoutes from './src/routes/authRoutes.js' // Import the Auth routes
+import categoryRoutes from './src/routes/categoryRoutes.js'
 
 dotenv.config()
 
