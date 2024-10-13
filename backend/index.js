@@ -25,6 +25,8 @@ app.get('/', (req, res) => {
 // Use product routes
 app.use('/api/products', productRoutes)
 
+app.use('/api/categories', categoryRoutes) // Added category routes
+
 // Use auth routes
 app.use('/api/auth', authRoutes) // Added auth routes
 
