@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import useCategories from '../../hooks/useCategories'; // Updated import
 import ConfirmDeleteModal from '../../components/ConfirmDeleteModal'; // Import the delete modal component
 import CreateModal from '../../components/CreateModal'; // Import the create/edit modal component
-import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
-import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toast notifications
+import { toast } from 'react-toastify'; // Import toast
+import ToastNotifications from '../../components/ToastNotifications'; // Import the new ToastNotifications component
 
 const CategoriesPage = () => {
     const { categories, error, loading, addCategory, updateCategory, deleteCategory } = useCategories(); // Use the custom hook to fetch categories
@@ -49,8 +49,8 @@ const CategoriesPage = () => {
     return (
         <div>
             <h1>Categories</h1>
-            <button 
-                className="bg-green-500 text-white px-4 py-2 rounded mb-4" 
+            <button
+                className="bg-green-500 text-white px-4 py-2 rounded mb-4"
                 onClick={() => { setIsCreateModalOpen(true); setCategoryToEdit(null); }} // Open modal for adding
             >
                 Add Category
@@ -80,24 +80,24 @@ const CategoriesPage = () => {
             </table>
 
             {/* Confirmation Modal for Deletion */}
-            <ConfirmDeleteModal 
-                isOpen={isDeleteModalOpen} 
-                onClose={() => setIsDeleteModalOpen(false)} 
-                onConfirm={handleDelete} 
+            <ConfirmDeleteModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleDelete}
                 heading={"Confirm delete"}
                 description={"Are you sure you want to delete this category?"}
             />
 
             {/* Create/Edit Modal */}
-            <CreateModal 
-                isOpen={isCreateModalOpen} 
-                onClose={() => setIsCreateModalOpen(false)} 
-                onSubmit={handleAddOrUpdateCategory} 
+            <CreateModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+                onSubmit={handleAddOrUpdateCategory}
                 formFields={formFields} // Pass the dynamic form fields
                 heading={categoryToEdit ? 'Edit Category' : 'Add New Category'} // Dynamic heading
                 initialData={categoryToEdit} // Pass the current category data for editing
             />
-                  <ToastContainer position="bottom-right" /> {/* Position the toast at the bottom right */}
+            <ToastNotifications /> {/* Use the new ToastNotifications component */}
         </div>
     );
 };

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth'; // Import the custom hook
 import SubmitButton from '../../components/SubmitButton'; // Import the SubmitButton component
-import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
-import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toast notifications
+import { toast } from 'react-toastify'; // Import toast
+import ToastNotifications from '../../components/ToastNotifications'; // Import the ToastNotifications component
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -58,7 +58,7 @@ const AdminLogin = () => {
         </div>
         <SubmitButton loading={submitLoading} text="Login" width="w-20" />
       </form>
-      <ToastContainer position="bottom-right" /> {/* Position the toast at the bottom right */}
+      <ToastNotifications /> {/* Use the ToastNotifications component */}
     </div>
   );
 };
