@@ -1,31 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader';
 import ProductModal from '../../components/ProductModal';
+import useProducts from '../../hooks/useProducts'; // Import the useProducts hook
 
 const Products = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get('/products');
-        setProducts(response.data);
-      } catch (err) {
-        setError('Failed to fetch products');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+  const { products, isLoading, error, deleteProduct } = useProducts(); // Use the useProducts hook
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -56,13 +40,10 @@ const Products = () => {
     );
   };
 
-  const deleteProduct = async () => {
-    try {
-      await axios.delete(`/products/${productToDelete._id}`);
-      setProducts((prevProducts) => prevProducts.filter((product) => product._id !== productToDelete._id));
+  const handleDeleteProduct = () => {
+    if (productToDelete) {
+      deleteProduct(productToDelete._id); // Call deleteProduct from the hook
       closeDeleteModal();
-    } catch (err) {
-      setError('Failed to delete product. Please try again.');
     }
   };
 
@@ -71,7 +52,7 @@ const Products = () => {
     openModal();
   };
 
-  if (loading) {
+  if (isLoading) { // Update loading check
     return (
       <div>
         <h2 className="text-2xl mb-4">Products</h2>
@@ -136,7 +117,7 @@ const Products = () => {
             <h2 className="text-xl mb-4">Confirm Deletion</h2>
             <p>Are you sure you want to delete this product?</p>
             <div className="flex justify-end mt-4">
-              <button onClick={deleteProduct} className="bg-red-500 text-white p-2 rounded mr-2">Delete</button>
+              <button onClick={handleDeleteProduct} className="bg-red-500 text-white p-2 rounded mr-2">Delete</button>
               <button onClick={closeDeleteModal} className="bg-gray-500 text-white p-2 rounded">Cancel</button>
             </div>
           </div>

@@ -7,7 +7,7 @@ import { useMediaQuery } from 'react-responsive';
 import happyClients from '../data/happyClients.js'; // Import happy clients data
 import heroImages from '../data/heroImages.js'; // Import hero images data
 import SkeletonLoader from '../components/SkeletonLoader'; // Import SkeletonLoader
-import useFetchProducts from '../hooks/useFetchProducts'; // Import the custom hook
+import useProducts from '../hooks/useProducts'; // Import the custom hook
 
 const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -18,7 +18,7 @@ const Home = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const [isVisible, setIsVisible] = useState(false);
 
-  const { products: displayedWines, isLoading } = useFetchProducts(); // Use the custom hook
+  const { products: displayedWines, isLoading } = useProducts(); // Use the custom hook
 
   const categories = ["All", ...new Set(displayedWines.map(wine => wine.type))];
 
