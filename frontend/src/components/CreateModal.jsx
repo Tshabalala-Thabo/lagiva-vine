@@ -1,55 +1,55 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import SubmitButton from './SubmitButton'; // Import the new SubmitButton component
+import React, { useState, useEffect, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import SubmitButton from './SubmitButton' // Import the new SubmitButton component
 
 const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialData }) => {
-    const [formData, setFormData] = useState({});
-    const [localData, setLocalData] = useState({});
-    const [loading, setLoading] = useState(false); // New loading state
+    const [formData, setFormData] = useState({})
+    const [localData, setLocalData] = useState({})
+    const [loading, setLoading] = useState(false) // New loading state
 
     useEffect(() => {
         if (isOpen) {
             const initialDataState = {};
             formFields.forEach(field => {
-                initialDataState[field.name] = initialData ? initialData[field.name] : '';
-            });
-            setFormData(initialDataState);
-            setLocalData(initialDataState);
+                initialDataState[field.name] = initialData ? initialData[field.name] : ''
+            })
+            setFormData(initialDataState)
+            setLocalData(initialDataState)
         }
-    }, [formFields, initialData, isOpen]);
+    }, [formFields, initialData, isOpen])
 
     const handleInputChange = (e) => {
-        const { name, value, type, files } = e.target;
+        const { name, value, type, files } = e.target
         setLocalData(prevData => ({
             ...prevData,
             [name]: type === 'file' ? files[0] : value
-        }));
-    };
+        }))
+    }
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true); // Set loading to true when submission starts
-        setFormData(localData);
+        e.preventDefault()
+        setLoading(true) // Set loading to true when submission starts
+        setFormData(localData)
         try {
             await onSubmit(localData); // Await the submission
             handleClose(); // Close the modal only if submission is successful
         } catch (error) {
-            console.error("Submission failed:", error); // Handle error if needed
+            console.error("Submission failed:", error) // Handle error if needed
         } finally {
-            setLoading(false); // Reset loading state
+            setLoading(false) // Reset loading state
         }
-    };
+    }
 
     const handleClose = useCallback(() => {
-        setLocalData(formData);
-        onClose();
-    }, [formData, onClose]);
+        setLocalData(formData)
+        onClose()
+    }, [formData, onClose])
 
     useEffect(() => {
         if (!isOpen) {
-            setLocalData(formData);
+            setLocalData(formData)
         }
-    }, [isOpen, formData]);
+    }, [isOpen, formData])
 
     return (
         <AnimatePresence>
@@ -112,4 +112,4 @@ const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialDa
     );
 };
 
-export default CreateModal;
+export default CreateModal

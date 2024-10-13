@@ -1,67 +1,67 @@
-import React, { useState } from 'react';
-import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader';
-import useProducts from '../../hooks/useProducts'; // Import the useProducts hook
-import ConfirmDeleteModal from '../../components/ConfirmDeleteModal'; // Import the ConfirmDeleteModal
-import CreateModal from '../../components/CreateModal'; // Import the CreateModal
+import React, { useState } from 'react'
+import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader'
+import useProducts from '../../hooks/useProducts' // Import the useProducts hook
+import ConfirmDeleteModal from '../../components/ConfirmDeleteModal' // Import the ConfirmDeleteModal
+import CreateModal from '../../components/CreateModal' // Import the CreateModal
 
 const Products = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [productToDelete, setProductToDelete] = useState(null);
-  const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingProduct, setEditingProduct] = useState(null)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [productToDelete, setProductToDelete] = useState(null)
+  const [error, setError] = useState(null)
 
-  const { products, isLoading, error: fetchError, deleteProduct, createProduct, updateProduct } = useProducts(); // Use the useProducts hook
+  const { products, isLoading, error: fetchError, deleteProduct, createProduct, updateProduct } = useProducts()
 
   const openModal = () => {
-    setIsModalOpen(true);
-  };
+    setIsModalOpen(true)
+  }
 
   const closeModal = () => {
-    setIsModalOpen(false);
-    setEditingProduct(null);
-    setError(null);
-  };
+    setIsModalOpen(false)
+    setEditingProduct(null)
+    setError(null)
+  }
 
   const handleSubmit = async (formData) => {
-    setError(null); // Reset error state
+    setError(null) // Reset error state
 
     try {
       if (editingProduct) {
         // If editing, call updateProduct
-        await updateProduct(editingProduct._id, formData);
+        await updateProduct(editingProduct._id, formData)
       } else {
         // If adding, call createProduct
-        await createProduct(formData);
+        await createProduct(formData)
       }
-      closeModal(); // Close the modal after successful submission
+      closeModal() // Close the modal after successful submission
     } catch (err) {
-      console.error(err); // Log the error for debugging
-      setError('Failed to save product. Please try again.'); // Handle error
+      console.error(err) // Log the error for debugging
+      setError('Failed to save product. Please try again.') // Handle error
     }
-  };
+  }
 
   const handleEdit = (product) => {
-    setEditingProduct(product);
-    openModal();
-  };
+    setEditingProduct(product)
+    openModal()
+  }
 
   const openDeleteModal = (product) => {
-    setProductToDelete(product);
-    setIsDeleteModalOpen(true);
-  };
+    setProductToDelete(product)
+    setIsDeleteModalOpen(true)
+  }
 
   const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-    setProductToDelete(null);
-  };
+    setIsDeleteModalOpen(false)
+    setProductToDelete(null)
+  }
 
   const handleDeleteProduct = () => {
     if (productToDelete) {
-      deleteProduct(productToDelete._id); // Call deleteProduct from the hook
-      closeDeleteModal();
+      deleteProduct(productToDelete._id) // Call deleteProduct from the hook
+      closeDeleteModal()
     }
-  };
+  }
 
   if (isLoading) { // Update loading check
     return (
@@ -69,10 +69,10 @@ const Products = () => {
         <h2 className="text-2xl mb-4">Products</h2>
         <AdminTableSkeletonLoader />
       </div>
-    );
+    )
   }
 
-  if (fetchError) return <p className="text-red-500">{fetchError}</p>;
+  if (fetchError) return <p className="text-red-500">{fetchError}</p>
 
   const formFields = [
     { name: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Enter product name' },
@@ -80,7 +80,7 @@ const Products = () => {
     { name: 'price', label: 'Price', type: 'number', required: true, placeholder: 'Enter product price' },
     { name: 'description', label: 'Description', type: 'text', required: true, placeholder: 'Enter product description' },
     { name: 'image', label: 'Image', type: 'file', required: false, placeholder: '' },
-  ];
+  ]
 
   return (
     <div>
@@ -140,7 +140,7 @@ const Products = () => {
         onConfirm={handleDeleteProduct}
       />
     </div>
-  );
-};
+  )
+}
 
-export default Products;
+export default Products

@@ -1,5 +1,5 @@
-import React from 'react';
-import ClipLoader from 'react-spinners/ClipLoader'; // Import the spinner
+import React from 'react'
+import ClipLoader from 'react-spinners/ClipLoader' // Import the spinner
 
 const SubmitButton = ({ loading }) => (
     <button
@@ -13,6 +13,6 @@ const SubmitButton = ({ loading }) => (
             'Submit'
         )}
     </button>
-);
+)
 
-export default SubmitButton;
+export default SubmitButton
