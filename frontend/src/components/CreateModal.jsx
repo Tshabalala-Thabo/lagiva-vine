@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import SubmitButton from './SubmitButton'; // Import the new SubmitButton component
 
 const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialData }) => {
     const [formData, setFormData] = useState({});
     const [localData, setLocalData] = useState({});
+    const [loading, setLoading] = useState(false); // New loading state
 
     useEffect(() => {
         if (isOpen) {
@@ -24,11 +26,18 @@ const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialDa
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true); // Set loading to true when submission starts
         setFormData(localData);
-        onSubmit(localData);
-        handleClose();
+        try {
+            await onSubmit(localData); // Await the submission
+            handleClose(); // Close the modal only if submission is successful
+        } catch (error) {
+            console.error("Submission failed:", error); // Handle error if needed
+        } finally {
+            setLoading(false); // Reset loading state
+        }
     };
 
     const handleClose = useCallback(() => {
@@ -92,12 +101,7 @@ const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialDa
                                     >
                                         Cancel
                                     </button>
-                                    <button
-                                        type="submit"
-                                        className="bg-blue-500 text-white px-4 py-2 rounded"
-                                    >
-                                        Submit
-                                    </button>
+                                    <SubmitButton loading={loading} /> {/* Use the new SubmitButton component */}
                                 </div>
                             </form>
                         </div>
