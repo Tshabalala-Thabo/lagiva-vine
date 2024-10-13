@@ -1,32 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialData }) => {
     const [formData, setFormData] = useState({});
+    const [localData, setLocalData] = useState({});
 
     useEffect(() => {
-        // Initialize form data based on the fields provided
-        const initialDataState = {};
-        formFields.forEach(field => {
-            initialDataState[field.name] = initialData ? initialData[field.name] : ''; // Populate with initial data if available
-        });
-        setFormData(initialDataState);
+        if (isOpen) {
+            const initialDataState = {};
+            formFields.forEach(field => {
+                initialDataState[field.name] = initialData ? initialData[field.name] : '';
+            });
+            setFormData(initialDataState);
+            setLocalData(initialDataState);
+        }
     }, [formFields, initialData, isOpen]);
 
     const handleInputChange = (e) => {
         const { name, value, type, files } = e.target;
-        if (type === 'file') {
-            setFormData({ ...formData, [name]: files[0] }); // Store the file object
-        } else {
-            setFormData({ ...formData, [name]: value });
-        }
+        setLocalData(prevData => ({
+            ...prevData,
+            [name]: type === 'file' ? files[0] : value
+        }));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit(formData);
-        onClose(); // Close the modal after submission
+        setFormData(localData);
+        onSubmit(localData);
+        handleClose();
     };
+
+    const handleClose = useCallback(() => {
+        setLocalData(formData);
+        onClose();
+    }, [formData, onClose]);
+
+    useEffect(() => {
+        if (!isOpen) {
+            setLocalData(formData);
+        }
+    }, [isOpen, formData]);
 
     return (
         <AnimatePresence>
@@ -35,32 +49,46 @@ const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialDa
                     <div className="fixed inset-0 bg-black bg-opacity-50 z-40" />
                     <motion.div
                         className="fixed inset-0 flex items-center justify-center z-50"
-                        initial={{ opacity: 0, scale: 0.8 }} // Initial state
-                        animate={{ opacity: 1, scale: 1 }} // Animate to this state
-                        exit={{ opacity: 0, scale: 0.8 }} // Exit state
-                        transition={{ duration: 0.3 }} // Transition duration
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.3 }}
                     >
-                        <div className="bg-white p-8 rounded shadow-md w-1/3"> {/* Adjusted width and padding */}
-                            <h2 className="text-lg font-bold">{heading}</h2>
+                        <div className="bg-white p-8 rounded shadow-md w-1/3">
+                            <h2 className="text-lg font-bold mb-4">{heading}</h2>
                             <form onSubmit={handleSubmit}>
                                 {formFields.map((field) => (
                                     <div key={field.name} className="mb-4">
                                         <label className="block mb-1" htmlFor={field.name}>{field.label}</label>
-                                        <input
-                                            type={field.type}
-                                            name={field.name}
-                                            value={field.type === 'file' ? '' : formData[field.name] || ''} // Ensure value is set correctly for non-file inputs
-                                            onChange={handleInputChange}
-                                            placeholder={field.placeholder}
-                                            required={field.required}
-                                            className="border p-2 w-full"
-                                        />
+                                        {field.type === 'file' ? (
+                                            <div>
+                                                <input
+                                                    type="file"
+                                                    name={field.name}
+                                                    onChange={handleInputChange}
+                                                    required={field.required}
+                                                    className="border p-2 w-full"
+                                                />
+                                                {localData[field.name] && <p className="mt-1 text-gray-600">{localData[field.name].name}</p>}
+                                            </div>
+                                        ) : (
+                                            <input
+                                                type={field.type}
+                                                name={field.name}
+                                                value={localData[field.name] || ''}
+                                                onChange={handleInputChange}
+                                                placeholder={field.placeholder}
+                                                required={field.required}
+                                                className="border p-2 w-full"
+                                            />
+                                        )}
                                     </div>
                                 ))}
                                 <div className="flex justify-end">
                                     <button
+                                        type="button"
                                         className="bg-gray-300 px-4 py-2 rounded mr-2"
-                                        onClick={onClose}
+                                        onClick={handleClose}
                                     >
                                         Cancel
                                     </button>
