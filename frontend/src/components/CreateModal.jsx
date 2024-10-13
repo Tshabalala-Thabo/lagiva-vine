@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading }) => {
+const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialData }) => {
     const [formData, setFormData] = useState({});
 
     useEffect(() => {
         // Initialize form data based on the fields provided
-        const initialData = {};
+        const initialDataState = {};
         formFields.forEach(field => {
-            initialData[field.name] = '';
+            initialDataState[field.name] = initialData ? initialData[field.name] : ''; // Populate with initial data if available
         });
-        setFormData(initialData);
-    }, [formFields, isOpen]);
+        setFormData(initialDataState);
+    }, [formFields, initialData, isOpen]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -36,7 +36,7 @@ const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading }) => {
                         exit={{ opacity: 0, scale: 0.8 }} // Exit state
                         transition={{ duration: 0.3 }} // Transition duration
                     >
-                        <div className="bg-white p-6 rounded shadow-md">
+                        <div className="bg-white p-8 rounded shadow-md w-1/3"> {/* Adjusted width and padding */}
                             <h2 className="text-lg font-bold">{heading}</h2>
                             <form onSubmit={handleSubmit}>
                                 {formFields.map((field) => (
@@ -45,7 +45,7 @@ const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading }) => {
                                         <input
                                             type={field.type}
                                             name={field.name}
-                                            value={formData[field.name] || ''}
+                                            value={formData[field.name] || ''} // Ensure value is set correctly
                                             onChange={handleInputChange}
                                             placeholder={field.placeholder}
                                             required={field.required}

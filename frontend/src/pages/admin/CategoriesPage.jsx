@@ -101,6 +101,7 @@ const CategoriesPage = () => {
                 onSubmit={handleAddOrUpdateCategory} 
                 formFields={formFields} // Pass the dynamic form fields
                 heading={categoryToEdit ? 'Edit Category' : 'Add New Category'} // Dynamic heading
+                initialData={categoryToEdit} // Pass the current category data for editing
             />
         </div>
     );
