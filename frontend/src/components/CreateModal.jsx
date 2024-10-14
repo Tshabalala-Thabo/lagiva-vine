@@ -29,9 +29,12 @@ const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialDa
     const handleSubmit = async (e) => {
         e.preventDefault()
         setLoading(true) // Set loading to true when submission starts
-        setFormData(localData)
+        const trimmedData = Object.fromEntries(
+            Object.entries(localData).map(([key, value]) => [key, typeof value === 'string' ? value.trim() : value]) // Trim only string values
+        )
+        setFormData(trimmedData)
         try {
-            await onSubmit(localData); // Await the submission
+            await onSubmit(trimmedData); // Await the submission
             handleClose(); // Close the modal only if submission is successful
         } catch (error) {
             console.error("Submission failed:", error) // Handle error if needed
