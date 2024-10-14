@@ -6,12 +6,20 @@ import { toast } from 'react-toastify'; // Import toast
 import ToastNotifications from '../../components/ToastNotifications'; // Import the new ToastNotifications component
 
 const CategoriesPage = () => {
-    const { categories, error, loading, addCategory, updateCategory, deleteCategory } = useCategories(); // Use the custom hook to fetch categories
+    const { categories, error, setError, loading, addCategory, updateCategory, deleteCategory } = useCategories(); // Use the custom hook to fetch categories
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for delete modal visibility
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); // State for create/edit modal visibility
     const [categoryToDelete, setCategoryToDelete] = useState(null); // State to hold the category to delete
     const [categoryToEdit, setCategoryToEdit] = useState(null); // State to hold the category to edit
     const [modalLoading, setModalLoading] = useState(false); // State for modal loading
+
+    useEffect(() => {
+        if (error) {
+            toast.error(error); // Display error message as toast
+            // Reset error state after displaying the toast
+            setError(null); // Reset error state to allow for future error notifications
+        }
+    }, [error]); // Run effect when error changes
 
     const handleAddOrUpdateCategory = async (category) => {
         let message;
@@ -22,8 +30,6 @@ const CategoriesPage = () => {
         }
         if (message) {
             toast.success(message); // Display success message
-        } else {
-            toast.error('An error occurred while processing your request.'); // Display generic error message
         }
         setIsCreateModalOpen(false); // Close the modal
         setCategoryToEdit(null); // Reset category to edit
@@ -36,8 +42,6 @@ const CategoriesPage = () => {
                 const message = await deleteCategory(categoryToDelete); // Call the delete function from the hook
                 if (message) {
                     toast.success(message); // Display success message
-                } else {
-                    toast.error('An error occurred while processing your request.'); // Display generic error message
                 }
             }
         } catch (error) {
@@ -64,7 +68,6 @@ const CategoriesPage = () => {
                 Add Category
             </button>
             {loading && <p>Loading categories...</p>}
-            {error && <p>Error fetching categories: {error}</p>}
             <table>
                 <thead>
                     <tr>

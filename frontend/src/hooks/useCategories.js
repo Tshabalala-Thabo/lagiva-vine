@@ -3,7 +3,7 @@ import axios from 'axios'; // Import axios
 
 const useCategories = () => {
     const [categories, setCategories] = useState([]);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState(null); // Add error state
     const [loading, setLoading] = useState(true);
 
 
@@ -26,9 +26,10 @@ const useCategories = () => {
         try {
             const response = await axios.post('/categories', category); // Send POST request to add a new category
             setCategories((prevCategories) => [...prevCategories, response.data.category]); // Update state with the new category
+            setError(null); // Clear error on success
             return response.data.message; // Return the success message
         } catch (err) {
-            return err.response?.data?.message || 'Failed to add category. Please try again.'; // Return error message
+            setError(err.response?.data || 'Failed to add category. Please try again.'); // Set error state
         }
     };
 
@@ -38,9 +39,10 @@ const useCategories = () => {
             setCategories((prevCategories) =>
                 prevCategories.map((cat) => (cat._id === categoryId ? response.data.category : cat))
             ); // Update the category in the state
+            setError(null); // Clear error on success
             return response.data.message; // Return the success message
         } catch (err) {
-            return err.response?.data?.message || 'Failed to update category. Please try again.'; // Return error message
+            setError(err.response?.data || 'Failed to update category. Please try again.'); // Set error state
         }
     };
 
@@ -48,13 +50,14 @@ const useCategories = () => {
         try {
             const response = await axios.delete(`/categories/${categoryId}`); // Send DELETE request to the backend
             setCategories((prevCategories) => prevCategories.filter(category => category._id !== categoryId)); // Update state to remove the deleted category
+            setError(null); // Clear error on success
             return response.data.message; // Return the success message
         } catch (err) {
-            return err.response?.data?.message || 'Failed to delete category. Please try again.'; // Return error message
+            setError(err.response?.data || 'Failed to delete category. Please try again.'); // Set error state
         }
     };
 
-    return { categories, error, loading, addCategory, updateCategory, deleteCategory }; // Return the functions
+    return { categories, error, setError, loading, addCategory, updateCategory, deleteCategory }; // Ensure error is returned
 };
 
 export default useCategories;
