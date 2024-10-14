@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { PulseLoader } from 'react-spinners';
 
-const ConfirmDeleteModal = ({ isOpen, heading, description, onClose, onConfirm }) => {
+const ConfirmDeleteModal = ({ isOpen, heading, description, onClose, onConfirm, loading }) => {
     return (
         <AnimatePresence>
             {isOpen && (
@@ -18,17 +19,23 @@ const ConfirmDeleteModal = ({ isOpen, heading, description, onClose, onConfirm }
                             <h2 className="text-lg font-bold">{heading}</h2>
                             <p>{description}</p>
                             <div className="mt-4">
-                                <button 
-                                    className="bg-red-500 text-white px-4 py-2 rounded mr-2" 
-                                    onClick={onConfirm}
-                                >
-                                    Yes, Delete
-                                </button>
-                                <button 
-                                    className="bg-gray-300 px-4 py-2 rounded" 
+                                <button
+                                    className="bg-gray-300 px-4 py-2 rounded"
                                     onClick={onClose}
                                 >
                                     Cancel
+                                </button>
+                                <button
+                                    className={`bg-red-500 text-white px-4 py-2 rounded ml-2 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    onClick={async () => {
+                                        if (!loading) {
+                                            await onConfirm() // Assuming onConfirm returns a promise
+                                            onClose()
+                                        }
+                                    }}
+                                    disabled={loading}
+                                >
+                                    {loading ? <PulseLoader size={8} color="#ffffff" /> : 'Yes, delete'}
                                 </button>
                             </div>
                         </div>

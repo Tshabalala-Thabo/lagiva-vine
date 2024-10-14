@@ -11,6 +11,7 @@ const CategoriesPage = () => {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); // State for create/edit modal visibility
     const [categoryToDelete, setCategoryToDelete] = useState(null); // State to hold the category to delete
     const [categoryToEdit, setCategoryToEdit] = useState(null); // State to hold the category to edit
+    const [modalLoading, setModalLoading] = useState(false); // State for modal loading
 
     const handleAddOrUpdateCategory = async (category) => {
         let message;
@@ -29,14 +30,21 @@ const CategoriesPage = () => {
     };
 
     const handleDelete = async () => {
-        if (categoryToDelete) {
-            const message = await deleteCategory(categoryToDelete); // Call the delete function from the hook
-            if (message) {
-                toast.success(message); // Display success message
-            } else {
-                toast.error('An error occurred while processing your request.'); // Display generic error message
+        setModalLoading(true); // Set loading to true when starting deletion
+        try {
+            if (categoryToDelete) {
+                const message = await deleteCategory(categoryToDelete); // Call the delete function from the hook
+                if (message) {
+                    toast.success(message); // Display success message
+                } else {
+                    toast.error('An error occurred while processing your request.'); // Display generic error message
+                }
             }
-            setIsDeleteModalOpen(false); // Close the delete modal
+        } catch (error) {
+            console.error('Error deleting category:', error);
+        } finally {
+            setModalLoading(false); // Set loading to false after deletion
+            setIsDeleteModalOpen(false); // Close modal after deletion
             setCategoryToDelete(null); // Reset category to delete
         }
     };
@@ -86,6 +94,7 @@ const CategoriesPage = () => {
                 onConfirm={handleDelete}
                 heading={"Confirm delete"}
                 description={"Are you sure you want to delete this category?"}
+                loading={modalLoading}
             />
 
             {/* Create/Edit Modal */}
