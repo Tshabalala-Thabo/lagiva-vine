@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { toast } from 'react-toastify' // Import toast
 import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader'
 import useProducts from '../../hooks/useProducts' // Import the useProducts hook
@@ -6,6 +6,8 @@ import ConfirmDeleteModal from '../../components/ConfirmDeleteModal' // Import t
 import CreateModal from '../../components/CreateModal' // Import the CreateModal
 import ToastNotifications from '../../components/ToastNotifications' // Import ToastNotifications
 import { DataTable } from '@/components/DataTable'
+import { Button } from "@/components/ui/button"
+import { MoreHorizontal } from "lucide-react"
 
 const Products = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -68,6 +70,54 @@ const Products = () => {
     }
   }
 
+  const columns = useMemo(() => [
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => (
+        <div className="flex items-center">
+          {row.original.imageUrl && (
+            <img src={row.original.imageUrl} alt={row.original.name} className="w-10 h-10 mr-2" />
+          )}
+          {row.getValue("name")}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "price",
+      header: "Price",
+      cell: ({ row }) => <div>R{row.getValue("price")}</div>,
+    },
+    {
+      accessorKey: "description",
+      header: "Description",
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const product = row.original
+        return (
+          <div className="flex space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleEdit(product)}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => openDeleteModal(product)}
+            >
+              Delete
+            </Button>
+          </div>
+        )
+      },
+    },
+  ], [])
+
   if (isLoading) { // Update loading check
     return (
       <div>
@@ -91,43 +141,9 @@ const Products = () => {
     <div>
       <ToastNotifications /> {/* Include ToastNotifications component */}
       <h2 className="text-2xl mb-4">Products</h2>
-      <button onClick={openModal} className="mb-4 bg-blue-500 text-white p-2 rounded">Add New Product</button>
-      <table className="min-w-full border-collapse border border-gray-300">
-        <thead>
-          <tr>
-            <th className="border border-gray-300 p-2">Name</th>
-            <th className="border border-gray-300 p-2">Price</th>
-            <th className="border border-gray-300 p-2">Description</th>
-            <th className="border border-gray-300 p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product) => (
-            <tr key={product._id}>
-              <td className="border border-gray-300 p-2 flex items-center">
-                {product.imageUrl && <img src={product.imageUrl} alt={product.name} className="w-10 h-10 mr-2" />} {/* Display image */}
-                {product.name}
-              </td>
-              <td className="border border-gray-300 p-2">R{product.price}</td>
-              <td className="border border-gray-300 p-2">{product.description}</td>
-              <td className="border border-gray-300 p-2">
-                <button
-                  onClick={() => handleEdit(product)}
-                  className="bg-yellow-500 text-white p-1 rounded mr-2"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => openDeleteModal(product)}
-                  className="bg-red-500 text-white p-1 rounded"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Button onClick={openModal} className="mb-4">Add New Product</Button>
+      
+      <DataTable columns={columns} data={products} />
 
       <CreateModal
         isOpen={isModalOpen}
