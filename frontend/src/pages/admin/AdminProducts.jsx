@@ -5,6 +5,7 @@ import useProducts from '../../hooks/useProducts' // Import the useProducts hook
 import ConfirmDeleteModal from '../../components/ConfirmDeleteModal' // Import the ConfirmDeleteModal
 import CreateModal from '../../components/CreateModal' // Import the CreateModal
 import ToastNotifications from '../../components/ToastNotifications' // Import ToastNotifications
+import { DataTable } from '@/components/DataTable'
 
 const Products = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
