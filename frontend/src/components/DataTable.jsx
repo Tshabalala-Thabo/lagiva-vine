@@ -115,7 +115,7 @@ export function DataTable({ data, columns }) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
+      {/* <div className="flex items-center py-4">
         <Input
           placeholder="Filter emails..."
           value={(table.getColumn("email")?.getFilterValue() ?? "").toString()}
@@ -124,7 +124,7 @@ export function DataTable({ data, columns }) {
           }
           className="max-w-sm"
         />
-      </div>
+      </div> */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>

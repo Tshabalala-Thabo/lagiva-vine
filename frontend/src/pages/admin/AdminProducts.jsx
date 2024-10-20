@@ -7,7 +7,8 @@ import CreateModal from '../../components/CreateModal' // Import the CreateModal
 import ToastNotifications from '../../components/ToastNotifications' // Import ToastNotifications
 import { DataTable } from '@/components/DataTable'
 import { Button } from "@/components/ui/button"
-import { MoreHorizontal } from "lucide-react"
+import { MoreHorizontal, Pencil, Trash } from "lucide-react"
+import { DynamicDropdown } from '@/components/DropDown'
 
 const Products = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -96,22 +97,31 @@ const Products = () => {
       id: "actions",
       cell: ({ row }) => {
         const product = row.original
+        
+        const dropdownItems = [
+          { 
+            label: "Edit", 
+            icon: Pencil, 
+            onClick: () => handleEdit(product)
+          },
+          { 
+            label: "Delete", 
+            icon: Trash, 
+            onClick: () => openDeleteModal(product)
+          }
+        ]
+
+        const handleItemClick = (item) => {
+          item.onClick()
+        }
+
         return (
-          <div className="flex space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleEdit(product)}
-            >
-              Edit
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => openDeleteModal(product)}
-            >
-              Delete
-            </Button>
+          <div className="text-right">
+            <DynamicDropdown
+              items={dropdownItems}
+              onItemClick={handleItemClick}
+              buttonText={<MoreHorizontal className="h-4 w-4" />}
+            />
           </div>
         )
       },

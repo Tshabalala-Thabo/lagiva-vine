@@ -5,3 +5,10 @@
 @tailwind utilities;
 
 /* Any custom styles can go here */
+html {
+  overflow-y: scroll;
+}
+
+body {
+  margin-right: calc(-1 * (100vw - 100%));
+}

@@ -53,6 +53,17 @@ export default {
           backgroundColor: theme('backgroundColor.default'),
         },
       })
-    }
+    },
+    function({ addUtilities }) {
+      const newUtilities = {
+        '.overflow-y-scroll': {
+          'overflow-y': 'scroll',
+        },
+        '.compensate-for-scrollbar': {
+          'margin-right': 'calc(-1 * (100vw - 100%))',
+        },
+      }
+      addUtilities(newUtilities)
+    },
   ],
 }
