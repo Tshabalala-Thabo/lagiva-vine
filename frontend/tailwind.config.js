@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: ["class"],
   content: [
     './pages/**/*.{js,jsx}',
     './components/**/*.{js,jsx}',
@@ -7,45 +8,96 @@ export default {
     './src/**/*.{js,jsx}',
   ],
   theme: {
-    extend: {
-      colors: {
-        black: '#121212', // Set default black to #121212
-        white: '#ffffff', // Explicitly set white
-        primary: '#b40100',
-        'primary-foreground': '#a52a2a',
-        muted: '#f3f4f6',
-        'muted-foreground': '#4b5563',
-        stale: '#f8f8f8', // Renamed from 'card' to 'stale'
+    container: {
+      center: true,
+      padding: '1rem',
+      screens: {
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
+        "2xl": "1400px",
       },
+    },
+    extend: {
+      // Your existing custom colors merged with shadcn requirements
+      colors: {
+        black: '#121212',
+        white: '#ffffff',
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: '#b40100',
+          foreground: '#a52a2a',
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: '#f3f4f6',
+          foreground: '#4b5563',
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        stale: '#f8f8f8',
+      },
+      // Your existing custom settings
       backgroundColor: {
-        'default': '#ffffff', // Set default background color to white
+        'default': '#ffffff',
       },
       fontFamily: {
         sans: ['Roboto', 'sans-serif'],
         'frank-ruhl': ['"Frank Ruhl Libre"', 'serif'],
       },
+      // Combined animations
       animation: {
         fadeIn: 'fadeIn 0.5s ease-out forwards',
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
       },
+      // Combined keyframes
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
-      },
-      container: {
-        center: true,
-        padding: '1rem',
-        screens: {
-          sm: '640px',
-          md: '768px',
-          lg: '1024px',
-          xl: '1280px',
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+      },
+      // shadcn border radius
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
     },
   },
   plugins: [
+    // Your existing plugins
     function({ addBase, theme }) {
       addBase({
         'html': { 
@@ -65,5 +117,7 @@ export default {
       }
       addUtilities(newUtilities)
     },
+    // Required shadcn plugin
+    require("tailwindcss-animate"),
   ],
 }
