@@ -15,18 +15,18 @@ const ConfirmDeleteModal = ({ isOpen, heading, description, onClose, onConfirm, 
                         exit={{ opacity: 0, scale: 0.8 }} // Exit state
                         transition={{ duration: 0.3 }} // Transition duration
                     >
-                        <div className="bg-white p-6 rounded shadow-md">
-                            <h2 className="text-lg font-bold">{heading}</h2>
-                            <p>{description}</p>
-                            <div className="mt-4">
+                        <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
+                            <h2 className="text-lg font-bold mb-2">{heading}</h2>
+                            <p className="mb-4">{description}</p>
+                            <div className="mt-4 flex justify-end">
                                 <button
-                                    className="bg-gray-300 px-4 py-2 rounded"
+                                    className="px-4 py-2 text-gray-600 hover:text-gray-800"
                                     onClick={onClose}
                                 >
                                     Cancel
                                 </button>
                                 <button
-                                    className={`bg-red-500 text-white px-4 py-2 rounded ml-2 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    className={`bg-red-500 text-white px-4 py-2 rounded ml-2 hover:bg-red-600 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     onClick={async () => {
                                         if (!loading) {
                                             await onConfirm() // Assuming onConfirm returns a promise

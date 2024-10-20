@@ -6,11 +6,11 @@ import ConfirmDeleteModal from '../../components/ConfirmDeleteModal' // Import t
 import CreateModal from '../../components/CreateModal' // Import the CreateModal
 import ToastNotifications from '../../components/ToastNotifications' // Import ToastNotifications
 import { DataTable } from '@/components/DataTable'
-import { Button } from "@/components/ui/button"
-import { MoreHorizontal, Pencil, Trash } from "lucide-react"
+import { Button } from "@/components/Button"
+import { MoreHorizontal, Pencil, Trash, Plus } from "lucide-react" // Add Plus to the imports
 import { DynamicDropdown } from '@/components/DropDown'
 
-const Products = () => {
+const AdminProducts = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState(null)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -151,7 +151,12 @@ const Products = () => {
     <div>
       <ToastNotifications /> {/* Include ToastNotifications component */}
       <h2 className="text-2xl mb-4">Products</h2>
-      <Button onClick={openModal} className="mb-4">Add New Product</Button>
+      <Button 
+        text="Add product" 
+        onClick={openModal} 
+        className="mb-4 bg-blue-500"
+        icon={<Plus className="h-4 w-4 mr-2" />} // Add the Plus icon here
+      />
       
       <DataTable columns={columns} data={products} />
 
@@ -175,4 +180,4 @@ const Products = () => {
   )
 }
 
-export default Products
+export default AdminProducts

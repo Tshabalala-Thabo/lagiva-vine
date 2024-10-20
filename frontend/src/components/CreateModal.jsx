@@ -99,7 +99,7 @@ const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialDa
                                 <div className="flex justify-end">
                                     <button
                                         type="button"
-                                        className="bg-gray-300 px-4 py-2 rounded mr-2"
+                                        className="text-gray-600 hover:text-gray-800 px-4 py-2 mr-2"
                                         onClick={handleClose}
                                     >
                                         Cancel
