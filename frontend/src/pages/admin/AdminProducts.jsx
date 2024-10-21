@@ -94,6 +94,7 @@ const AdminProducts = () => {
       header: "Description",
     },
     {
+      header: "Action",
       id: "actions",
       cell: ({ row }) => {
         const product = row.original
