@@ -9,6 +9,7 @@ import { DataTable } from '@/components/DataTable'
 import { Button } from "@/components/Button"
 import { MoreHorizontal, Pencil, Trash, Plus } from "lucide-react" // Add Plus to the imports
 import { DynamicDropdown } from '@/components/DropDown'
+import { BreadCrumb } from '../../components/BreadCrumb' // Add this import
 
 const AdminProducts = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -98,16 +99,16 @@ const AdminProducts = () => {
       id: "actions",
       cell: ({ row }) => {
         const product = row.original
-        
+
         const dropdownItems = [
-          { 
-            label: "Edit", 
-            icon: Pencil, 
+          {
+            label: "Edit",
+            icon: Pencil,
             onClick: () => handleEdit(product)
           },
-          { 
-            label: "Delete", 
-            icon: Trash, 
+          {
+            label: "Delete",
+            icon: Trash,
             onClick: () => openDeleteModal(product)
           }
         ]
@@ -151,14 +152,23 @@ const AdminProducts = () => {
   return (
     <div>
       <ToastNotifications /> {/* Include ToastNotifications component */}
-      <h2 className="text-2xl mb-4">Products</h2>
-      <Button 
-        text="Add product" 
-        onClick={openModal} 
+      <div className='flex justify-between'>
+        <div> <BreadCrumb items={[ // Add this Breadcrumb component
+          { label: 'Home', href: '/' },
+          { label: 'Admin', href: '/admin' },
+          { label: 'Products', isDropdown: false }
+        ]} />
+          <h2 className="text-2xl mb-4">Products</h2>
+        </div>
+        <Button
+        text="Add product"
+        onClick={openModal}
         className="mb-4 bg-blue-500"
         icon={<Plus className="h-4 w-4 mr-2" />} // Add the Plus icon here
       />
-      
+      </div>
+     
+
       <DataTable columns={columns} data={products} />
 
       <CreateModal
