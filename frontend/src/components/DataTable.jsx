@@ -125,14 +125,14 @@ export function DataTable({ data, columns }) {
           className="max-w-sm"
         />
       </div> */}
-      <div className="rounded-md border">
+      <div className="rounded-md bg-white shadow-sm border">
         <Table>
-          <TableHeader>
+          <TableHeader className="">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className="bg-gray-200 text-gray-800">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
