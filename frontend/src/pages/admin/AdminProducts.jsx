@@ -155,7 +155,6 @@ const AdminProducts = () => {
       <div className='flex justify-between'>
         <div> <BreadCrumb items={[ // Add this Breadcrumb component
           { label: 'Home', href: '/' },
-          { label: 'Admin', href: '/admin' },
           { label: 'Products', isDropdown: false }
         ]} />
           <h2 className="text-2xl mb-4">Products</h2>
