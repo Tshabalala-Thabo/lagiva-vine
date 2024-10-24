@@ -1,59 +1,60 @@
 import React, { useEffect, useState } from 'react';
-import useCategories from '../../hooks/useCategories'; // Updated import
-import ConfirmDeleteModal from '../../components/ConfirmDeleteModal'; // Import the delete modal component
-import CreateModal from '../../components/CreateModal'; // Import the create/edit modal component
-import { toast } from 'react-toastify'; // Import toast
-import ToastNotifications from '../../components/ToastNotifications'; // Import the new ToastNotifications component
-import { BreadCrumb } from '../../components/BreadCrumb'; // Import the BreadCrumb component
-import { Button } from "@/components/Button"; // Import the Button component
-import { Plus } from "lucide-react"; // Import the Plus icon
-import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader'; // Import the AdminTableSkeletonLoader
+import useCategories from '../../hooks/useCategories';
+import ConfirmDeleteModal from '../../components/ConfirmDeleteModal';
+import CreateModal from '../../components/CreateModal';
+import { toast } from 'react-toastify';
+import ToastNotifications from '../../components/ToastNotifications';
+import { BreadCrumb } from '../../components/BreadCrumb';
+import { Button } from "@/components/Button";
+import { Plus, Pencil, Trash, MoreHorizontal } from "lucide-react";
+import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader';
+import { DataTable } from '../../components/DataTable';
+import { DynamicDropdown } from '@/components/DropDown';
 
 const CategoriesPage = () => {
-    const { categories, error, setError, loading, addCategory, updateCategory, deleteCategory } = useCategories(); // Use the custom hook to fetch categories
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for delete modal visibility
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); // State for create/edit modal visibility
-    const [categoryToDelete, setCategoryToDelete] = useState(null); // State to hold the category to delete
-    const [categoryToEdit, setCategoryToEdit] = useState(null); // State to hold the category to edit
-    const [modalLoading, setModalLoading] = useState(false); // State for modal loading
+    const { categories, error, setError, loading, addCategory, updateCategory, deleteCategory } = useCategories();
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [categoryToDelete, setCategoryToDelete] = useState(null);
+    const [categoryToEdit, setCategoryToEdit] = useState(null);
+    const [modalLoading, setModalLoading] = useState(false);
 
     useEffect(() => {
         if (error) {
-            toast.error(error); // Display error message as toast
-            // Reset error state after displaying the toast
-            setError(null); // Reset error state to allow for future error notifications
+            toast.error(error);
+            setError(null);
         }
-    }, [error]); // Run effect when error changes
+    }, [error]);
 
     const handleAddOrUpdateCategory = async (category) => {
         let message;
         if (categoryToEdit) {
-            message = await updateCategory(categoryToEdit._id, category); // Update existing category
+            message = await updateCategory(categoryToEdit._id, category);
         } else {
-            message = await addCategory(category); // Add new category
+            message = await addCategory(category);
         }
         if (message) {
-            toast.success(message); // Display success message
+            toast.success(message);
         }
-        setIsCreateModalOpen(false); // Close the modal
-        setCategoryToEdit(null); // Reset category to edit
+        setIsCreateModalOpen(false);
+        setCategoryToEdit(null);
     };
 
     const handleDelete = async () => {
-        setModalLoading(true); // Set loading to true when starting deletion
+        setModalLoading(true);
         try {
             if (categoryToDelete) {
-                const message = await deleteCategory(categoryToDelete); // Call the delete function from the hook
+                const message = await deleteCategory(categoryToDelete);
                 if (message) {
-                    toast.success(message); // Display success message
+                    toast.success(message);
                 }
             }
         } catch (error) {
             console.error('Error deleting category:', error);
         } finally {
-            setModalLoading(false); // Set loading to false after deletion
-            setIsDeleteModalOpen(false); // Close modal after deletion
-            setCategoryToDelete(null); // Reset category to delete
+            setModalLoading(false);
+            setIsDeleteModalOpen(false);
+            setCategoryToDelete(null);
         }
     };
 
@@ -62,12 +63,58 @@ const CategoriesPage = () => {
         { name: 'description', label: 'Description', type: 'text', placeholder: 'Enter description', required: false },
     ];
 
+    // Define columns for the DataTable
+    const columns = [
+        {
+            accessorKey: 'name',
+            header: 'Name',
+        },
+        {
+            accessorKey: 'description',
+            header: 'Description',
+        },
+        {
+            id: 'actions',
+            header: 'Actions',
+            cell: ({ row }) => {
+                const category = row.original;
+
+                const dropdownItems = [
+                    {
+                        label: "Edit",
+                        icon: Pencil,
+                        onClick: () => { setIsCreateModalOpen(true); setCategoryToEdit(category); }
+                    },
+                    {
+                        label: "Delete",
+                        icon: Trash,
+                        onClick: () => { setIsDeleteModalOpen(true); setCategoryToDelete(category._id); }
+                    }
+                ];
+
+                const handleItemClick = (item) => {
+                    item.onClick();
+                };
+
+                return (
+                    <div className="text-right">
+                        <DynamicDropdown
+                            items={dropdownItems}
+                            onItemClick={handleItemClick}
+                            buttonText={<MoreHorizontal className="h-4 w-4" />}
+                        />
+                    </div>
+                );
+            },
+        },
+    ];
+
     return (
         <div>
-            <ToastNotifications /> {/* Include ToastNotifications component */}
+            <ToastNotifications />
             <div className='flex justify-between'>
                 <div>
-                    <BreadCrumb items={[ // Add this Breadcrumb component
+                    <BreadCrumb items={[
                         { label: 'Home', href: '/' },
                         { label: 'Categories', isDropdown: false }
                     ]} />
@@ -75,38 +122,17 @@ const CategoriesPage = () => {
                 </div>
                 <Button
                     text="Add Category"
-                    onClick={() => { setIsCreateModalOpen(true); setCategoryToEdit(null); }} // Open modal for adding
+                    onClick={() => { setIsCreateModalOpen(true); setCategoryToEdit(null); }}
                     className="mb-4 bg-green-500"
-                    icon={<Plus className="h-4 w-4 mr-2" />} // Add the Plus icon here
+                    icon={<Plus className="h-4 w-4 mr-2" />}
                 />
             </div>
             {loading ? (
-                <AdminTableSkeletonLoader columns={3} /> // Pass the number of columns
+                <AdminTableSkeletonLoader columns={3} />
             ) : (
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {categories.map((category) => (
-                            <tr key={category._id}>
-                                <td>{category.name}</td>
-                                <td>{category.description}</td>
-                                <td>
-                                    <button onClick={() => { setIsCreateModalOpen(true); setCategoryToEdit(category); }}>Edit</button>
-                                    <button onClick={() => { setIsDeleteModalOpen(true); setCategoryToDelete(category._id); }}>Delete</button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <DataTable data={categories} columns={columns} />
             )}
 
-            {/* Confirmation Modal for Deletion */}
             <ConfirmDeleteModal
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
@@ -116,14 +142,13 @@ const CategoriesPage = () => {
                 loading={modalLoading}
             />
 
-            {/* Create/Edit Modal */}
             <CreateModal
                 isOpen={isCreateModalOpen}
                 onClose={() => setIsCreateModalOpen(false)}
                 onSubmit={handleAddOrUpdateCategory}
-                formFields={formFields} // Pass the dynamic form fields
-                heading={categoryToEdit ? 'Edit Category' : 'Add New Category'} // Dynamic heading
-                initialData={categoryToEdit} // Pass the current category data for editing
+                formFields={formFields}
+                heading={categoryToEdit ? 'Edit Category' : 'Add New Category'}
+                initialData={categoryToEdit}
             />
         </div>
     );
