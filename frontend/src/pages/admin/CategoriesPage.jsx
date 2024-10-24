@@ -4,6 +4,10 @@ import ConfirmDeleteModal from '../../components/ConfirmDeleteModal'; // Import 
 import CreateModal from '../../components/CreateModal'; // Import the create/edit modal component
 import { toast } from 'react-toastify'; // Import toast
 import ToastNotifications from '../../components/ToastNotifications'; // Import the new ToastNotifications component
+import { BreadCrumb } from '../../components/BreadCrumb'; // Import the BreadCrumb component
+import { Button } from "@/components/Button"; // Import the Button component
+import { Plus } from "lucide-react"; // Import the Plus icon
+import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader'; // Import the AdminTableSkeletonLoader
 
 const CategoriesPage = () => {
     const { categories, error, setError, loading, addCategory, updateCategory, deleteCategory } = useCategories(); // Use the custom hook to fetch categories
@@ -60,35 +64,47 @@ const CategoriesPage = () => {
 
     return (
         <div>
-            <h1>Categories</h1>
-            <button
-                className="bg-green-500 text-white px-4 py-2 rounded mb-4"
-                onClick={() => { setIsCreateModalOpen(true); setCategoryToEdit(null); }} // Open modal for adding
-            >
-                Add Category
-            </button>
-            {loading && <p>Loading categories...</p>}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {categories.map((category) => (
-                        <tr key={category._id}>
-                            <td>{category.name}</td>
-                            <td>{category.description}</td>
-                            <td>
-                                <button onClick={() => { setIsCreateModalOpen(true); setCategoryToEdit(category); }}>Edit</button>
-                                <button onClick={() => { setIsDeleteModalOpen(true); setCategoryToDelete(category._id); }}>Delete</button>
-                            </td>
+            <ToastNotifications /> {/* Include ToastNotifications component */}
+            <div className='flex justify-between'>
+                <div>
+                    <BreadCrumb items={[ // Add this Breadcrumb component
+                        { label: 'Home', href: '/' },
+                        { label: 'Categories', isDropdown: false }
+                    ]} />
+                    <h1 className="text-2xl mb-4">Categories</h1>
+                </div>
+                <Button
+                    text="Add Category"
+                    onClick={() => { setIsCreateModalOpen(true); setCategoryToEdit(null); }} // Open modal for adding
+                    className="mb-4 bg-green-500"
+                    icon={<Plus className="h-4 w-4 mr-2" />} // Add the Plus icon here
+                />
+            </div>
+            {loading ? (
+                <AdminTableSkeletonLoader columns={3} /> // Pass the number of columns
+            ) : (
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Actions</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {categories.map((category) => (
+                            <tr key={category._id}>
+                                <td>{category.name}</td>
+                                <td>{category.description}</td>
+                                <td>
+                                    <button onClick={() => { setIsCreateModalOpen(true); setCategoryToEdit(category); }}>Edit</button>
+                                    <button onClick={() => { setIsDeleteModalOpen(true); setCategoryToDelete(category._id); }}>Delete</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
 
             {/* Confirmation Modal for Deletion */}
             <ConfirmDeleteModal
@@ -109,7 +125,6 @@ const CategoriesPage = () => {
                 heading={categoryToEdit ? 'Edit Category' : 'Add New Category'} // Dynamic heading
                 initialData={categoryToEdit} // Pass the current category data for editing
             />
-            <ToastNotifications /> {/* Use the new ToastNotifications component */}
         </div>
     );
 };
