@@ -1,24 +1,24 @@
 import React from 'react';
 
-const AdminTableSkeletonLoader = () => {
+const AdminTableSkeletonLoader = ({ columns = 3 }) => {
   return (
     <div className="animate-pulse">
-      <table className="min-w-full border-collapse border border-gray-300">
+      <table className="w-full border-collapse">
         <thead>
-          <tr>
-            <th className="border border-gray-300 p-2 bg-gray-200 h-6 w-1/4"></th>
-            <th className="border border-gray-300 p-2 bg-gray-200 h-6 w-1/4"></th>
-            <th className="border border-gray-300 p-2 bg-gray-200 h-6 w-1/4"></th>
-            <th className="border border-gray-300 p-2 bg-gray-200 h-6 w-1/4"></th>
+          <tr className="bg-gray-300">
+            <th colSpan={columns} className="px-4 py-2">
+              <div className="h-4 bg-gray-300 rounded"></div>
+            </th>
           </tr>
         </thead>
         <tbody>
-          {Array.from({ length: 5 }).map((_, index) => (
-            <tr key={index}>
-              <td className="border border-gray-300 p-2 bg-gray-200 h-6"></td>
-              <td className="border border-gray-300 p-2 bg-gray-200 h-6"></td>
-              <td className="border border-gray-300 p-2 bg-gray-200 h-6"></td>
-              <td className="border border-gray-300 p-2 bg-gray-200 h-6"></td>
+          {Array.from({ length: 5 }).map((_, rowIndex) => (
+            <tr key={rowIndex}>
+              {Array.from({ length: columns }).map((_, colIndex) => (
+                <td key={colIndex} className="px-4 py-2">
+                  <div className="h-8 bg-gray-300 rounded"></div>
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>
