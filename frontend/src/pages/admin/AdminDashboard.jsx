@@ -1,5 +1,6 @@
 import React from 'react';
 import { DataTable } from '@/components/DataTable';
+import { Area_Chart } from '@/components/charts/Area_Chart';
 
 const columns = [
   {
@@ -25,7 +26,11 @@ const AdminDashboard = () => {
     <div className="p-4">
       <h2 className="text-2xl mb-4">Admin Dashboard</h2>
       <p className="mb-4">Welcome to the admin dashboard! Only accessible by admin users.</p>
-      <DataTable data={data} columns={columns} />
+      
+      <div className="mb-8 w-full md:w-1/2">
+        <Area_Chart />
+      </div>
+
     </div>
   );
 };
