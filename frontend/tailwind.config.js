@@ -58,6 +58,23 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         stale: '#f8f8f8',
+        // New color palette
+        blue: {
+          // Primary Blue: Use for primary buttons, active states, headers, key actions
+          primary: '#1E3A8A',
+          // Light Blue: Use for backgrounds, card backgrounds, hovered states
+          light: '#DBEAFE',
+          // Dark Blue: Use for headers, sidebars, and navigation backgrounds
+          dark: '#1E40AF',
+          // Accent Blue: Use for links, icons, or subtle accents for highlighting actions
+          accent: '#3B82F6',
+          // Muted Blue: Use for borders, dividers, disabled buttons
+          muted: '#93C5FD',
+          // Blue Gray: Use for text, labels, less important details
+          gray: '#64748B',
+          // Deep Blue Gray: Use for footer, text on light backgrounds, or secondary text
+          deepGray: '#334155',
+        },
       },
       // Your existing custom settings
       backgroundColor: {
