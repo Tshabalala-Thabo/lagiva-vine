@@ -21,7 +21,7 @@ const AdminLayout = () => {
       <aside
         className={`${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } fixed inset-y-0 left-0 z-50 w-64 bg-gray-800 text-white transition-transform duration-300 ease-in-out lg:static lg:translate-x-0`}
+        } fixed inset-y-0 left-0 z-50 w-64 bg-[#1E40AF] text-white transition-transform duration-300 ease-in-out lg:static lg:translate-x-0`}
       >
         <div className="flex h-16 items-center justify-center border-b border-gray-700">
           <h2 className="text-2xl font-semibold">Admin Panel</h2>
