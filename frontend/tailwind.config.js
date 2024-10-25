@@ -60,20 +60,20 @@ export default {
         stale: '#f8f8f8',
         // New color palette
         blue: {
-          // Primary Blue: Use for primary buttons, active states, headers, key actions
-          primary: '#1E3A8A',
-          // Light Blue: Use for backgrounds, card backgrounds, hovered states
-          light: '#DBEAFE',
-          // Dark Blue: Use for headers, sidebars, and navigation backgrounds
-          dark: '#1E40AF',
-          // Accent Blue: Use for links, icons, or subtle accents for highlighting actions
-          accent: '#3B82F6',
-          // Muted Blue: Use for borders, dividers, disabled buttons
-          muted: '#93C5FD',
-          // Blue Gray: Use for text, labels, less important details
-          gray: '#64748B',
-          // Deep Blue Gray: Use for footer, text on light backgrounds, or secondary text
-          deepGray: '#334155',
+          // Primary Blue: Use for background of sidebars, headers, or primary buttons
+          primary: '#1E293B',
+          // Secondary Blue: Use for hovered states, secondary buttons, borders, and section dividers
+          secondary: '#334155',
+          // Accent Blue: Use for text highlights, subtle accents for active states or navigation links
+          accent: '#475569',
+          // Light Slate Blue: Use for backgrounds, cards, or input fields
+          light: '#64748B',
+          // Very Dark Blue: Use for text, headings, and high-contrast elements
+          dark: '#0F172A',
+          // Muted Blue Gray: Use for borders, subtle shadows, and disabled states
+          muted: '#94A3B8',
+          // Soft Blue Background: Use for page backgrounds or light areas where you need contrast with dark text
+          background: '#E2E8F0',
         },
       },
       // Your existing custom settings
