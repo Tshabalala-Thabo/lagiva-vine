@@ -8,21 +8,29 @@ const productSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    required: true,
+    required: false,
   },
   price: {
     type: Number,
     required: true,
   },
   image: {
-    type: String, // Store the path to the image
+    type: String,
     required: false,
   },
   description: {
     type: String,
     required: true,
   },
-})
+  categories: {
+    type: [String],
+    default: [],
+  },
+  published: {
+    type: Boolean,
+    default: false,
+  },
+}, { timestamps: true }) // Add this option to include timestamps
 
 // Create the model
 const Product = mongoose.model('Product', productSchema)

@@ -20,9 +20,9 @@ export const getAllProducts = async (req, res) => {
       if (product.image) {
         const command = new GetObjectCommand({
           Bucket: process.env.S3_BUCKET_NAME,
-          Key: product.image, // This should be the key stored in the database
+          Key: product.image,
         });
-        imageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 }); // URL valid for 1 hour
+        imageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
       }
       return {
         ...product.toObject(),
@@ -37,14 +37,22 @@ export const getAllProducts = async (req, res) => {
 
 // Add a new product
 export const addProduct = async (req, res) => {
-  const { name, type, price, description } = req.body;
-  const image = req.file ? req.file.key : null; // Get the image key from S3
+  const { name, type, price, description, categories, published } = req.body;
+  const image = req.file ? req.file.key : null;
   try {
-    const newProduct = new Product({ name, type, price, image, description });
+    const newProduct = new Product({ 
+      name, 
+      type, 
+      price, 
+      image, 
+      description, 
+      categories, 
+      published: published || false 
+    });
     const savedProduct = await newProduct.save();
-    res.status(200).json({ message: 'Product added successfully', product: savedProduct }); // Return success message and the saved product
+    res.status(200).json({ message: 'Product added successfully', product: savedProduct });
   } catch (error) {
-    res.status(400).json({ message: 'Error adding product: ' + error.message }); // Return specific error message
+    res.status(400).json({ message: 'Error adding product: ' + error.message });
   }
 };
 
@@ -62,18 +70,28 @@ export const getProductById = async (req, res) => {
 // Update a product by ID
 export const updateProduct = async (req, res) => {
   try {
-    const updateData = { ...req.body }; // Get the update data from the request body
+    const { name, type, price, description, categories, published } = req.body;
+    const updateData = { 
+      name, 
+      type, 
+      price, 
+      description, 
+      categories, 
+      published: published !== undefined ? published : undefined 
+    };
 
-    // Check if a new image is uploaded
+    // Remove undefined fields
+    Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
+
     if (req.file) {
-      updateData.image = req.file.key; // Update the image key if a new image is uploaded
+      updateData.image = req.file.key;
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
     if (!updatedProduct) return res.status(404).json({ message: 'Product not found' });
     res.status(200).json({ message: 'Product updated successfully', product: updatedProduct });
   } catch (error) {
-    res.status(400).json({ message: 'Error updating product: ' + error.message }); // Return specific error message
+    res.status(400).json({ message: 'Error updating product: ' + error.message });
   }
 };
 
