@@ -10,6 +10,7 @@ import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader'
 import { DataTable } from '../../components/DataTable';
 import { DynamicDropdown } from '@/components/DropDown';
 import { DynamicDialog } from '../../components/Dialog';
+import SubmitButton from '../../components/SubmitButton';
 
 const CategoriesPage = () => {
     const { categories, error, setError, loading, addCategory, updateCategory, deleteCategory } = useCategories();
@@ -44,19 +45,28 @@ const CategoriesPage = () => {
     };
 
     const handleAddOrUpdateCategory = async () => {
+        setModalLoading(true);
+        console.log("Submit button clicked");
         console.log("Submitted form data:", formData);
 
         let message;
-        if (categoryToEdit) {
-            message = await updateCategory(categoryToEdit._id, formData);
-        } else {
-            message = await addCategory(formData);
+        try {
+            if (categoryToEdit) {
+                message = await updateCategory(categoryToEdit._id, formData);
+            } else {
+                message = await addCategory(formData);
+            }
+            if (message) {
+                toast.success(message);
+            }
+        } catch (error) {
+            console.error('Error adding/updating category:', error);
+            toast.error('An error occurred while saving the category.');
+        } finally {
+            setModalLoading(false);
+            setIsCreateModalOpen(false);
+            setCategoryToEdit(null);
         }
-        if (message) {
-            toast.success(message);
-        }
-        setIsCreateModalOpen(false);
-        setCategoryToEdit(null);
     };
 
     const handleDelete = async () => {
@@ -175,12 +185,12 @@ const CategoriesPage = () => {
                         >
                             Cancel
                         </Button>
-                        <Button
+                        <SubmitButton
+                            loading={modalLoading}
+                            text="Save"
                             onClick={handleAddOrUpdateCategory}
                             className="bg-blue-500 text-black"
-                        >
-                            Save
-                        </Button>
+                        />
                     </div>
                 }
             >
