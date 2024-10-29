@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import useCategories from '../../hooks/useCategories';
 import ConfirmDeleteModal from '../../components/ConfirmDeleteModal';
-import CreateModal from '../../components/CreateModal';
 import { toast } from 'react-toastify';
 import ToastNotifications from '../../components/ToastNotifications';
 import { BreadCrumb } from '../../components/BreadCrumb';
@@ -10,6 +9,7 @@ import { Plus, Pencil, Trash, MoreHorizontal } from "lucide-react";
 import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader';
 import { DataTable } from '../../components/DataTable';
 import { DynamicDropdown } from '@/components/DropDown';
+import { DynamicDialog } from '../../components/Dialog';
 
 const CategoriesPage = () => {
     const { categories, error, setError, loading, addCategory, updateCategory, deleteCategory } = useCategories();
@@ -18,6 +18,7 @@ const CategoriesPage = () => {
     const [categoryToDelete, setCategoryToDelete] = useState(null);
     const [categoryToEdit, setCategoryToEdit] = useState(null);
     const [modalLoading, setModalLoading] = useState(false);
+    const [formData, setFormData] = useState({ name: '', description: '' });
 
     useEffect(() => {
         if (error) {
@@ -26,12 +27,30 @@ const CategoriesPage = () => {
         }
     }, [error]);
 
-    const handleAddOrUpdateCategory = async (category) => {
+    useEffect(() => {
+        if (categoryToEdit) {
+            setFormData({ name: categoryToEdit.name, description: categoryToEdit.description });
+        } else {
+            setFormData({ name: '', description: '' });
+        }
+    }, [categoryToEdit]);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
+    const handleAddOrUpdateCategory = async () => {
+        console.log("Submitted form data:", formData);
+
         let message;
         if (categoryToEdit) {
-            message = await updateCategory(categoryToEdit._id, category);
+            message = await updateCategory(categoryToEdit._id, formData);
         } else {
-            message = await addCategory(category);
+            message = await addCategory(formData);
         }
         if (message) {
             toast.success(message);
@@ -142,14 +161,47 @@ const CategoriesPage = () => {
                 loading={modalLoading}
             />
 
-            <CreateModal
+            <DynamicDialog
                 isOpen={isCreateModalOpen}
-                onClose={() => setIsCreateModalOpen(false)}
-                onSubmit={handleAddOrUpdateCategory}
-                formFields={formFields}
-                heading={categoryToEdit ? 'Edit Category' : 'Add New Category'}
-                initialData={categoryToEdit}
-            />
+                onOpenChange={setIsCreateModalOpen}
+                title={categoryToEdit ? 'Edit Category' : 'Add New Category'}
+                description={categoryToEdit ? 'Edit the details of the category.' : 'Fill in the details to create a new category.'}
+                footer={
+                    <div className="flex justify-end">
+                        <Button
+                            type="button"
+                            onClick={() => setIsCreateModalOpen(false)}
+                            className="text-gray-600 hover:text-gray-800 px-4 py-2 mr-2"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={handleAddOrUpdateCategory}
+                            className="bg-blue-500 text-black"
+                        >
+                            Save
+                        </Button>
+                    </div>
+                }
+            >
+                {/* Render form fields here */}
+                {formFields.map((field) => (
+                    <div key={field.name} className="mb-4">
+                        <label className="block mb-1" htmlFor={field.name}>
+                            {field.label}
+                        </label>
+                        <input
+                            type={field.type}
+                            name={field.name}
+                            value={formData[field.name]}
+                            onChange={handleInputChange}
+                            placeholder={field.placeholder}
+                            required={field.required}
+                            className="border p-2 w-full"
+                        />
+                    </div>
+                ))}
+            </DynamicDialog>
         </div>
     );
 };
