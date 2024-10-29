@@ -95,6 +95,19 @@ const AdminProducts = () => {
       header: "Description",
     },
     {
+      accessorKey: "published",
+      header: "Published",
+      cell: ({ row }) => (
+        <div className={`px-2 py-1 rounded-full w-min text-xs font-medium ${
+          row.getValue("published") 
+            ? "bg-green-100 text-green-800" 
+            : "bg-red-100 text-red-800"
+        }`}>
+          {row.getValue("published") ? "Published" : "Draft"}
+        </div>
+      ),
+    },
+    {
       header: "Action",
       id: "actions",
       cell: ({ row }) => {
@@ -147,6 +160,13 @@ const AdminProducts = () => {
     { name: 'price', label: 'Price', type: 'number', required: true, placeholder: 'Enter product price' },
     { name: 'description', label: 'Description', type: 'text', required: true, placeholder: 'Enter product description' },
     { name: 'image', label: 'Image', type: 'file', required: false, placeholder: '' },
+    { 
+      name: 'published', 
+      label: 'Published', 
+      type: 'checkbox', 
+      required: false, 
+      placeholder: '' 
+    },
   ]
 
   return (
