@@ -4,7 +4,7 @@ import ConfirmDeleteModal from '../../components/ConfirmDeleteModal';
 import { toast } from 'react-toastify';
 import ToastNotifications from '../../components/ToastNotifications';
 import { BreadCrumb } from '../../components/BreadCrumb';
-import { Button } from "@/components/Button";
+import { CancelButton, Button } from "@/components/Button";
 import { Plus, Pencil, Trash, MoreHorizontal } from "lucide-react";
 import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader';
 import { DataTable } from '../../components/DataTable';
@@ -178,13 +178,14 @@ const CategoriesPage = () => {
                 description={categoryToEdit ? 'Edit the details of the category.' : 'Fill in the details to create a new category.'}
                 footer={
                     <div className="flex justify-end">
-                        <Button
+                        <CancelButton
                             type="button"
-                            onClick={() => setIsCreateModalOpen(false)}
-                            className="text-gray-600 hover:text-gray-800 px-4 py-2 mr-2"
+                            onClick={() => { setIsCreateModalOpen(false)}}
+                            className="text-black hover:text-gray-800 px-4 py-2 mr-2"
+                            // text={'Cancel'}
                         >
                             Cancel
-                        </Button>
+                        </CancelButton>
                         <SubmitButton
                             loading={modalLoading}
                             text="Save"
