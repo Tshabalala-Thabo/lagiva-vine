@@ -21,9 +21,6 @@ export function DynamicDialog({
 }) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        {trigger || <Button variant="outline">Open</Button>}
-      </DialogTrigger>
       <DialogContent className={maxWidth}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
