@@ -1,22 +1,53 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { toast } from 'react-toastify' // Import toast
 import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader'
 import useProducts from '../../hooks/useProducts' // Import the useProducts hook
 import ConfirmDeleteModal from '../../components/ConfirmDeleteModal' // Import the ConfirmDeleteModal
-import CreateModal from '../../components/CreateModal' // Import the CreateModal
+import { DynamicDialog } from '@/components/Dialog' // Import DynamicDialog
 import ToastNotifications from '../../components/ToastNotifications' // Import ToastNotifications
 import { DataTable } from '@/components/DataTable'
 import { Button } from "@/components/Button"
 import { MoreHorizontal, Pencil, Trash, Plus } from "lucide-react" // Add Plus to the imports
 import { DynamicDropdown } from '@/components/DropDown'
 import { BreadCrumb } from '../../components/BreadCrumb' // Add this import
-
+import SubmitButton from '@/components/SubmitButton'
 const AdminProducts = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalLoading, setIsModalLoading] = useState(false)
   const [editingProduct, setEditingProduct] = useState(null)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [productToDelete, setProductToDelete] = useState(null)
   const { products, isLoading, error: fetchError, deleteProduct, createProduct, updateProduct } = useProducts()
+  const [formData, setFormData] = useState({
+    name: '',
+    type: '',
+    price: '',
+    description: '',
+    image: null,
+    published: false,
+  });
+
+  useEffect(() => {
+    if (editingProduct) {
+      setFormData({
+        name: editingProduct.name || '',
+        type: editingProduct.type || '',
+        price: editingProduct.price || '',
+        description: editingProduct.description || '',
+        image: null, // Reset image input, handle file upload separately
+        published: editingProduct.published || false,
+      });
+    } else {
+      setFormData({
+        name: '',
+        type: '',
+        price: '',
+        description: '',
+        image: null,
+        published: false,
+      });
+    }
+  }, [editingProduct]);
 
   const openModal = () => {
     setIsModalOpen(true)
@@ -27,23 +58,29 @@ const AdminProducts = () => {
     setEditingProduct(null)
   }
 
-  const handleSubmit = async (formData) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+    const trimmedData = {
+      ...formData,
+      image: formData.image ? formData.image : null, // Handle image upload separately
+    };
     try {
-      let message
+      let message;
+      setIsModalLoading(true)
       if (editingProduct) {
-        // If editing, call updateProduct
-        message = await updateProduct(editingProduct._id, formData)
+        message = await updateProduct(editingProduct._id, trimmedData);
       } else {
-        // If adding, call createProduct
-        message = await createProduct(formData)
+        message = await createProduct(trimmedData);
       }
-      toast.success(message) // Show success message
-      closeModal() // Close the modal after successful submission
+      toast.success(message);
     } catch (err) {
-      console.error(err) // Log the error for debugging
-      toast.error(err.message) // Show error message
+      console.error(err);
+      toast.error(err.message);
+    } finally{
+      setIsModalLoading(false)
+      closeModal();
     }
-  }
+  };
 
   const handleEdit = (product) => {
     setEditingProduct(product)
@@ -147,27 +184,12 @@ const AdminProducts = () => {
     return (
       <div>
         <h2 className="text-2xl mb-4">Products</h2>
-        <AdminTableSkeletonLoader />
+        <AdminTableSkeletonLoader columns={5} />
       </div>
     )
   }
 
   if (fetchError) return <p className="text-red-500">{fetchError}</p>
-
-  const formFields = [
-    { name: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Enter product name' },
-    { name: 'type', label: 'Type', type: 'text', required: true, placeholder: 'Enter product type' },
-    { name: 'price', label: 'Price', type: 'number', required: true, placeholder: 'Enter product price' },
-    { name: 'description', label: 'Description', type: 'text', required: true, placeholder: 'Enter product description' },
-    { name: 'image', label: 'Image', type: 'file', required: false, placeholder: '' },
-    { 
-      name: 'published', 
-      label: 'Published', 
-      type: 'checkbox', 
-      required: false, 
-      placeholder: '' 
-    },
-  ]
 
   return (
     <div>
@@ -187,17 +209,94 @@ const AdminProducts = () => {
       />
       </div>
      
-
       <DataTable columns={columns} data={products} />
 
-      <CreateModal
+      <DynamicDialog
         isOpen={isModalOpen}
-        onClose={closeModal}
-        onSubmit={handleSubmit}
-        formFields={formFields}
-        heading={editingProduct ? 'Edit Product' : 'Add New Product'}
-        initialData={editingProduct}
-      />
+        onOpenChange={closeModal}
+        title={editingProduct ? 'Edit Product' : 'Add New Product'}
+        footer={
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="text-gray-600 hover:text-gray-800 px-4 py-2 mr-2"
+              onClick={closeModal}
+            >
+              Cancel
+            </button>
+            <SubmitButton onClick={handleSubmit} loading={isModalLoading} text="Save" width="w-20" />
+          </div>
+        }
+      >
+        <form onSubmit={handleSubmit} className="flex flex-wrap">
+          <div className="mb-4 w-full md:w-1/2 pr-2"> {/* Updated for responsiveness */}
+            <label className="block mb-1" htmlFor="name">Name</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              required
+              placeholder="Enter product name"
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="border p-2 w-full"
+            />
+          </div>
+          <div className="mb-4 w-full md:w-1/2 pr-2"> {/* Updated for responsiveness */}
+            <label className="block mb-1" htmlFor="published">Published</label>
+            <input
+              type="checkbox"
+              name="published"
+              checked={formData.published}
+              onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+              className="h-4 w-4 text-blue-600"
+            />
+          </div>
+          <div className="mb-4 w-full md:w-1/2 pr-2"> {/* Updated for responsiveness */}
+            <label className="block mb-1" htmlFor="type">Type</label>
+            <input
+              type="text"
+              name="type"
+              value={formData.type}
+              required
+              placeholder="Enter product type"
+              onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+              className="border p-2 w-full"
+            />
+          </div>
+          <div className="mb-4 w-full md:w-1/2 pr-2"> {/* Updated for responsiveness */}
+            <label className="block mb-1" htmlFor="price">Price</label>
+            <input
+              type="number"
+              name="price"
+              value={formData.price}
+              required
+              placeholder="Enter product price"
+              onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+              className="border p-2 w-full"
+            />
+          </div>
+          <div className="mb-4 w-full pr-2"> {/* Updated for responsiveness */}
+            <label className="block mb-1" htmlFor="description">Description</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              required
+              placeholder="Enter product description"
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="border p-2 w-full h-24"
+            />
+          </div>
+          <div className="mb-4 w-full md:w-1/2 pr-2"> {/* Updated for responsiveness */}
+            <label className="block mb-1" htmlFor="image">Image</label>
+            <input
+              type="file"
+              name="image"
+              onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
+              className="border p-2 w-full"
+            />
+          </div>
+        </form>
+      </DynamicDialog>
 
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
