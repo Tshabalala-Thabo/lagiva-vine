@@ -1,5 +1,5 @@
 BUG LIST
-- When creating a duplicate category, return the relevant error to the user
+- Products form doesnt validate empty input
 
 COMMANDS
 - Add component: npx shadcn add
