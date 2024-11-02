@@ -15,27 +15,25 @@ export function DynamicDialog({
   description,
   children,
   footer,
-  maxWidth = "sm:max-w-[425px]",
+  maxWidth = "w-[95vw] sm:max-w-[425px] md:max-w-[500px] lg:max-w-[600px] xl:max-w-[700px] 2xl:max-w-[800px]",
   isOpen,
   onOpenChange
 }) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className={`${maxWidth} h-[90vh] flex flex-col p-0 gap-0`}>
+      <DialogContent 
+        className={`${maxWidth} min-h-[200px] max-h-[90vh] h-auto grid grid-rows-[auto_1fr_auto]`}
+      >
         {/* Fixed Header */}
-        <div className="shrink-0 px-6 pb-4 border-b">
-          <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
-            {description && (
-              <DialogDescription>
-                {description}
-              </DialogDescription>
-            )}
-          </DialogHeader>
-        </div>
+        <DialogHeader className="px-6 pb-4 border-b">
+          <DialogTitle>{title}</DialogTitle>
+          {description && (
+            <DialogDescription>{description}</DialogDescription>
+          )}
+        </DialogHeader>
 
         {/* Scrollable Content */}
-        <div className="flex-1 min-h-0 overflow-y-auto">
+        <div className="overflow-y-auto relative">
           <div className="px-6 py-4">
             {children}
           </div>
@@ -43,11 +41,9 @@ export function DynamicDialog({
 
         {/* Fixed Footer */}
         {footer && (
-          <div className="shrink-0 px-6 pt-4 border-t">
-            <DialogFooter>
-              {footer}
-            </DialogFooter>
-          </div>
+          <DialogFooter className="px-6 pt-4 border-t">
+            {footer}
+          </DialogFooter>
         )}
       </DialogContent>
     </Dialog>
