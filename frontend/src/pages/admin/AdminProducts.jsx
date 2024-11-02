@@ -12,6 +12,7 @@ import { DynamicDropdown } from '@/components/DropDown'
 import { BreadCrumb } from '../../components/BreadCrumb' // Add this import
 import SubmitButton from '@/components/SubmitButton'
 import CategorySelector from '../../components/CategorySelector' // Import the new CategorySelector component
+import useCategories from '@/hooks/useCategories'
 const AdminProducts = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isModalLoading, setIsModalLoading] = useState(false)
@@ -19,6 +20,7 @@ const AdminProducts = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [productToDelete, setProductToDelete] = useState(null)
   const { products, isLoading, error: fetchError, deleteProduct, createProduct, updateProduct } = useProducts()
+  const { categories }= useCategories()
   const [formData, setFormData] = useState({
     name: '',
     type: '',
@@ -29,6 +31,7 @@ const AdminProducts = () => {
   });
   const [selectedCategories, setSelectedCategories] = useState([]);
 
+  console.log("categories: ", categories)
 
   useEffect(() => {
     if (editingProduct) {
@@ -37,9 +40,10 @@ const AdminProducts = () => {
         type: editingProduct.type || '',
         price: editingProduct.price || '',
         description: editingProduct.description || '',
-        image: null, // Reset image input, handle file upload separately
+        image: null,
         published: editingProduct.published || false,
       });
+      setSelectedCategories(editingProduct.categories || []);
     } else {
       setFormData({
         name: '',
@@ -49,6 +53,7 @@ const AdminProducts = () => {
         image: null,
         published: false,
       });
+      setSelectedCategories([]);
     }
   }, [editingProduct]);
 
@@ -66,6 +71,7 @@ const AdminProducts = () => {
     const trimmedData = {
       ...formData,
       image: formData.image ? formData.image : null, // Handle image upload separately
+      categories: selectedCategories,
     };
     try {
       let message;
@@ -139,8 +145,8 @@ const AdminProducts = () => {
       header: "Published",
       cell: ({ row }) => (
         <div className={`px-2 py-1 rounded-full w-min text-xs font-medium ${row.getValue("published")
-            ? "bg-green-100 text-green-800"
-            : "bg-red-100 text-red-800"
+          ? "bg-green-100 text-green-800"
+          : "bg-red-100 text-red-800"
           }`}>
           {row.getValue("published") ? "Published" : "Draft"}
         </div>
@@ -253,7 +259,7 @@ const AdminProducts = () => {
               className="h-4 w-4 text-blue-600"
             />
           </div>
-          <div className="mb-4 w-full md:w-1/2 pr-2"> {/* Updated for responsiveness */}
+          {/* <div className="mb-4 w-full md:w-1/2 pr-2"> {/* Updated for responsiveness /}
             <label className="block mb-1" htmlFor="type">Type</label>
             <input
               type="text"
@@ -263,6 +269,18 @@ const AdminProducts = () => {
               placeholder="Enter product type"
               onChange={(e) => setFormData({ ...formData, type: e.target.value })}
               className="border p-2 w-full"
+            />
+          </div> */}
+
+          <div className="mb-4  w-full md:w-1/2 pr-2"> {/* Updated for responsiveness */}
+            <label className="block mb-1" htmlFor="description">Description</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              required
+              placeholder="Enter product description"
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="border p-2 w-full h-24"
             />
           </div>
           <div className="mb-4 w-full md:w-1/2 pr-2"> {/* Updated for responsiveness */}
@@ -277,17 +295,6 @@ const AdminProducts = () => {
               className="border p-2 w-full"
             />
           </div>
-          <div className="mb-4 w-full pr-2"> {/* Updated for responsiveness */}
-            <label className="block mb-1" htmlFor="description">Description</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              required
-              placeholder="Enter product description"
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="border p-2 w-full h-24"
-            />
-          </div>
           <div className="mb-4 w-full md:w-1/2 pr-2"> {/* Updated for responsiveness */}
             <label className="block mb-1" htmlFor="image">Image</label>
             <input
@@ -297,12 +304,14 @@ const AdminProducts = () => {
               className="border p-2 w-full"
             />
           </div>
-          <div className="mb-4 w-full pr-2"> {/* New category selection */}
+          <div className="mb-4 w-full md:w-1/2 pr-2"> {/* New category selection */}
             <label className="block mb-1">Categories</label>
             <CategorySelector
+              categories={categories}
               selectedCategories={selectedCategories}
               setSelectedCategories={setSelectedCategories}
-            />          </div>
+            />          
+          </div>
         </form>
       </DynamicDialog>
 
