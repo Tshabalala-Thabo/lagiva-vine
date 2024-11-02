@@ -11,6 +11,7 @@ import { MoreHorizontal, Pencil, Trash, Plus } from "lucide-react" // Add Plus t
 import { DynamicDropdown } from '@/components/DropDown'
 import { BreadCrumb } from '../../components/BreadCrumb' // Add this import
 import SubmitButton from '@/components/SubmitButton'
+import CategorySelector from '../../components/CategorySelector' // Import the new CategorySelector component
 const AdminProducts = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isModalLoading, setIsModalLoading] = useState(false)
@@ -26,6 +27,8 @@ const AdminProducts = () => {
     image: null,
     published: false,
   });
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
 
   useEffect(() => {
     if (editingProduct) {
@@ -76,7 +79,7 @@ const AdminProducts = () => {
     } catch (err) {
       console.error(err);
       toast.error(err.message);
-    } finally{
+    } finally {
       setIsModalLoading(false)
       closeModal();
     }
@@ -135,11 +138,10 @@ const AdminProducts = () => {
       accessorKey: "published",
       header: "Published",
       cell: ({ row }) => (
-        <div className={`px-2 py-1 rounded-full w-min text-xs font-medium ${
-          row.getValue("published") 
-            ? "bg-green-100 text-green-800" 
+        <div className={`px-2 py-1 rounded-full w-min text-xs font-medium ${row.getValue("published")
+            ? "bg-green-100 text-green-800"
             : "bg-red-100 text-red-800"
-        }`}>
+          }`}>
           {row.getValue("published") ? "Published" : "Draft"}
         </div>
       ),
@@ -202,13 +204,13 @@ const AdminProducts = () => {
           <h2 className="text-2xl mb-4">Products</h2>
         </div>
         <Button
-        text="Add product"
-        onClick={openModal}
-        className="mb-4 bg-blue-500"
-        icon={<Plus className="h-4 w-4 mr-2" />} // Add the Plus icon here
-      />
+          text="Add product"
+          onClick={openModal}
+          className="mb-4 bg-blue-500"
+          icon={<Plus className="h-4 w-4 mr-2" />} // Add the Plus icon here
+        />
       </div>
-     
+
       <DataTable columns={columns} data={products} />
 
       <DynamicDialog
@@ -295,6 +297,12 @@ const AdminProducts = () => {
               className="border p-2 w-full"
             />
           </div>
+          <div className="mb-4 w-full pr-2"> {/* New category selection */}
+            <label className="block mb-1">Categories</label>
+            <CategorySelector
+              selectedCategories={selectedCategories}
+              setSelectedCategories={setSelectedCategories}
+            />          </div>
         </form>
       </DynamicDialog>
 

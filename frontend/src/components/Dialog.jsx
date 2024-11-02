@@ -9,38 +9,49 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 
-export function DynamicDialog({ 
-  trigger, // Custom trigger button/element
-  title, 
+export function DynamicDialog({
+  trigger,
+  title,
   description,
-  children, // Form or any content
-  footer, // Custom footer
-  maxWidth = "sm:max-w-[425px]", // Customizable width
-  isOpen, // Add isOpen prop
-  onOpenChange // Add onOpenChange prop
+  children,
+  footer,
+  maxWidth = "sm:max-w-[425px]",
+  isOpen,
+  onOpenChange
 }) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className={maxWidth}>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          {description && (
-            <DialogDescription>
-              {description}
-            </DialogDescription>
-          )}
-        </DialogHeader>
-        
-        <div className="py-4">
-          {children}
+      <DialogContent className={`${maxWidth} h-[90vh] flex flex-col p-0 gap-0`}>
+        {/* Fixed Header */}
+        <div className="shrink-0 px-6 pb-4 border-b">
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+            {description && (
+              <DialogDescription>
+                {description}
+              </DialogDescription>
+            )}
+          </DialogHeader>
         </div>
 
+        {/* Scrollable Content */}
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          <div className="px-6 py-4">
+            {children}
+          </div>
+        </div>
+
+        {/* Fixed Footer */}
         {footer && (
-          <DialogFooter>
-            {footer}
-          </DialogFooter>
+          <div className="shrink-0 px-6 pt-4 border-t">
+            <DialogFooter>
+              {footer}
+            </DialogFooter>
+          </div>
         )}
       </DialogContent>
     </Dialog>
   )
 }
+
+export default DynamicDialog;
