@@ -22,6 +22,16 @@ const useProducts = () => {
     fetchProducts();
   }, []);
 
+  const fetchProductById = async (id) => {
+    try {
+      const response = await axios.get(`/products/${id}`); // Fetch a single product by ID
+      return response.data;
+    } catch (err) {
+      console.error('Error fetching product:', err);
+      throw new Error('Failed to fetch product');
+    }
+  };
+
   const deleteProduct = async (productId) => {
     try {
       const response = await axios.delete(`/products/${productId}`); // Delete the product from the backend
@@ -68,7 +78,7 @@ const useProducts = () => {
     }
   };
 
-  return { products, isLoading, error, deleteProduct, createProduct, updateProduct }; // Return create and update functions
+  return { products, isLoading, error, fetchProductById, deleteProduct, createProduct, updateProduct }; // Return fetchProductById
 };
 
 export default useProducts;

@@ -61,7 +61,20 @@ export const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: 'Product not found' });
-    res.status(200).json(product);
+
+    let imageUrl = null;
+    if (product.image) {
+      const command = new GetObjectCommand({
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: product.image,
+      });
+      imageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
+    }
+
+    res.status(200).json({
+      ...product.toObject(),
+      imageUrl,
+    });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching product', error: error.message });
   }

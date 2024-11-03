@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Wine, Leaf, UserCheck, Truck, Facebook, Phone, Mail, MessageCircle, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { BrandTiktok } from 'tabler-icons-react';
 import { motion, AnimatePresence, useInView } from "framer-motion";
@@ -17,6 +17,7 @@ const Home = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const [isVisible, setIsVisible] = useState(false);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const { products: displayedWines, isLoading } = useProducts(); // Use the custom hook
 
@@ -220,7 +221,7 @@ const Home = () => {
                       exit="hidden"
                       layout
                       className="rounded-sm overflow-hidden cursor-pointer w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1.125rem)] max-w-xs"
-                      onClick={() => setSelectedWine(wine)}
+                      onClick={() => navigate(`/product/${wine._id}`)}
                     >
                       <div className="relative bg-stale w-full pt-[125%]">
                         <img

@@ -2,6 +2,7 @@ TODO
 - When deleting a category, remove it's id form array of all products
 - Only admin tokens should expire after 1 hour
 - make sure on update user the userController should never set a user as admin
+- iclude the stock stats for all products
 
 TODO FROM CHAT
 1. Logout Button Placement
