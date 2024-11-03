@@ -28,6 +28,7 @@ const useAuth = () => {
     try {
       const response = await axios.post('/auth/login', { email, password });
       localStorage.setItem('token', response.data.token); // Store token
+      console.log("Tokend data: ", response.data)
       return response.data; // Return the response data
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');

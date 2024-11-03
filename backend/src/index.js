@@ -5,6 +5,7 @@ import connectDB from '../src/config/db.js'
 import productRoutes from '../src/routes/productRoutes.js'
 import authRoutes from '../src/routes/authRoutes.js' // Import the Auth routes
 import categoryRoutes from '../src/routes/categoryRoutes.js' // Import the Category routes
+import userRoutes from './routes/userRoutes.js';
 
 dotenv.config()
 
@@ -30,6 +31,9 @@ app.use('/api/auth', authRoutes) // Added auth routes
 
 // Use category routes
 app.use('/api/categories', categoryRoutes) // Added category routes
+
+// Use user routes
+app.use('/api/users', userRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)

@@ -12,6 +12,7 @@ import ProtectedRoute from './components/ProtectedRoute'; // Import Protected Ro
 import AdminLayout from './components/AdminLayout'; // Import Admin Layout
 import Layout from './components/Layout'; // Import Layout for main routes
 import CategoriesPage from './pages/admin/CategoriesPage'; // Import the CategoriesPage
+import UsersPage from './pages/admin/UsersPage';
 
 const App = () => {
   return (
@@ -36,6 +37,7 @@ const App = () => {
           <Route index element={<AdminDashboard />} /> {/* Admin Dashboard */}
           <Route path="products" element={<AdminProducts />} /> {/* Admin Products route */}
           <Route path="categories" element={<CategoriesPage />} /> {/* Categories Page route */}
+          <Route path="users" element={<UsersPage />} />
           {/* Add more admin routes here */}
         </Route>
       </Routes>
