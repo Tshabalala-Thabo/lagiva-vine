@@ -31,8 +31,6 @@ const AdminProducts = () => {
   });
   const [selectedCategories, setSelectedCategories] = useState([]);
 
-  console.log("categories: ", categories)
-
   useEffect(() => {
     if (editingProduct) {
       setFormData({
@@ -203,17 +201,18 @@ const AdminProducts = () => {
     <div>
       <ToastNotifications /> {/* Include ToastNotifications component */}
       <div className='flex justify-between'>
-        <div> <BreadCrumb items={[ // Add this Breadcrumb component
-          { label: 'Home', href: '/' },
-          { label: 'Products', isDropdown: false }
-        ]} />
-          <h2 className="text-2xl mb-4">Products</h2>
+        <div>
+          <BreadCrumb items={[
+            { label: 'Dashboard', href: '/' },
+            { label: 'Products', isDropdown: false }
+          ]} />
+          <h2 className="text-2xl mb-4">Manage Products</h2>
         </div>
         <Button
           text="Add product"
           onClick={openModal}
           className="mb-4 bg-blue-500"
-          icon={<Plus className="h-4 w-4 mr-2" />} // Add the Plus icon here
+          icon={<Plus className="h-4 w-4 mr-2" />}
         />
       </div>
 

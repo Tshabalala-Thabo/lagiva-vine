@@ -34,14 +34,17 @@ export function BreadCrumb({ items }) {
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
+                <>
+                  {index === items.length - 1 ? (
+                    <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                  ) : (
+                    <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
+                  )}
+                </>
               )}
-              <BreadcrumbSeparator />
+              {index < items.length - 1 && <BreadcrumbSeparator />}
             </BreadcrumbItem>
           ))}
-          <BreadcrumbItem>
-            <BreadcrumbPage>{items[items.length - 1].label}</BreadcrumbPage>
-          </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
     )
