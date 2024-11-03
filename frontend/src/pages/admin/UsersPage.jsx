@@ -168,81 +168,83 @@ const UsersPage = () => {
                     </div>
                 }
             >
-                <div className="mb-4">
-                    <label className="block mb-1" htmlFor="firstName">
-                        First Name
-                    </label>
-                    <input
-                        type="text"
-                        name="firstName"
-                        value={formData.firstName}
-                        onChange={handleInputChange}
-                        className="border p-2 w-full"
-                    />
-                </div>
-                <div className="mb-4">
-                    <label className="block mb-1" htmlFor="lastName">
-                        Last Name
-                    </label>
-                    <input
-                        type="text"
-                        name="lastName"
-                        value={formData.lastName}
-                        onChange={handleInputChange}
-                        className="border p-2 w-full"
-                    />
-                </div>
-                <div className="mb-4">
-                    <label className="block mb-1" htmlFor="email">
-                        Email
-                    </label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        className="border p-2 w-full"
-                        required
-                    />
-                </div>
-                <div className="mb-4">
-                    <label className="block mb-1" htmlFor="phone">
-                        Phone
-                    </label>
-                    <input
-                        type="text"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className="border p-2 w-full"
-                    />
-                </div>
-                <div className="mb-4">
-                    <label className="block mb-1" htmlFor="role">
-                        Role
-                    </label>
-                    <select
-                        name="role"
-                        value={formData.role}
-                        onChange={handleInputChange}
-                        className="border p-2 w-full"
-                        required
-                    >
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </div>
-                <div className="mb-4">
-                    <label className="block mb-1" htmlFor="isDisabled">
-                        Disabled
-                    </label>
-                    <input
-                        type="checkbox"
-                        name="isDisabled"
-                        checked={formData.isDisabled}
-                        onChange={handleInputChange}
-                        className="border p-2"
-                    />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="mb-4">
+                        <label className="block mb-1" htmlFor="firstName">
+                            First Name
+                        </label>
+                        <input
+                            type="text"
+                            name="firstName"
+                            value={formData.firstName}
+                            onChange={handleInputChange}
+                            className="border p-2 w-full"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block mb-1" htmlFor="lastName">
+                            Last Name
+                        </label>
+                        <input
+                            type="text"
+                            name="lastName"
+                            value={formData.lastName}
+                            onChange={handleInputChange}
+                            className="border p-2 w-full"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block mb-1" htmlFor="email">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            className="border p-2 w-full"
+                            required
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block mb-1" htmlFor="phone">
+                            Phone
+                        </label>
+                        <input
+                            type="text"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                            className="border p-2 w-full"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block mb-1" htmlFor="role">
+                            Role
+                        </label>
+                        <select
+                            name="role"
+                            value={formData.role}
+                            onChange={handleInputChange}
+                            className="border p-2 w-full"
+                            required
+                        >
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div className="mb-4">
+                        <label className="block mb-1" htmlFor="isDisabled">
+                            Disabled
+                        </label>
+                        <input
+                            type="checkbox"
+                            name="isDisabled"
+                            checked={formData.isDisabled}
+                            onChange={handleInputChange}
+                            className="border p-2"
+                        />
+                    </div>
                 </div>
             </DynamicDialog>
         </div>
