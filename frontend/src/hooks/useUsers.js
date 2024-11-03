@@ -18,7 +18,6 @@ const useUsers = () => {
             setUsers(response.data);
         } catch (err) {
             setError(err.response?.data?.message || 'Error fetching users');
-            console.log("Fetch users data: ", )
         } finally {
             setLoading(false);
         }

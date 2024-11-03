@@ -103,7 +103,7 @@ const AdminLogin = () => {
         <div className="h-full flex items-center justify-center p-12">
           <div className="max-w-lg w-full">
             <img
-              src="/assets/logo/design.png"
+              src="/assets/logo/logo.png"
 
               alt="Company Logo"
               className="w-full h-auto"

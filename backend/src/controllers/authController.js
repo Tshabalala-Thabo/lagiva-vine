@@ -5,13 +5,44 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; // Use a secure 
 
 // Register a new user
 export const registerUser = async (req, res) => {
-  const { email, password, role } = req.body; // Include role in the request body
+  const { email, password, firstName, lastName, phone } = req.body.formData;
+  
   try {
-    const newUser = new User({ email, password, role: role || 'user' }); // Default to 'user' if no role is provided
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ 
+        message: 'User already exists with this email',
+      });
+    }
+
+    const newUser = new User({
+      email,
+      password,
+      firstName,
+      lastName,
+      phone,
+      role: 'user'
+    });
+
     await newUser.save();
-    res.status(201).json({ message: 'User registered successfully' });
+    
+    res.status(201).json({ 
+      message: 'User registered successfully',
+      user: {
+        id: newUser._id,
+        email: newUser.email,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        phone: newUser.phone,
+        role: newUser.role
+      }
+    });
   } catch (error) {
-    res.status(400).json({ message: 'Error registering user', error });
+    res.status(400).json({ 
+      message: 'Error registering user', 
+      error: error.message,
+    });
   }
 };
 
@@ -20,10 +51,20 @@ export const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (!user) return res.status(401).json({ message: 'Invalid email or password' });
+    if (!user) {
+      return res.status(401).json({ 
+        message: 'Invalid email or password',
+        requestBody: req.body // Return the request body
+      });
+    }
 
     const isMatch = await user.comparePassword(password);
-    if (!isMatch) return res.status(401).json({ message: 'Invalid email or password' });
+    if (!isMatch) {
+      return res.status(401).json({ 
+        message: 'Invalid email or password',
+        requestBody: req.body // Return the request body
+      });
+    }
 
     const token = generateToken(user);
     res.status(200).json({ 
@@ -31,11 +72,18 @@ export const loginUser = async (req, res) => {
       user: {
         id: user._id,
         email: user.email,
-        role: user.role
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone
       }
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error logging in', error });
+    res.status(500).json({ 
+      message: 'Error logging in', 
+      error: error.message,
+      requestBody: req.body // Return the request body
+    });
   }
 };
 

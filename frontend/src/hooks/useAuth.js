@@ -8,11 +8,11 @@ const useAuth = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const register = async (email, password) => {
+  const register = async ( formData ) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post('/auth/register', { email, password });
+      const response = await axios.post('/auth/register', { formData });
       return response.data; // Return the response data
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
@@ -28,7 +28,6 @@ const useAuth = () => {
     try {
       const response = await axios.post('/auth/login', { email, password });
       localStorage.setItem('token', response.data.token); // Store token
-      console.log("Tokend data: ", response.data)
       return response.data; // Return the response data
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');

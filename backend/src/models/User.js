@@ -2,9 +2,12 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema({
+  firstName: { type: String, required: false },
+  lastName: { type: String, required: false },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ['admin', 'user'], default: 'user' }, // Add role field
+  phone: { type: String, required: false },
+  role: { type: String, enum: ['admin', 'user'], default: 'user' },
 });
 
 // Hash password before saving
