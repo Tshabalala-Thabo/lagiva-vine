@@ -1,3 +1,6 @@
+TODO
+- When deleting a category, remove it's id form array of all products
+
 BUG LIST
 - Products form doesnt validate empty input
 
