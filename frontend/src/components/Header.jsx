@@ -65,7 +65,7 @@ const Header = () => {
             <li><Link to="/gallery" className="block py-2 text-gray-700 hover:text-primary" onClick={toggleMenu}>Gallery</Link></li>
             {isLoggedIn ? (
               <li>
-                <button onClick={handleLogout} className="block py-2 text-gray-700 hover:text-primary" onClick={toggleMenu}>Logout</button>
+                <button onClick={handleLogout} className="block py-2 text-gray-700 hover:text-primary">Logout</button>
               </li>
             ) : (
               <>
