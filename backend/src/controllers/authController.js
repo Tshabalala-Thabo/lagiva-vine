@@ -54,7 +54,7 @@ export const loginUser = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ 
-        message: 'Invalid email or password',
+        message: 'Email not registered',
         requestBody: req.body // Return the request body
       });
     }
@@ -62,7 +62,7 @@ export const loginUser = async (req, res) => {
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(401).json({ 
-        message: 'Invalid email or password',
+        message: 'Incorrect password',
         requestBody: req.body // Return the request body
       });
     }
