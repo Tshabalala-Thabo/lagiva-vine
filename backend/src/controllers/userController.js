@@ -20,12 +20,12 @@ export const getAllUsers = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { email, role } = req.body;
+    const { email, role, isDisabled } = req.body;
 
     // Don't allow password updates through this endpoint for security
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { email, role },
+      { email, role, isDisabled },
       { new: true }
     ).select('-password');
 

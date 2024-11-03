@@ -22,7 +22,8 @@ export const registerUser = async (req, res) => {
       firstName,
       lastName,
       phone,
-      role: 'user'
+      role: 'user',
+      isDisabled: false
     });
 
     await newUser.save();

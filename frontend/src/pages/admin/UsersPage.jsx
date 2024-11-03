@@ -16,7 +16,7 @@ const UsersPage = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [userToEdit, setUserToEdit] = useState(null);
     const [modalLoading, setModalLoading] = useState(false);
-    const [formData, setFormData] = useState({ email: '', role: '' });
+    const [formData, setFormData] = useState({ email: '', role: '', firstName: '', lastName: '', phone: '', isDisabled: false });
 
     useEffect(() => {
         fetchUsers();
@@ -31,17 +31,24 @@ const UsersPage = () => {
 
     useEffect(() => {
         if (userToEdit) {
-            setFormData({ email: userToEdit.email, role: userToEdit.role });
+            setFormData({
+                email: userToEdit.email,
+                role: userToEdit.role,
+                firstName: userToEdit.firstName,
+                lastName: userToEdit.lastName,
+                phone: userToEdit.phone,
+                isDisabled: userToEdit.isDisabled
+            });
         } else {
-            setFormData({ email: '', role: '' });
+            setFormData({ email: '', role: '', firstName: '', lastName: '', phone: '', isDisabled: false });
         }
     }, [userToEdit]);
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type, checked } = e.target;
         setFormData(prevData => ({
             ...prevData,
-            [name]: value,
+            [name]: type === 'checkbox' ? checked : value,
         }));
     };
 
@@ -61,14 +68,36 @@ const UsersPage = () => {
 
     const columns = [
         {
+            accessorKey: 'names',
+            header: 'Names',
+            cell: ({ row }) => {
+                const { firstName, lastName } = row.original;
+                return firstName || lastName ? `${firstName || ''} ${lastName || ''}`.trim() : 'N/A';
+            },
+        },
+        {
             accessorKey: 'email',
             header: 'Email',
+        },
+        {
+            accessorKey: 'phone',
+            header: 'Phone',
+            cell: ({ row }) => row.original.phone || 'N/A',
         },
         {
             accessorKey: 'role',
             header: 'Role',
             cell: ({ row }) => (
                 <div className="capitalize">{row.original.role}</div>
+            ),
+        },
+        {
+            accessorKey: 'isDisabled',
+            header: 'Disabled',
+            cell: ({ row }) => (
+                <div className={row.original.isDisabled ? 'text-red-500' : ''}>
+                    {row.original.isDisabled ? 'Yes' : 'No'}
+                </div>
             ),
         },
         {
@@ -112,7 +141,7 @@ const UsersPage = () => {
             </div>
 
             {loading ? (
-                <AdminTableSkeletonLoader columns={3} />
+                <AdminTableSkeletonLoader columns={6} />
             ) : (
                 <DataTable data={users} columns={columns} />
             )}
@@ -140,6 +169,30 @@ const UsersPage = () => {
                 }
             >
                 <div className="mb-4">
+                    <label className="block mb-1" htmlFor="firstName">
+                        First Name
+                    </label>
+                    <input
+                        type="text"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        className="border p-2 w-full"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block mb-1" htmlFor="lastName">
+                        Last Name
+                    </label>
+                    <input
+                        type="text"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        className="border p-2 w-full"
+                    />
+                </div>
+                <div className="mb-4">
                     <label className="block mb-1" htmlFor="email">
                         Email
                     </label>
@@ -150,6 +203,18 @@ const UsersPage = () => {
                         onChange={handleInputChange}
                         className="border p-2 w-full"
                         required
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block mb-1" htmlFor="phone">
+                        Phone
+                    </label>
+                    <input
+                        type="text"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className="border p-2 w-full"
                     />
                 </div>
                 <div className="mb-4">
@@ -166,6 +231,18 @@ const UsersPage = () => {
                         <option value="user">User</option>
                         <option value="admin">Admin</option>
                     </select>
+                </div>
+                <div className="mb-4">
+                    <label className="block mb-1" htmlFor="isDisabled">
+                        Disabled
+                    </label>
+                    <input
+                        type="checkbox"
+                        name="isDisabled"
+                        checked={formData.isDisabled}
+                        onChange={handleInputChange}
+                        className="border p-2"
+                    />
                 </div>
             </DynamicDialog>
         </div>

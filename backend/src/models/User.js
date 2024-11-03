@@ -8,7 +8,8 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   phone: { type: String, required: false },
   role: { type: String, enum: ['admin', 'user'], default: 'user' },
-});
+  isDisabled: { type: Boolean, default: false },
+}, { timestamps: true });
 
 // Hash password before saving
 userSchema.pre('save', async function (next) {
