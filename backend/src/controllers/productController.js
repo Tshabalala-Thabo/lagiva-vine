@@ -118,3 +118,27 @@ export const deleteProduct = async (req, res) => {
     res.status(500).json({ message: 'Error deleting product: ' + error.message }); // Return specific error message
   }
 };
+
+// Get all published products
+export const getPublishedProducts = async (req, res) => {
+  try {
+    const publishedProducts = await Product.find({ published: true });
+    const productsWithImageUrl = await Promise.all(publishedProducts.map(async (product) => {
+      let imageUrl = null;
+      if (product.image) {
+        const command = new GetObjectCommand({
+          Bucket: process.env.S3_BUCKET_NAME,
+          Key: product.image,
+        });
+        imageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
+      }
+      return {
+        ...product.toObject(),
+        imageUrl,
+      };
+    }));
+    res.status(200).json(productsWithImageUrl);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching published products', error: error.message });
+  }
+};
