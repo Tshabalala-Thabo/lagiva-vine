@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import useCategories from '../../hooks/useCategories';
+import useCategories from '../../hooks/admin/useCategories';
 import ConfirmDeleteModal from '../../components/ConfirmDeleteModal';
 import { toast } from 'react-toastify';
 import ToastNotifications from '../../components/ToastNotifications';

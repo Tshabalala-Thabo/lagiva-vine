@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { toast } from 'react-toastify' // Import toast
 import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader'
-import useProducts from '../../hooks/useProducts' // Import the useProducts hook
+import useProducts from '../../hooks/admin/useProducts' // Import the useProducts hook
 import ConfirmDeleteModal from '../../components/ConfirmDeleteModal' // Import the ConfirmDeleteModal
 import { DynamicDialog } from '@/components/Dialog' // Import DynamicDialog
 import ToastNotifications from '../../components/ToastNotifications' // Import ToastNotifications
@@ -12,7 +12,7 @@ import { DynamicDropdown } from '@/components/DropDown'
 import { BreadCrumb } from '../../components/BreadCrumb' // Add this import
 import SubmitButton from '@/components/SubmitButton'
 import CategorySelector from '../../components/CategorySelector' // Import the new CategorySelector component
-import useCategories from '@/hooks/useCategories'
+import useCategories from '@/hooks/admin/useCategories'
 const AdminProducts = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isModalLoading, setIsModalLoading] = useState(false)

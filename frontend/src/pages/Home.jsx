@@ -7,7 +7,7 @@ import { useMediaQuery } from 'react-responsive';
 import happyClients from '../data/happyClients.js'; // Import happy clients data
 import heroImages from '../data/heroImages.js'; // Import hero images data
 import SkeletonLoader from '../components/SkeletonLoader'; // Import SkeletonLoader
-import useProducts from '../hooks/useProducts'; // Import the custom hook
+import usePublishedProducts from '../hooks/usePublishedProducts'; // Import the new custom hook
 
 const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -19,7 +19,7 @@ const Home = () => {
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate(); // Initialize useNavigate
 
-  const { products: displayedWines, isLoading } = useProducts(); // Use the custom hook
+  const { publishedProducts: displayedWines, isLoading } = usePublishedProducts(); // Use the new custom hook
 
   const categories = ["All", ...new Set(displayedWines.map(wine => wine.type))];
 

@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingCart } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import useProducts from '../hooks/useProducts'; // Import the custom hook
+import useProducts from '../hooks/admin/useProducts'; // Import the custom hook
 
 export default function ProductPage() {
   const { id } = useParams(); // Get product ID from URL

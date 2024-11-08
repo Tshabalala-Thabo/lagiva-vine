@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from '../config/axiosConfig'; // Import the configured Axios instance
+import axios from '../../config/axiosConfig'; // Import the configured Axios instance
 
 const useProducts = () => {
   const [products, setProducts] = useState([]);
