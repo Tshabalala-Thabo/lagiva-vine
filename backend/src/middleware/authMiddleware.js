@@ -19,7 +19,8 @@ export const authenticate = async (req, res, next) => {
     if (!user) {
       return res.status(401).json({ 
         message: 'User not found:',
-        userId: decoded.userId 
+        userId: decoded.userId, 
+        role: user.role,
       });
     }
 
