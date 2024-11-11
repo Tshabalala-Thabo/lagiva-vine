@@ -75,7 +75,7 @@ const AdminDashboard = () => {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl">Dashboard</h2>
+        <h2 className="text-primary-blue text-2xl">Dashboard</h2>
         <DynamicDialog 
           trigger={<Button variant="outline" onClick={() => setIsDialogOpen(true)}>Edit Profile</Button>}
           title="Edit Profile"

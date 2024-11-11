@@ -99,7 +99,7 @@ const AdminLogin = () => {
         </div>
       </div>
 
-      <div className="hidden lg:block lg:w-7/12 bg-primary-600">
+      <div className="hidden lg:block lg:w-7/12 bg-deep-blue">
         <div className="h-full flex items-center justify-center p-12">
           <div className="max-w-lg w-full">
             <img
