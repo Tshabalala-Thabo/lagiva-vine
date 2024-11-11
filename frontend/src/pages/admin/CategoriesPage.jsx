@@ -147,7 +147,7 @@ const CategoriesPage = () => {
                         { label: 'Daashboard', href: '/' },
                         { label: 'Categories', isDropdown: false }
                     ]} />
-                    <h1 className="text-2xl mb-4">Manage Categories</h1>
+                    <h1 className="text-2xl mb-4 text-deep-blue">Manage Categories</h1>
                 </div>
                 <Button
                     text="Add Category"

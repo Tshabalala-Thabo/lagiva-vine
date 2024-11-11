@@ -136,7 +136,7 @@ const UsersPage = () => {
                         { label: 'Dashboard', href: '/' },
                         { label: 'Users', isDropdown: false }
                     ]} />
-                    <h1 className="text-2xl mb-4">Manage Users</h1>
+                    <h1 className="text-2xl mb-4 text-deep-blue">Manage Users</h1>
                 </div>
             </div>
 

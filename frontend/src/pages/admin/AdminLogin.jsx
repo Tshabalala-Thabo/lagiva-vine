@@ -37,7 +37,7 @@ const AdminLogin = () => {
     <div className="min-h-screen bg-gray-100 flex">
       <div className="w-full lg:w-5/12 bg-white p-8 flex flex-col justify-center">
         <div className="max-w-md w-full mx-auto">
-          <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-6">
+          <h2 className="text-3xl font-extrabold text-deep-blue text-center mb-6">
             Admin Login
           </h2>
           <form className="space-y-6" onSubmit={handleSubmit}>
