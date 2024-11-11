@@ -16,16 +16,18 @@ export const up = async (db, client) => {
 
 export const down = async (db, client) => {
   await db.collection('products').deleteMany({
-    name: { $in: [
-      "MCC Brut Blanc DE Noir",
-      "Syrah",
-      "Sauvignon Blanc",
-      "Pinot Noir",
-      "Merlot",
-      "Cabernet Sauvignon",
-      "Chardonnay",
-      "Sweet Red",
-      "Custom"
-    ]}
+    name: {
+      $in: [
+        "MCC Brut Blanc DE Noir",
+        "Syrah",
+        "Sauvignon Blanc",
+        "Pinot Noir",
+        "Merlot",
+        "Cabernet Sauvignon",
+        "Chardonnay",
+        "Sweet Red",
+        "Custom"
+      ]
+    }
   });
 };

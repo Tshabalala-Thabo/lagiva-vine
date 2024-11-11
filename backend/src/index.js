@@ -56,6 +56,7 @@ protectedRoutes.use('/api/users', userRoutes)
 
 // Public routes (no CSRF needed)
 app.use('/api/auth', authRoutes) // Login/register don't need CSRF
+//app.use('/api/products', productRoutes) // Login/register don't need CSRF
 
 // Apply the protected routes
 app.use(protectedRoutes)

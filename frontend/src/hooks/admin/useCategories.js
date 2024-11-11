@@ -29,7 +29,7 @@ const useCategories = () => {
             setError(null); // Clear error on success
             return response.data.message; // Return the success message
         } catch (err) {
-            setError(err.response?.data || 'Failed to add category. Please try again.'); // Set error state
+            setError('Failed to add category. Please try again.'); // Set error state
         }
     };
 
@@ -42,7 +42,8 @@ const useCategories = () => {
             setError(null); // Clear error on success
             return response.data.message; // Return the success message
         } catch (err) {
-            setError(err.response?.data || 'Failed to update category. Please try again.'); // Set error state
+            setError(err.response?.data?.message || 'Failed to update category. Please try again.'); // Set error state with specific message
+            return null; // Return null to indicate failure
         }
     };
 
@@ -53,7 +54,7 @@ const useCategories = () => {
             setError(null); // Clear error on success
             return response.data.message; // Return the success message
         } catch (err) {
-            setError(err.response?.data || 'Failed to delete category. Please try again.'); // Set error state
+            setError('Failed to delete category. Please try again.'); // Set error state
         }
     };
 
