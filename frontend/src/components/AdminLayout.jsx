@@ -16,12 +16,12 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-page-bg">
       {/* Sidebar */}
       <aside
         className={`${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } fixed inset-y-0 left-0 z-50 w-64 bg-[#1E40AF] text-white transition-transform duration-300 ease-in-out lg:static lg:translate-x-0`}
+        } fixed inset-y-0 left-0 z-50 w-64 bg-deep-blue text-white transition-transform duration-300 ease-in-out lg:static lg:translate-x-0`}
       >
         <div className="flex h-16 items-center justify-center border-b border-gray-700">
           <h2 className="text-2xl font-semibold">Admin Panel</h2>
@@ -95,7 +95,7 @@ const AdminLayout = () => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-page-bg p-6">
           <Outlet /> {/* This will render the child routes */}
         </main>
       </div>

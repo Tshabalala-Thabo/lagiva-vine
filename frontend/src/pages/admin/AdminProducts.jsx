@@ -206,12 +206,12 @@ const AdminProducts = () => {
             { label: 'Dashboard', href: '/' },
             { label: 'Products', isDropdown: false }
           ]} />
-          <h2 className="text-2xl mb-4">Manage Products</h2>
+          <h2 className="text-2xl mb-4 text-deep-blue">Manage Products</h2>
         </div>
         <Button
           text="Add product"
           onClick={openModal}
-          className="mb-4 bg-blue-500"
+          className="mb-4 bg-primary-blue"
           icon={<Plus className="h-4 w-4 mr-2" />}
         />
       </div>

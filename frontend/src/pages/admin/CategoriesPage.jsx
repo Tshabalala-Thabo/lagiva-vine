@@ -14,6 +14,7 @@ import SubmitButton from '../../components/SubmitButton';
 
 const CategoriesPage = () => {
     const { categories, error, setError, loading, addCategory, updateCategory, deleteCategory } = useCategories();
+    const [localError, setLocalError] = useState(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [categoryToDelete, setCategoryToDelete] = useState(null);
@@ -22,19 +23,20 @@ const CategoriesPage = () => {
     const [formData, setFormData] = useState({ name: '', description: '' });
 
     useEffect(() => {
-        if (error) {
-            toast.error(error);
-            setError(null);
-        }
-    }, [error]);
-
-    useEffect(() => {
         if (categoryToEdit) {
             setFormData({ name: categoryToEdit.name, description: categoryToEdit.description });
         } else {
             setFormData({ name: '', description: '' });
         }
     }, [categoryToEdit]);
+
+    useEffect(() => {
+        if (error) {
+            toast.error(error);
+            setLocalError(error);
+            setError(null);
+        }
+    }, [error, setError]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -59,9 +61,6 @@ const CategoriesPage = () => {
             if (message) {
                 toast.success(message);
             }
-        } catch (error) {
-            console.error('Error adding/updating category:', error);
-            toast.error('An error occurred while saving the category.');
         } finally {
             setModalLoading(false);
             setIsCreateModalOpen(false);
@@ -80,6 +79,7 @@ const CategoriesPage = () => {
             }
         } catch (error) {
             console.error('Error deleting category:', error);
+            setLocalError('Failed to delete category.');
         } finally {
             setModalLoading(false);
             setIsDeleteModalOpen(false);
@@ -147,7 +147,7 @@ const CategoriesPage = () => {
                         { label: 'Daashboard', href: '/' },
                         { label: 'Categories', isDropdown: false }
                     ]} />
-                    <h1 className="text-2xl mb-4">Manage Categories</h1>
+                    <h1 className="text-2xl mb-4 text-deep-blue">Manage Categories</h1>
                 </div>
                 <Button
                     text="Add Category"
