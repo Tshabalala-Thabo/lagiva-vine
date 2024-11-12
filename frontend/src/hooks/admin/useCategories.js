@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { api } from '../../config/axiosConfig';
 
 const useCategories = () => {
@@ -6,25 +6,32 @@ const useCategories = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await api.get('/categories');
-                setCategories(response.data);
-            } catch (err) {
-                setError('Failed to fetch categories');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchCategories();
+    const fetchCategories = useCallback(async () => {
+        try {
+            setLoading(true);
+            const token = localStorage.getItem('jwtToken');
+            const response = await api.get('/categories', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setCategories(response.data.data);
+        } catch (err) {
+            setError('Failed to fetch categories');
+        } finally {
+            setLoading(false);
+        }
     }, []);
+
+    useEffect(() => {
+        fetchCategories();
+    }, [fetchCategories]);
 
     const addCategory = async (category) => {
         try {
-            const response = await api.post('/categories', category);
-            setCategories((prevCategories) => [...prevCategories, response.data.category]);
+            const token = localStorage.getItem('token');
+            const response = await api.post('/categories', category, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setCategories((prevCategories) => [...prevCategories, response.data.data]);
             setError(null);
             return response.data.message;
         } catch (err) {
@@ -34,9 +41,12 @@ const useCategories = () => {
 
     const updateCategory = async (categoryId, category) => {
         try {
-            const response = await api.put(`/categories/${categoryId}`, category);
+            const token = localStorage.getItem('token');
+            const response = await api.put(`/categories/${categoryId}`, category, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             setCategories((prevCategories) =>
-                prevCategories.map((cat) => (cat._id === categoryId ? response.data.category : cat))
+                prevCategories.map((cat) => (cat._id === categoryId ? response.data.data : cat))
             );
             setError(null);
             return response.data.message;
@@ -48,7 +58,10 @@ const useCategories = () => {
 
     const deleteCategory = async (categoryId) => {
         try {
-            const response = await api.delete(`/categories/${categoryId}`);
+            const token = localStorage.getItem('token');
+            const response = await api.delete(`/categories/${categoryId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             setCategories((prevCategories) => prevCategories.filter(category => category._id !== categoryId));
             setError(null);
             return response.data.message;

@@ -157,7 +157,7 @@ export const updateCategory = async (req, res) => {
             success: true,
             message: 'Category updated successfully',
             data: {
-                id: updatedCategory._id,
+                _id: updatedCategory._id,
                 name: updatedCategory.name,
                 description: updatedCategory.description
             }

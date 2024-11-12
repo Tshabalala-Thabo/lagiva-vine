@@ -48,9 +48,6 @@ const CategoriesPage = () => {
 
     const handleAddOrUpdateCategory = async () => {
         setModalLoading(true);
-        console.log("Submit button clicked");
-        console.log("Submitted form data:", formData);
-
         let message;
         try {
             if (categoryToEdit) {
