@@ -142,3 +142,27 @@ export const getPublishedProducts = async (req, res) => {
     res.status(500).json({ message: 'Error fetching published products', error: error.message });
   }
 };
+
+// Get a published product by ID
+export const getPublishedProductById = async (req, res) => {
+  try {
+    const product = await Product.findOne({ _id: req.params.id, published: true });
+    if (!product) return res.status(404).json({ message: 'Published product not found' });
+
+    let imageUrl = null;
+    if (product.image) {
+      const command = new GetObjectCommand({
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: product.image,
+      });
+      imageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
+    }
+
+    res.status(200).json({
+      ...product.toObject(),
+      imageUrl,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching published product', error: error.message });
+  }
+};

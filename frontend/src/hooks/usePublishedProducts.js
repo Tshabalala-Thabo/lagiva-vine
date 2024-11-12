@@ -22,7 +22,13 @@ const usePublishedProducts = () => {
     fetchPublishedProducts();
   }, []);
 
-  return { publishedProducts, isLoading, error };
+    // New function to fetch a published product by ID
+    const fetchPublishedProductById = async (id) => {
+      const response = await axios.get(`/products/published/${id}`); // Fetch published product by ID
+      return response.data;
+    };
+
+    return { publishedProducts, isLoading, error, fetchPublishedProductById }; // Return the new function
 };
 
 export default usePublishedProducts; 
