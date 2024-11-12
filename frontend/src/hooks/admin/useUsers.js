@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../config/axiosConfig';
 
 const useUsers = () => {
     const [users, setUsers] = useState([]);
@@ -10,7 +10,7 @@ const useUsers = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const response = await axios.get('/users', {
+            const response = await axiosInstance.get('/users', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -26,7 +26,7 @@ const useUsers = () => {
     const updateUser = async (userId, userData) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.put(`/users/${userId}`, userData, {
+            const response = await axiosInstance.put(`/users/${userId}`, userData, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
