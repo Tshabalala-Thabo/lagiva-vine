@@ -99,11 +99,11 @@ const Register = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold mb-6">Register</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+    <div className="flex flex-col md:flex-row h-screen">
+      <div className="flex-1 flex items-center justify-center p-4">
+        <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-sm">
+          <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block mb-2">First Name:</label>
               <input
@@ -126,28 +126,29 @@ const Register = () => {
             </div>
           </div>
 
-          <div>
-            <label className="block mb-2">Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="border p-2 w-full rounded"
-            />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
-          </div>
-
-          <div>
-            <label className="block mb-2">Phone:</label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="border p-2 w-full rounded"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block mb-2">Email:</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="border p-2 w-full rounded"
+              />
+              {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+            </div>
+            <div>
+              <label className="block mb-2">Phone:</label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="border p-2 w-full rounded"
+              />
+            </div>
           </div>
 
           <div className="relative space-y-2">
@@ -253,8 +254,15 @@ const Register = () => {
           </button>
           
           {error && <p className="text-red-500 mt-4">{error}</p>}
+          
+          <div className="mt-4 text-center">
+            <p className="text-sm">
+              Already have an account? <a href="/login" className="text-blue-500 hover:underline">Login</a>
+            </p>
+          </div>
         </form>
       </div>
+      <div className="flex-1 bg-cover bg-center hidden md:block" style={{ backgroundImage: 'url(/assets/hero_images/hero_2.png)' }} />
     </div>
   );
 };
