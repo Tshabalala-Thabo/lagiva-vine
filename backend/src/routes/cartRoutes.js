@@ -1,16 +1,14 @@
 import express from 'express'
 import { addItemToCart, removeItemFromCart, getCart } from '../controllers/cartController.js'
-import { verifyToken } from '../utils/jwt.js'
+import { authenticate } from '../middleware/authMiddleware.js';
 
 const router = express.Router()
 
-// Route to add item to cart
-router.post('/add', verifyToken, addItemToCart)
+router.post('/cart/add', authenticate, addItemToCart);
+router.post('/cart/remove', authenticate, removeItemFromCart);
+router.get('/cart', authenticate, getCart);
 
-// Route to remove item from cart
-router.delete('/remove', verifyToken, removeItemFromCart)
+//router.get('/admin/route', adminProtected, controller);
 
-// Route to get user's cart
-router.get('/:userId', verifyToken, getCart)
 
 export default router 
