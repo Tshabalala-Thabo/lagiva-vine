@@ -8,6 +8,7 @@ import productRoutes from '../src/routes/productRoutes.js';
 import authRoutes from '../src/routes/authRoutes.js';
 import categoryRoutes from '../src/routes/categoryRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
 
 dotenv.config();
 
@@ -51,6 +52,7 @@ protectedRoutes.use(csrfProtection);
 protectedRoutes.use('/api/products', productRoutes);
 protectedRoutes.use('/api/categories', categoryRoutes);
 protectedRoutes.use('/api/users', userRoutes);
+protectedRoutes.use('/api/cart', cartRoutes);
 
 // Public routes (no CSRF needed)
 app.use('/api/auth', authRoutes); // Login/register don't need CSRF
