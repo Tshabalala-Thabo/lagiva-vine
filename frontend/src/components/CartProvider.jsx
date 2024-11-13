@@ -22,17 +22,12 @@ export const CartProvider = ({ children }) => {
 
       setCart(response.data)
       console.log('Retrieved cart object:', response.data)
-      console.log('Current cart state:', cart)
+      console.log('Current cart state after fetch:', cart)
 
     } catch (error) {
       console.error('Error fetching cart:', error)
     }
   }, [])
-
-  useEffect(() => {
-    console.log("Current cart state:", cart);
-  }, [cart]);
-  
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
@@ -43,6 +38,7 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     const totalCount = cart.reduce((total, item) => total + item.quantity, 0)
     setCartItemCount(totalCount)
+    console.log('Updated cart state:', cart)
   }, [cart])
 
   const addItemToCart = useCallback(async (itemId, quantity) => {
@@ -59,8 +55,8 @@ export const CartProvider = ({ children }) => {
       )
 
       const updatedCart = response.data
-      setCart(response.data)
-      console.log('Current cart state:', cart)
+      setCart(updatedCart)
+      console.log('Current cart state after adding item:', updatedCart)
 
       const totalCount = updatedCart.reduce((total, item) => total + item.quantity, 0)
       setCartItemCount(totalCount)
@@ -73,7 +69,7 @@ export const CartProvider = ({ children }) => {
   }, [])
 
   return (
-    <CartContext.Provider value={{ cartItemCount, addItemToCart, fetchCart }}>
+    <CartContext.Provider value={{ cart, cartItemCount, addItemToCart, fetchCart }}>
       {children}
     </CartContext.Provider>
   )

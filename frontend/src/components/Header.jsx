@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, ShoppingCart } from 'lucide-react';
 import { useCart } from './CartProvider';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { cartItemCount } = useCart(); // Use the useCart hook to get cart item count
+  const { cart = [], cartItemCount } = useCart();
   const navigate = useNavigate();
 
   const toggleMenu = () => {
@@ -13,11 +14,11 @@ const Header = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove the token from local storage
-    navigate('/login'); // Redirect to login page
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
-  const isLoggedIn = !!localStorage.getItem('token'); // Check if the user is logged in
+  const isLoggedIn = !!localStorage.getItem('token');
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
@@ -46,14 +47,47 @@ const Header = () => {
           </ul>
         </nav>
         <div className="md:flex items-center space-x-4">
-          <Link to="/cart" className="relative">
-            <ShoppingCart size={24} className="text-gray-700 hover:text-primary" />
-            {cartItemCount > 0 && (
-              <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">
-                {cartItemCount}
-              </span>
-            )}
-          </Link>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button variant="outline" size="icon" className="relative" aria-label="Shopping cart">
+                <ShoppingCart size={24} className="text-gray-700 hover:text-primary" />
+                {cartItemCount > 0 && (
+                  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">
+                    {cartItemCount}
+                  </span>
+                )}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80">
+              <div className="grid gap-4">
+                <div className="space-y-2">
+                  <h4 className="font-medium leading-none">Recent Cart Items</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Your most recent additions to the cart.
+                  </p>
+                </div>
+                <ul className="grid gap-2">
+                  {cart.length > 0 ? (
+                    cart.slice(0, 3).map((item) => (
+                      <li key={item.itemId} className="flex items-center space-x-2">
+                        <img src={item.productImage} alt={item.productName} className="w-10 h-10 rounded" />
+                        <div>
+                          <p className="text-sm font-medium">{item.productName}</p>
+                          <p className="text-xs text-muted-foreground">Quantity: {item.quantity}</p>
+                        </div>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="text-gray-500">No items in cart.</li>
+                  )}
+                </ul>
+                <div className="flex justify-between">
+                  <button onClick={() => navigate('/checkout')}>Checkout</button>
+                  <button variant="outline" onClick={() => navigate('/cart')}>View Cart</button>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
           {isLoggedIn ? (
             <button onClick={handleLogout} className="hidden md:block text-gray-700 hover:text-primary">Logout</button>
           ) : (
