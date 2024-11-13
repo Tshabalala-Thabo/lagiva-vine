@@ -6,9 +6,10 @@ const CartContext = createContext()
 
 // Provider Component
 export const CartProvider = ({ children }) => {
+  const [cart, setCart] = useState([])
   const [cartItemCount, setCartItemCount] = useState(0)
 
-  const fetchCartItemCount = useCallback(async () => {
+  const fetchCart = useCallback(async () => {
     try {
       const token = localStorage.getItem('token')
       if (!token) return
@@ -19,13 +20,30 @@ export const CartProvider = ({ children }) => {
         },
       })
 
-      const cart = response.data
-      const totalCount = cart.reduce((total, item) => total + item.quantity, 0)
-      setCartItemCount(totalCount)
+      setCart(response.data)
+      console.log('Retrieved cart object:', response.data)
+      console.log('Current cart state:', cart)
+
     } catch (error) {
-      console.error('Error fetching cart item count:', error)
+      console.error('Error fetching cart:', error)
     }
   }, [])
+
+  useEffect(() => {
+    console.log("Current cart state:", cart);
+  }, [cart]);
+  
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      fetchCart()
+    }
+  }, [fetchCart])
+
+  useEffect(() => {
+    const totalCount = cart.reduce((total, item) => total + item.quantity, 0)
+    setCartItemCount(totalCount)
+  }, [cart])
 
   const addItemToCart = useCallback(async (itemId, quantity) => {
     try {
@@ -40,24 +58,22 @@ export const CartProvider = ({ children }) => {
         }
       )
 
-      const cart = response.data
-      const totalCount = cart.reduce((total, item) => total + item.quantity, 0)
+      const updatedCart = response.data
+      setCart(response.data)
+      console.log('Current cart state:', cart)
+
+      const totalCount = updatedCart.reduce((total, item) => total + item.quantity, 0)
       setCartItemCount(totalCount)
-      return cart
+
+      return updatedCart
     } catch (error) {
       console.error('Error adding item to cart:', error)
       throw error
     }
   }, [])
 
-  useEffect(() => {
-    if (localStorage.getItem('token')) {
-      fetchCartItemCount()
-    }
-  }, [fetchCartItemCount])
-
   return (
-    <CartContext.Provider value={{ cartItemCount, addItemToCart, fetchCartItemCount }}>
+    <CartContext.Provider value={{ cartItemCount, addItemToCart, fetchCart }}>
       {children}
     </CartContext.Provider>
   )

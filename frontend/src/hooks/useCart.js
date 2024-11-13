@@ -60,5 +60,5 @@ const useCart = () => {
 
   return { addItemToCart, cartItemCount }; // Return the cart item count along with the addItemToCart function
 };
-
 export default useCart;
+

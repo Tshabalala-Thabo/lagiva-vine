@@ -1,4 +1,5 @@
 import User from '../models/User.js';
+import Product from '../models/Product.js';
 
 // Add item to cart
 export const addItemToCart = async (req, res) => {
@@ -18,7 +19,19 @@ export const addItemToCart = async (req, res) => {
     }
 
     await user.save();
-    res.status(200).json(user.cart);
+
+    // Fetch product details for each item in the cart
+    const cartWithDetails = await Promise.all(user.cart.map(async (item) => {
+      const product = await Product.findById(item.itemId).select('name image') // Fetch name and image
+      return {
+        itemId: item.itemId,
+        quantity: item.quantity,
+        productName: product.name,
+        productImage: product.image
+      }
+    }));
+
+    res.status(200).json(cartWithDetails); // Return updated cart with details
   } catch (err) {
     res.status(500).json({ message: 'Error adding item to cart', error: err.message });
   }
@@ -48,10 +61,21 @@ export const getCart = async (req, res) => {
     // Get userId from JWT token (set by auth middleware)
     const userId = req.user.id;
 
-    const user = await User.findById(userId).populate('cart.itemId');
+    const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    res.status(200).json(user.cart);
+    // Fetch product details for each item in the cart
+    const cartWithDetails = await Promise.all(user.cart.map(async (item) => {
+      const product = await Product.findById(item.itemId).select('name image') // Fetch name and image
+      return {
+        itemId: item.itemId,
+        quantity: item.quantity,
+        productName: product.name,
+        productImage: product.image
+      }
+    }));
+
+    res.status(200).json(cartWithDetails);
   } catch (err) {
     res.status(500).json({ message: 'Error retrieving cart', error: err.message });
   }
