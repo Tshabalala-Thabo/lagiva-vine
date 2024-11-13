@@ -145,7 +145,7 @@ const Home = () => {
               </p>
               <Link 
                 to="/explore" 
-                className={`text-primary px-6 py-2 border border-primary rounded-sm text-lg font-semibold hover:bg-opacity-90 transition-all duration-1000 ease-in-out delay-600 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                className={`text-white px-6 py-2 bg-primary rounded-[1px] text-lg font-semibold hover:bg-opacity-90 transition-all duration-1000 ease-in-out delay-600 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               >
                 Explore Our Collection
               </Link>
@@ -195,7 +195,7 @@ const Home = () => {
                   key={category}
                   onClick={() => setSelectedCategory(category)}
                   className={`px-4 py-2 text-sm font-medium transition-colors duration-300 ease-in-out ${selectedCategory === category ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-200'
-                    } rounded-sm mr-2 mb-2`}
+                    } rounded-[1px] mr-2 mb-2`}
                 >
                   {category}
                 </button>
@@ -220,7 +220,7 @@ const Home = () => {
                       animate="visible"
                       exit="hidden"
                       layout
-                      className="rounded-sm overflow-hidden cursor-pointer w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1.125rem)] max-w-xs"
+                      className="rounded-[1px] overflow-hidden cursor-pointer w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1.125rem)] max-w-xs"
                       onClick={() => navigate(`/product/${wine._id}`)}
                     >
                       <div className="relative bg-stale w-full pt-[125%]">
@@ -229,7 +229,7 @@ const Home = () => {
                           alt={wine.name}
                           className="absolute inset-0 w-full h-full object-contain p-4"
                         />
-                        <div className="absolute top-2 left-2 bg-gray-300 text-gray-800 text-xs px-2 py-1 rounded-sm">
+                        <div className="absolute top-2 left-2 bg-gray-300 text-gray-800 text-xs px-2 py-1 rounded-[1px]">
                           {wine.type}
                         </div>
                       </div>
@@ -415,7 +415,7 @@ function FeatureCard({ icon, title, description, index }) {
   return (
     <motion.div
       ref={ref}
-      className="bg-[#282828] rounded-sm shadow-md   p-6 h-full"
+      className="bg-[#282828] rounded-[1px] shadow-md   p-6 h-full"
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
       transition={{ duration: 0.8, delay: index * 0.2, ease: [0.25, 0.1, 0.25, 1] }}
