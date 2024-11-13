@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Area_Chart } from '@/components/charts/Area_Chart';
-import { Bar_Chart_Horizontal } from '@/components/charts/Bar_Chart_Horizontal';
+import { Area_Chart } from '@/components/admin/charts/Area_Chart';
+import { Bar_Chart_Horizontal } from '@/components/admin/charts/Bar_Chart_Horizontal';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Package, Grid, ShoppingCart, Users } from "lucide-react"
 import { DynamicDialog } from '@/components/admin/Dialog';
