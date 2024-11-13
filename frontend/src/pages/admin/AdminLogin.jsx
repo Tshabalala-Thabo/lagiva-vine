@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
-import SubmitButton from '../../components/SubmitButton';
+import SubmitButton from '../../components/admin/SubmitButton';
 import { toast } from 'react-toastify';
-import ToastNotifications from '../../components/ToastNotifications';
+import ToastNotifications from '../../components/admin/ToastNotifications';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');

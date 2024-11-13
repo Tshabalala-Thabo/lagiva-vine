@@ -3,7 +3,7 @@ import { Area_Chart } from '@/components/charts/Area_Chart';
 import { Bar_Chart_Horizontal } from '@/components/charts/Bar_Chart_Horizontal';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Package, Grid, ShoppingCart, Users } from "lucide-react"
-import { DynamicDialog } from '@/components/Dialog';
+import { DynamicDialog } from '@/components/admin/Dialog';
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"

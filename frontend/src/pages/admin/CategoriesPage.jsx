@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import useCategories from '../../hooks/admin/useCategories';
-import ConfirmDeleteModal from '../../components/ConfirmDeleteModal';
+import ConfirmDeleteModal from '../../components/admin/ConfirmDeleteModal';
 import { toast } from 'react-toastify';
-import ToastNotifications from '../../components/ToastNotifications';
-import { BreadCrumb } from '../../components/BreadCrumb';
-import { CancelButton, Button } from "@/components/Button";
+import ToastNotifications from '../../components/admin/ToastNotifications';
+import { BreadCrumb } from '../../components/admin/BreadCrumb';
+import { CancelButton, Button } from "@/components/admin/Button";
 import { Plus, Pencil, Trash, MoreHorizontal } from "lucide-react";
-import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader';
-import { DataTable } from '../../components/DataTable';
-import { DynamicDropdown } from '@/components/DropDown';
-import { DynamicDialog } from '../../components/Dialog';
-import SubmitButton from '../../components/SubmitButton';
+import AdminTableSkeletonLoader from '../../components/admin/AdminTableSkeletonLoader';
+import { DataTable } from '../../components/admin/DataTable';
+import { DynamicDropdown } from '@/components/admin/DropDown';
+import { DynamicDialog } from '../../components/admin/Dialog';
+import SubmitButton from '../../components/admin/SubmitButton';
 
 const CategoriesPage = () => {
     const { categories, error, setError, loading, addCategory, updateCategory, deleteCategory } = useCategories();

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import useUsers from '../../hooks/admin/useUsers';
 import { toast } from 'react-toastify';
-import ToastNotifications from '../../components/ToastNotifications';
-import { BreadCrumb } from '../../components/BreadCrumb';
+import ToastNotifications from '../../components/admin/ToastNotifications';
+import { BreadCrumb } from '../../components/admin/BreadCrumb';
 import { Pencil, MoreHorizontal } from "lucide-react";
-import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader';
-import { DataTable } from '../../components/DataTable';
-import { DynamicDropdown } from '@/components/DropDown';
-import { DynamicDialog } from '../../components/Dialog';
-import { CancelButton } from "@/components/Button";
-import SubmitButton from '../../components/SubmitButton';
+import AdminTableSkeletonLoader from '../../components/admin/AdminTableSkeletonLoader';
+import { DataTable } from '../../components/admin/DataTable';
+import { DynamicDropdown } from '@/components/admin/DropDown';
+import { DynamicDialog } from '../../components/admin/Dialog';
+import { CancelButton } from "@/components/admin/Button";
+import SubmitButton from '../../components/admin/SubmitButton';
 
 const UsersPage = () => {
     const { users, error, setError, loading, fetchUsers, updateUser } = useUsers();
