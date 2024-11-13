@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, ShoppingCart } from 'lucide-react';
+import { useCart } from './CartProvider';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { cartItemCount } = useCart(); // Use the useCart hook to get cart item count
   const navigate = useNavigate();
 
   const toggleMenu = () => {
@@ -16,7 +18,6 @@ const Header = () => {
   };
 
   const isLoggedIn = !!localStorage.getItem('token'); // Check if the user is logged in
-  const cartItemCount = 3; // Temporary indication of items in the cart
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
@@ -44,7 +45,7 @@ const Header = () => {
             <li><Link to="/gallery" className="text-gray-700 hover:text-primary">Gallery</Link></li>
           </ul>
         </nav>
-        <div className=" md:flex items-center space-x-4">
+        <div className="md:flex items-center space-x-4">
           <Link to="/cart" className="relative">
             <ShoppingCart size={24} className="text-gray-700 hover:text-primary" />
             {cartItemCount > 0 && (
@@ -62,7 +63,6 @@ const Header = () => {
             </div>
           )}
         </div>
-
       </div>
       <div
         className={`absolute top-full left-0 right-0 bg-white shadow-md md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-48' : 'max-h-0'

@@ -4,8 +4,7 @@ import { ShoppingCart } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import usePublishedProducts from '../hooks/usePublishedProducts'; // Import the custom hook
-import useCart from '../hooks/useCart'; // Import the custom hook
-
+import { useCart } from "@/components/CartProvider";
 export default function ProductPage() {
   const { id } = useParams(); // Get product ID from URL
   const { fetchPublishedProductById } = usePublishedProducts(); // Use the new hook to fetch published product
