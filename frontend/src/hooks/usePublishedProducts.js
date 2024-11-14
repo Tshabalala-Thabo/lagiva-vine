@@ -9,15 +9,26 @@ const usePublishedProducts = () => {
   useEffect(() => {
     const fetchPublishedProducts = async () => {
       try {
-        const response = await axios.get('/products/published'); // Fetch published products from the backend
+        setIsLoading(true);
+        const response = await axios.get('/products/published');
         setPublishedProducts(response.data);
       } catch (err) {
+        if (err.response) {
+          // Server responded with a status other than 2xx
+          console.error('Server error:', err.response.status, err.response.data);
+        } else if (err.request) {
+          // No response was received from the server
+          console.error('Network error: No response received', err.request);
+        } else {
+          // Other error during request setup
+          console.error('Error setting up request:', err.message);
+        }
         setError('Failed to fetch published products');
-        console.error('Error fetching published products:', err);
       } finally {
         setIsLoading(false);
       }
     };
+    
 
     fetchPublishedProducts();
   }, []);
