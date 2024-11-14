@@ -22,9 +22,13 @@ app.use(express.json());
 // Configure CORS with credentials
 app.use(
   cors({
-    origin: process.env.NODE_ENV === 'production' 
-      ? ['https://mrn-b453f.vercel.app', 'https://mrn-b453-frontend-m5un77xnd-tshabalala-thabos-projects.vercel.app', 'https://mrn-b453-frontend-git-main-tshabalala-thabos-projects.vercel.app/']
-      : ['http://localhost:3000', 'http://localhost:5637'],
+    origin: [
+      'https://mrn-b453f.vercel.app',
+      'https://mrn-b453-frontend-m5un77xnd-tshabalala-thabos-projects.vercel.app',
+      'https://mrn-b453-frontend-git-main-tshabalala-thabos-projects.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:5637'
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
@@ -36,6 +40,7 @@ app.use(
     exposedHeaders: ['set-cookie', 'CSRF-Token']
   })
 );
+
 
 
 // CSRF protection middleware
