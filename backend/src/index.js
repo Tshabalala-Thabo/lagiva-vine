@@ -22,15 +22,18 @@ app.use(express.json());
 // Configure CORS with credentials
 app.use(
   cors({
-    origin: [
-      'mrn-b453f.vercel.app', // Your production frontend URL
-      'https://mrn-b453f.vercel.app', // Your production frontend URL
-      'http://localhost:3000', // Optional: for local development
-      'http://localhost:5637', // Optional: for local development
-    ],
+    origin: process.env.NODE_ENV === 'production' 
+      ? ['https://mrn-b453f.vercel.app']
+      : ['http://localhost:3000', 'http://localhost:5637'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'CSRF-Token',
+      'X-Requested-With'
+    ],
+    exposedHeaders: ['set-cookie', 'CSRF-Token']
   })
 );
 
