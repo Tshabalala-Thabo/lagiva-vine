@@ -22,7 +22,10 @@ app.use(express.json());
 // Configure CORS with credentials
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: [
+      'https://mrn-b453f.vercel.app', // Your production frontend URL
+      'http://localhost:3000', // Optional: for local development
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token'],
