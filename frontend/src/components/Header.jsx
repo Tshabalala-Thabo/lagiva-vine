@@ -82,7 +82,7 @@ const Header = () => {
                   {cart.length > 0 ? (
                     cart.slice(0, 3).map((item) => (
                       <li key={item.itemId} className="flex items-center space-x-2">
-                        <img src={item.productImage} alt={item.productName} className="w-10 h-10 rounded" />
+                        <img src={item.productImage} alt={item.productName} className="w-10 h-10 rounded object-contain" />
                         <div className='flex w-full items-center justify-between'>
                           <div>
                             <p className="text-sm text-primary font-medium">{item.productName}</p>

@@ -1,5 +1,16 @@
 import User from '../models/User.js';
 import Product from '../models/Product.js';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+
+// Initialize S3 client
+const s3 = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
 
 // Add item to cart
 export const addItemToCart = async (req, res) => {
@@ -23,11 +34,19 @@ export const addItemToCart = async (req, res) => {
     // Fetch product details for each item in the cart
     const cartWithDetails = await Promise.all(user.cart.map(async (item) => {
       const product = await Product.findById(item.itemId).select('name image price') // Fetch name, image, and price
+      let imageUrl = null;
+      if (product.image) {
+        const command = new GetObjectCommand({
+          Bucket: process.env.S3_BUCKET_NAME,
+          Key: product.image,
+        });
+        imageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
+      }
       return {
         itemId: item.itemId,
         quantity: item.quantity,
         productName: product.name,
-        productImage: product.image,
+        productImage: imageUrl, // Use the signed URL for the product image
         productPrice: product.price // Include product price
       }
     }));
@@ -68,11 +87,19 @@ export const getCart = async (req, res) => {
     // Fetch product details for each item in the cart
     const cartWithDetails = await Promise.all(user.cart.map(async (item) => {
       const product = await Product.findById(item.itemId).select('name image price') // Fetch name, image, and price
+      let imageUrl = null;
+      if (product.image) {
+        const command = new GetObjectCommand({
+          Bucket: process.env.S3_BUCKET_NAME,
+          Key: product.image,
+        });
+        imageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
+      }
       return {
         itemId: item.itemId,
         quantity: item.quantity,
         productName: product.name,
-        productImage: product.image,
+        productImage: imageUrl, // Use the signed URL for the product image
         productPrice: product.price // Include product price
       }
     }));
