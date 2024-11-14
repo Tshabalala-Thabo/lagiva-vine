@@ -3,11 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, ShoppingCart } from 'lucide-react';
 import { useCart } from './CartProvider';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { ButtonPrimary } from './Button';
+import { Button } from './Button';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cart = [], cartItemCount } = useCart();
   const navigate = useNavigate();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -49,16 +52,23 @@ const Header = () => {
         <div className="md:flex items-center space-x-4">
           <Popover>
             <PopoverTrigger asChild>
-              <button variant="outline" size="icon" className="relative" aria-label="Shopping cart">
+              <button 
+                variant="outline" 
+                size="icon" 
+                className="relative" 
+                aria-label="Shopping cart"
+                onMouseEnter={() => setIsPopoverOpen(true)}
+                onMouseLeave={() => setIsPopoverOpen(false)}
+              >
                 <ShoppingCart size={24} className="text-gray-700 hover:text-primary" />
                 {cartItemCount > 0 && (
-                  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">
+                  <span className="absolute top-0 -right-1 bg-red-500 text-white text-[10px] rounded-[1px] px-1">
                     {cartItemCount > 99 ? '99+' : cartItemCount}
                   </span>
                 )}
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-80">
+            <PopoverContent className="w-80 rounded-[1px] mr-4" onMouseEnter={() => setIsPopoverOpen(true)} onMouseLeave={() => setIsPopoverOpen(false)}>
               <div className="grid gap-4">
                 <div className="space-y-2">
                   <h4 className="font-medium leading-none">Recent Cart Items</h4>
@@ -82,8 +92,8 @@ const Header = () => {
                   )}
                 </ul>
                 <div className="flex justify-between">
-                  <button onClick={() => navigate('/checkout')}>Checkout</button>
-                  <button variant="outline" onClick={() => navigate('/cart')}>View Cart</button>
+                  <ButtonPrimary text={"Checkout"} onClick={() => navigate('/checkout')}>Checkout</ButtonPrimary>
+                  <Button className={'text-primary border border-primary'} text={"View cart"} variant="outline" onClick={() => navigate('/cart')}>View Cart</Button>
                 </div>
               </div>
             </PopoverContent>
