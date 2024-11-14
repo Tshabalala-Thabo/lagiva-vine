@@ -70,7 +70,7 @@ app.use(protectedRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
-  res.send('Hi from the backend!');
+  res.send('Hi from the backend!!');
 });
 
 // Error handling middleware for CSRF errors
