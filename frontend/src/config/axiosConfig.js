@@ -1,18 +1,18 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL,
+  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api',
   timeout: 10000,
   withCredentials: true, // Enable sending cookies with requests
 });
 
-// Store CSRF token
+// Store CSRF token in memory
 let csrfToken = null;
 
-// Function to fetch CSRF token
+// Fetch CSRF token if it hasn't been fetched already or is invalid
 const fetchCsrfToken = async () => {
   if (csrfToken) return csrfToken;
-  
+
   try {
     const response = await axiosInstance.get('/csrf-token');
     csrfToken = response.data.csrfToken;
@@ -23,18 +23,16 @@ const fetchCsrfToken = async () => {
   }
 };
 
-// Request interceptor
+// Request interceptor to attach CSRF token to non-GET requests
 axiosInstance.interceptors.request.use(
   async (config) => {
-    // Skip CSRF token for GET requests and auth endpoints
-    if (
-      config.method?.toLowerCase() === 'get' || 
-      config.url?.includes('/auth/')
-    ) {
+    // Exclude GET requests and auth-related endpoints from CSRF token
+    if (config.method?.toLowerCase() === 'get' || config.url?.includes('/auth/')) {
       return config;
     }
 
     try {
+      // Ensure CSRF token is fetched and included in the headers
       const token = await fetchCsrfToken();
       config.headers['CSRF-Token'] = token;
       return config;
@@ -47,17 +45,18 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Response interceptor
+// Response interceptor for handling CSRF-related errors
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    // Handle CSRF token expiration/invalidation
+    // Check if CSRF token needs to be refreshed
     if (error.response?.status === 403 && error.response?.data?.message?.includes('CSRF')) {
       csrfToken = null; // Clear stored token
-      
+
       try {
-        // Fetch new token and retry the original request
-        await fetchCsrfToken();
+        // Fetch new CSRF token and retry the original request
+        const token = await fetchCsrfToken();
+        error.config.headers['CSRF-Token'] = token;
         return axiosInstance(error.config);
       } catch (retryError) {
         return Promise.reject(retryError);
@@ -67,17 +66,14 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-// Helper methods for common API operations
+// Helper methods for API operations
 export const api = {
   get: (url, config = {}) => axiosInstance.get(url, config),
-  
   post: (url, data = {}, config = {}) => axiosInstance.post(url, data, config),
-  
   put: (url, data = {}, config = {}) => axiosInstance.put(url, data, config),
-  
   delete: (url, config = {}) => axiosInstance.delete(url, config),
   
-  // Add new token to headers (useful for auth)
+  // Function to set auth token in headers
   setAuthToken: (token) => {
     if (token) {
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -86,7 +82,7 @@ export const api = {
     }
   },
   
-  // Clear CSRF token (useful for logout)
+  // Clear CSRF token manually (useful for logout)
   clearCsrfToken: () => {
     csrfToken = null;
   }

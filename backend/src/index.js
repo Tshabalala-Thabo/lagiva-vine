@@ -20,20 +20,22 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Configure CORS with credentials
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token']
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token'],
+  })
+);
 
 // CSRF protection middleware
 const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
-  }
+    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+  },
 });
 
 // Connect to MongoDB
@@ -56,7 +58,7 @@ protectedRoutes.use('/api/cart', cartRoutes);
 
 // Public routes (no CSRF needed)
 app.use('/api/auth', authRoutes); // Login/register don't need CSRF
-app.get('/api/categories', categoryRoutes); // Login/register don't need CSRF
+app.get('/api/categories', categoryRoutes); // Public category route
 
 // Apply the protected routes
 app.use(protectedRoutes);
@@ -70,7 +72,7 @@ app.get('/', (req, res) => {
 app.use((err, req, res, next) => {
   if (err.code === 'EBADCSRFTOKEN') {
     return res.status(403).json({
-      message: 'Invalid CSRF token. Please refresh the page and try again.'
+      message: 'Invalid CSRF token. Please refresh the page and try again.',
     });
   }
   next(err);
