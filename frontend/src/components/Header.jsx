@@ -23,6 +23,8 @@ const Header = () => {
 
   const isLoggedIn = !!localStorage.getItem('token');
 
+  const totalCost = cart.reduce((total, item) => total + item.productPrice * item.quantity, 0).toFixed(2)
+
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -52,10 +54,10 @@ const Header = () => {
         <div className="md:flex items-center space-x-4">
           <Popover>
             <PopoverTrigger asChild>
-              <button 
-                variant="outline" 
-                size="icon" 
-                className="relative" 
+              <button
+                variant="outline"
+                size="icon"
+                className="relative"
                 aria-label="Shopping cart"
                 onMouseEnter={() => setIsPopoverOpen(true)}
                 onMouseLeave={() => setIsPopoverOpen(false)}
@@ -81,9 +83,12 @@ const Header = () => {
                     cart.slice(0, 3).map((item) => (
                       <li key={item.itemId} className="flex items-center space-x-2">
                         <img src={item.productImage} alt={item.productName} className="w-10 h-10 rounded" />
-                        <div>
-                          <p className="text-sm font-medium">{item.productName}</p>
-                          <p className="text-xs text-muted-foreground">Quantity: {item.quantity}</p>
+                        <div className='flex w-full items-center justify-between'>
+                          <div>
+                            <p className="text-sm text-primary font-medium">{item.productName}</p>
+                            <p className="text-xs text-muted-foreground">Quantity: {item.quantity}</p>
+                          </div>
+                          <p className='text-sm font-medium'>R{item.productPrice.toFixed(2)}</p>
                         </div>
                       </li>
                     ))
@@ -91,6 +96,10 @@ const Header = () => {
                     <li className="text-gray-500">No items in cart.</li>
                   )}
                 </ul>
+                <hr className=" border-gray-300" />
+                <p className="w-fill text-end font-medium">Total: R{totalCost}</p>
+                <hr className=" border-gray-300" />
+
                 <div className="flex justify-between">
                   <ButtonPrimary text={"Checkout"} onClick={() => navigate('/checkout')}>Checkout</ButtonPrimary>
                   <Button className={'text-primary border border-primary'} text={"View cart"} variant="outline" onClick={() => navigate('/cart')}>View Cart</Button>

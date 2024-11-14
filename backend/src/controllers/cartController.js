@@ -22,12 +22,13 @@ export const addItemToCart = async (req, res) => {
 
     // Fetch product details for each item in the cart
     const cartWithDetails = await Promise.all(user.cart.map(async (item) => {
-      const product = await Product.findById(item.itemId).select('name image') // Fetch name and image
+      const product = await Product.findById(item.itemId).select('name image price') // Fetch name, image, and price
       return {
         itemId: item.itemId,
         quantity: item.quantity,
         productName: product.name,
-        productImage: product.image
+        productImage: product.image,
+        productPrice: product.price // Include product price
       }
     }));
 
@@ -66,12 +67,13 @@ export const getCart = async (req, res) => {
 
     // Fetch product details for each item in the cart
     const cartWithDetails = await Promise.all(user.cart.map(async (item) => {
-      const product = await Product.findById(item.itemId).select('name image') // Fetch name and image
+      const product = await Product.findById(item.itemId).select('name image price') // Fetch name, image, and price
       return {
         itemId: item.itemId,
         quantity: item.quantity,
         productName: product.name,
-        productImage: product.image
+        productImage: product.image,
+        productPrice: product.price // Include product price
       }
     }));
 
