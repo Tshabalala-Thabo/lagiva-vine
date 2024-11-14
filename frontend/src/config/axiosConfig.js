@@ -11,11 +11,15 @@ let csrfToken = null;
 
 // Fetch CSRF token if it hasn't been fetched already or is invalid
 const fetchCsrfToken = async () => {
-  if (csrfToken) return csrfToken;
+  if (csrfToken) {
+    console.log('Using cached CSRF token');
+    return csrfToken;
+  }
 
   try {
     const response = await axiosInstance.get('/csrf-token');
     csrfToken = response.data.csrfToken;
+    console.log('Fetched new CSRF token:', csrfToken);
     return csrfToken;
   } catch (error) {
     console.error('Error fetching CSRF token:', error);
