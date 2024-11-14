@@ -8,7 +8,7 @@ import { Button } from './Button';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { cart = [], cartItemCount } = useCart();
+  const { cart = [], cartItemCount, clearCart } = useCart();
   const navigate = useNavigate();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
@@ -18,6 +18,7 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    clearCart();
     navigate('/login');
   };
 

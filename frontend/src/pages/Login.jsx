@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth'; // Import the custom hook
+import { useCart } from '../components/CartProvider'; // Import useCart to get fetchCart
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { login, error, loading } = useAuth(); // Use the custom hook
+  const { fetchCart } = useCart(); // Get fetchCart from CartProvider
+  const { login, error, loading } = useAuth(fetchCart); // Pass fetchCart to useAuth
 
   const handleSubmit = async (e) => {
     e.preventDefault();

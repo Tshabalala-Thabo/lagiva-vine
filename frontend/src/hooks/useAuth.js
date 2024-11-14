@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axiosInstance, { api } from '../config/axiosConfig'; // Ensure correct path
 
-const useAuth = () => {
+const useAuth = (fetchCart) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -31,6 +31,9 @@ const useAuth = () => {
 
       // Set token in Authorization header for future requests
       api.setAuthToken(token);
+
+      // Fetch the latest cart information after successful login
+      await fetchCart() // Call fetchCart to update the cart
 
       return response.data; // Return the response data
     } catch (err) {

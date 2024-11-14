@@ -4,13 +4,15 @@ import useAuth from '../../hooks/useAuth';
 import SubmitButton from '../../components/admin/SubmitButton';
 import { toast } from 'react-toastify';
 import ToastNotifications from '../../components/admin/ToastNotifications';
+import { useCart } from '../../components/CartProvider';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
-  const { login, error, loading } = useAuth();
+  const { fetchCart } = useCart();
+  const { login, error, loading } = useAuth(fetchCart);
   const [submitLoading, setSubmitLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -27,7 +29,7 @@ const AdminLogin = () => {
         localStorage.removeItem('token');
       }
     } catch (err) {
-      toast.error(error);
+      toast.error(err.response?.data?.message || 'Login failed');
     } finally {
       setSubmitLoading(false);
     }
@@ -104,7 +106,6 @@ const AdminLogin = () => {
           <div className="max-w-lg w-full">
             <img
               src="/assets/logo/logo.png"
-
               alt="Company Logo"
               className="w-full h-auto"
             />
