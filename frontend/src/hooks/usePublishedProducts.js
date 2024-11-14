@@ -10,7 +10,10 @@ const usePublishedProducts = () => {
     const fetchPublishedProducts = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get('/products/published');
+        const token = localStorage.getItem('token');
+        const response = await api.get('/products/published', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         setPublishedProducts(response.data);
       } catch (err) {
         if (err.response) {
@@ -28,18 +31,18 @@ const usePublishedProducts = () => {
         setIsLoading(false);
       }
     };
-    
+
 
     fetchPublishedProducts();
   }, []);
 
-    // New function to fetch a published product by ID
-    const fetchPublishedProductById = async (id) => {
-      const response = await axios.get(`/products/published/${id}`); // Fetch published product by ID
-      return response.data;
-    };
+  // New function to fetch a published product by ID
+  const fetchPublishedProductById = async (id) => {
+    const response = await axios.get(`/products/published/${id}`); // Fetch published product by ID
+    return response.data;
+  };
 
-    return { publishedProducts, isLoading, error, fetchPublishedProductById }; // Return the new function
+  return { publishedProducts, isLoading, error, fetchPublishedProductById }; // Return the new function
 };
 
 export default usePublishedProducts; 
