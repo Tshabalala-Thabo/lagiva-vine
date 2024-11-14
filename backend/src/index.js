@@ -23,8 +23,10 @@ app.use(express.json());
 app.use(
   cors({
     origin: [
+      'mrn-b453f.vercel.app', // Your production frontend URL
       'https://mrn-b453f.vercel.app', // Your production frontend URL
       'http://localhost:3000', // Optional: for local development
+      'http://localhost:5637', // Optional: for local development
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -37,7 +39,7 @@ const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+    sameSite: 'strict',
   },
 });
 
