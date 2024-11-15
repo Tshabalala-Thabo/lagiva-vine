@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axiosInstance, { api } from '../config/axiosConfig'; // Ensure correct path
+import api from '../config/axiosConfig'; // This imports your configured axios instance
 
 const useAuth = (fetchCart) => {
   const [error, setError] = useState(null);

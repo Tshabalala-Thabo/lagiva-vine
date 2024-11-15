@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { api } from '../../config/axiosConfig';
+import api from '../../config/axiosConfig'; // This imports your configured axios instance
 
 const useCategories = () => {
     const [categories, setCategories] = useState([]);
