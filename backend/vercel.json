@@ -9,14 +9,14 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/index.js",
       "headers": {
         "Access-Control-Allow-Credentials": "true",
         "Access-Control-Allow-Origin": "https://mrn-b453f.vercel.app",
         "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
-        "Access-Control-Allow-Headers": "X-CSRF-Token,Authorization,Content-Type,Accept,Origin,User-Agent",
-        "Access-Control-Expose-Headers": "set-cookie,CSRF-Token"
-      }
+        "Access-Control-Allow-Headers": "X-CSRF-Token,Authorization,Content-Type,Accept,Origin,X-Requested-With",
+        "Access-Control-Expose-Headers": "set-cookie"
+      },
+      "continue": true
     },
     {
       "src": "/(.*)",
