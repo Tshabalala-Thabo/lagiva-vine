@@ -35,7 +35,8 @@ app.use(
       'Content-Type',
       'Authorization',
       'CSRF-Token',
-      'X-Requested-With'
+      'X-Requested-With',
+      'Access-Control-Allow-Origin'
     ],
     exposedHeaders: ['set-cookie', 'CSRF-Token']
   })
