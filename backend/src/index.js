@@ -1,8 +1,8 @@
-// api/index.js or your main entry file
 import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import csrf from 'csurf';
-import dotenv from 'dotenv';
 import connectDB from '../src/config/db.js';
 import productRoutes from '../src/routes/productRoutes.js';
 import authRoutes from '../src/routes/authRoutes.js';
@@ -12,82 +12,81 @@ import cartRoutes from './routes/cartRoutes.js';
 
 dotenv.config();
 
-// CORS wrapper function for Vercel
-const allowCors = fn => async (req, res) => {
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', 'https://mrn-b453f.vercel.app');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization'
-  );
-
-  // Handle OPTIONS request
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
-
-  try {
-    return await fn(req, res);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-};
-
-// Create Express app
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB
-connectDB();
-
-// Middleware
-app.use(express.json());
+// Middleware setup
 app.use(cookieParser());
+app.use(express.json());
+
+// Configure CORS with credentials
+app.use(
+  cors({
+    origin: process.env.NODE_ENV === 'production' 
+      ? ['https://mrn-b453f.vercel.app', 'https://mrn-b453-frontend-m5un77xnd-tshabalala-thabos-projects.vercel.app', 'https://mrn-b453-frontend-git-main-tshabalala-thabos-projects.vercel.app/']
+      : ['http://localhost:3000', 'http://localhost:5637'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'CSRF-Token',
+      'X-Requested-With'
+    ],
+    exposedHeaders: ['set-cookie', 'CSRF-Token']
+  })
+);
+
 
 // CSRF protection middleware
 const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none',
+    sameSite: 'strict',
   },
 });
 
-// Routes handler function
-const handler = async (req, res) => {
-  // Basic route
-  app.get('/', (req, res) => {
-    res.send('API is running');
-  });
+// Connect to MongoDB
+connectDB();
 
-  // CSRF Token endpoint
-  app.get('/api/csrf-token', csrfProtection, (req, res) => {
-    res.json({ csrfToken: req.csrfToken() });
-  });
+// CSRF Token endpoint (publicly accessible)
+app.get('/api/csrf-token', csrfProtection, (req, res) => {
+  res.json({ csrfToken: req.csrfToken() });
+});
 
-  // Public routes
-  app.use('/api/auth', authRoutes);
-  
-  // Protected routes
-  const protectedRoutes = express.Router();
-  protectedRoutes.use(csrfProtection);
-  
-  app.use('/api/products', productRoutes);
-  app.use('/api/categories', categoryRoutes);
-  app.use('/api/users', userRoutes);
-  app.use('/api/cart', cartRoutes);
+// Routes that need CSRF protection
+const protectedRoutes = express.Router();
+protectedRoutes.use(csrfProtection);
 
-  // Handle the request using Express
-  return new Promise((resolve, reject) => {
-    app(req, res, (error) => {
-      if (error) reject(error);
-      resolve();
+// Apply protected routes
+protectedRoutes.use('/api/products', productRoutes);
+protectedRoutes.use('/api/categories', categoryRoutes);
+protectedRoutes.use('/api/users', userRoutes);
+protectedRoutes.use('/api/cart', cartRoutes);
+
+// Public routes (no CSRF needed)
+app.use('/api/auth', authRoutes); // Login/register don't need CSRF
+app.get('/api/categories', categoryRoutes); // Public category route
+
+// Apply the protected routes
+app.use(protectedRoutes);
+
+// Basic route
+app.get('/', (req, res) => {
+  res.send('Hi from the backend!!');
+});
+
+// Error handling middleware for CSRF errors
+app.use((err, req, res, next) => {
+  if (err.code === 'EBADCSRFTOKEN') {
+    return res.status(403).json({
+      message: 'Invalid CSRF token. Please refresh the page and try again.',
     });
-  });
-};
+  }
+  next(err);
+});
 
-// Export the wrapped handler
-export default allowCors(handler);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
