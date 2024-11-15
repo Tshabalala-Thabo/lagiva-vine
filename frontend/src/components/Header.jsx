@@ -1,22 +1,30 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, ShoppingCart } from 'lucide-react';
+import { useCart } from './CartProvider';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { ButtonPrimary } from './Button';
+import { Button } from './Button';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { cart = [], cartItemCount, clearCart } = useCart();
   const navigate = useNavigate();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove the token from local storage
-    navigate('/login'); // Redirect to login page
+    localStorage.removeItem('token');
+    clearCart();
+    navigate('/login');
   };
 
-  const isLoggedIn = !!localStorage.getItem('token'); // Check if the user is logged in
-  const cartItemCount = 3; // Temporary indication of items in the cart
+  const isLoggedIn = !!localStorage.getItem('token');
+
+  const totalCost = cart.reduce((total, item) => total + item.productPrice * item.quantity, 0).toFixed(2)
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
@@ -44,15 +52,62 @@ const Header = () => {
             <li><Link to="/gallery" className="text-gray-700 hover:text-primary">Gallery</Link></li>
           </ul>
         </nav>
-        <div className=" md:flex items-center space-x-4">
-          <Link to="/cart" className="relative">
-            <ShoppingCart size={24} className="text-gray-700 hover:text-primary" />
-            {cartItemCount > 0 && (
-              <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">
-                {cartItemCount}
-              </span>
-            )}
-          </Link>
+        <div className="md:flex items-center space-x-4">
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                variant="outline"
+                size="icon"
+                className="relative"
+                aria-label="Shopping cart"
+                onMouseEnter={() => setIsPopoverOpen(true)}
+                onMouseLeave={() => setIsPopoverOpen(false)}
+              >
+                <ShoppingCart size={24} className="text-gray-700 hover:text-primary" />
+                {cartItemCount > 0 && (
+                  <span className="absolute top-0 -right-1 bg-red-500 text-white text-[10px] rounded-[1px] px-1">
+                    {cartItemCount > 99 ? '99+' : cartItemCount}
+                  </span>
+                )}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 rounded-[1px] mr-4" onMouseEnter={() => setIsPopoverOpen(true)} onMouseLeave={() => setIsPopoverOpen(false)}>
+              <div className="grid gap-4">
+                <div className="space-y-2">
+                  <h4 className="font-medium leading-none">Recent Cart Items</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Your most recent additions to the cart.
+                  </p>
+                </div>
+                <ul className="grid gap-2">
+                  {cart.length > 0 ? (
+                    cart.slice(0, 3).map((item) => (
+                      <li key={item.itemId} className="flex items-center space-x-2">
+                        <img src={item.productImage} alt={item.productName} className="w-10 h-10 rounded object-contain" />
+                        <div className='flex w-full items-center justify-between'>
+                          <div>
+                            <p className="text-sm text-primary font-medium">{item.productName}</p>
+                            <p className="text-xs text-muted-foreground">Quantity: {item.quantity}</p>
+                          </div>
+                          <p className='text-sm font-medium'>R{item.productPrice.toFixed(2)}</p>
+                        </div>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="text-gray-500">No items in cart.</li>
+                  )}
+                </ul>
+                <hr className=" border-gray-300" />
+                <p className="w-fill text-end font-medium">Total: R{totalCost}</p>
+                <hr className=" border-gray-300" />
+
+                <div className="flex justify-between">
+                  <ButtonPrimary text={"Checkout"} onClick={() => navigate('/checkout')}>Checkout</ButtonPrimary>
+                  <Button className={'text-primary border border-primary'} text={"View cart"} variant="outline" onClick={() => navigate('/cart')}>View Cart</Button>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
           {isLoggedIn ? (
             <button onClick={handleLogout} className="hidden md:block text-gray-700 hover:text-primary">Logout</button>
           ) : (
@@ -62,7 +117,6 @@ const Header = () => {
             </div>
           )}
         </div>
-
       </div>
       <div
         className={`absolute top-full left-0 right-0 bg-white shadow-md md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-48' : 'max-h-0'

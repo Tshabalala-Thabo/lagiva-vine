@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
-import SubmitButton from '../../components/SubmitButton';
+import SubmitButton from '../../components/admin/SubmitButton';
 import { toast } from 'react-toastify';
-import ToastNotifications from '../../components/ToastNotifications';
+import ToastNotifications from '../../components/admin/ToastNotifications';
+import { useCart } from '../../components/CartProvider';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
-  const { login, error, loading } = useAuth();
+  const { fetchCart } = useCart();
+  const { login, error, loading } = useAuth(fetchCart);
   const [submitLoading, setSubmitLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -27,7 +29,7 @@ const AdminLogin = () => {
         localStorage.removeItem('token');
       }
     } catch (err) {
-      toast.error(error);
+      toast.error(err.response?.data?.message || 'Login failed');
     } finally {
       setSubmitLoading(false);
     }
@@ -37,7 +39,7 @@ const AdminLogin = () => {
     <div className="min-h-screen bg-gray-100 flex">
       <div className="w-full lg:w-5/12 bg-white p-8 flex flex-col justify-center">
         <div className="max-w-md w-full mx-auto">
-          <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-6">
+          <h2 className="text-3xl font-extrabold text-deep-blue text-center mb-6">
             Admin Login
           </h2>
           <form className="space-y-6" onSubmit={handleSubmit}>
@@ -99,12 +101,11 @@ const AdminLogin = () => {
         </div>
       </div>
 
-      <div className="hidden lg:block lg:w-7/12 bg-primary-600">
+      <div className="hidden lg:block lg:w-7/12 bg-deep-blue">
         <div className="h-full flex items-center justify-center p-12">
           <div className="max-w-lg w-full">
             <img
               src="/assets/logo/logo.png"
-
               alt="Company Logo"
               className="w-full h-auto"
             />

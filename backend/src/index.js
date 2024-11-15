@@ -1,44 +1,93 @@
-import express from 'express'
-import cors from 'cors'
-import dotenv from 'dotenv'
-import connectDB from '../src/config/db.js'
-import productRoutes from '../src/routes/productRoutes.js'
-import authRoutes from '../src/routes/authRoutes.js' // Import the Auth routes
-import categoryRoutes from '../src/routes/categoryRoutes.js' // Import the Category routes
+// api/index.js or your main entry file
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import csrf from 'csurf';
+import dotenv from 'dotenv';
+import connectDB from '../src/config/db.js';
+import productRoutes from '../src/routes/productRoutes.js';
+import authRoutes from '../src/routes/authRoutes.js';
+import categoryRoutes from '../src/routes/categoryRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
-const PORT = process.env.PORT || 5000
+// CORS wrapper function for Vercel
+const allowCors = fn => async (req, res) => {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', 'https://mrn-b453f.vercel.app');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization'
+  );
 
-app.use(cors())
-app.use(express.json())
+  // Handle OPTIONS request
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  try {
+    return await fn(req, res);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+// Create Express app
+const app = express();
 
 // Connect to MongoDB
-connectDB()
+connectDB();
 
-// Routes
-app.get('/', (req, res) => {
-  res.send('Hello from the backend!!!')
-})
+// Middleware
+app.use(express.json());
+app.use(cookieParser());
 
-// Use product routes
-app.use('/api/products', productRoutes)
+// CSRF protection middleware
+const csrfProtection = csrf({
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'none',
+  },
+});
 
-// Use auth routes
-app.use('/api/auth', authRoutes) // Added auth routes
+// Routes handler function
+const handler = async (req, res) => {
+  // Basic route
+  app.get('/', (req, res) => {
+    res.send('API is running');
+  });
 
-// Use category routes
-app.use('/api/categories', categoryRoutes) // Added category routes
+  // CSRF Token endpoint
+  app.get('/api/csrf-token', csrfProtection, (req, res) => {
+    res.json({ csrfToken: req.csrfToken() });
+  });
 
-// Use user routes
-app.use('/api/users', userRoutes);
+  // Public routes
+  app.use('/api/auth', authRoutes);
+  
+  // Protected routes
+  const protectedRoutes = express.Router();
+  protectedRoutes.use(csrfProtection);
+  
+  app.use('/api/products', productRoutes);
+  app.use('/api/categories', categoryRoutes);
+  app.use('/api/users', userRoutes);
+  app.use('/api/cart', cartRoutes);
 
-// Use cart routes
-app.use('/api/cart', cartRoutes);
+  // Handle the request using Express
+  return new Promise((resolve, reject) => {
+    app(req, res, (error) => {
+      if (error) reject(error);
+      resolve();
+    });
+  });
+};
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`)
-})
+// Export the wrapped handler
+export default allowCors(handler);

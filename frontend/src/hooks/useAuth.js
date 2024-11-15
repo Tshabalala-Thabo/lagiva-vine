@@ -1,18 +1,15 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../config/axiosConfig'; // This imports your configured axios instance
 
-// Set the base URL for Axios
-axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL; // Update this if your backend runs on a different port
-
-const useAuth = () => {
+const useAuth = (fetchCart) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const register = async ( formData ) => {
+  const register = async (formData) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post('/auth/register', { formData });
+      const response = await axiosInstance.post('/auth/register', formData);
       return response.data; // Return the response data
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
@@ -26,8 +23,18 @@ const useAuth = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post('/auth/login', { email, password });
-      localStorage.setItem('token', response.data.token); // Store token
+      const response = await axiosInstance.post('/auth/login', { email, password });
+      const token = response.data.token;
+
+      // Store token in localStorage
+      localStorage.setItem('token', token);
+
+      // Set token in Authorization header for future requests
+      api.setAuthToken(token);
+
+      // Fetch the latest cart information after successful login
+      await fetchCart() // Call fetchCart to update the cart
+
       return response.data; // Return the response data
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');

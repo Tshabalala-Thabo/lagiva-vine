@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   phone: { type: String, required: false },
   role: { type: String, enum: ['admin', 'user'], default: 'user' },
   isDisabled: { type: Boolean, default: false },
+  cart: { type: [{ itemId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' }, quantity: Number }], default: [] },
 }, { timestamps: true });
 
 // Hash password before saving

@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import useCategories from '../../hooks/admin/useCategories';
-import ConfirmDeleteModal from '../../components/ConfirmDeleteModal';
+import ConfirmDeleteModal from '../../components/admin/ConfirmDeleteModal';
 import { toast } from 'react-toastify';
-import ToastNotifications from '../../components/ToastNotifications';
-import { BreadCrumb } from '../../components/BreadCrumb';
-import { CancelButton, Button } from "@/components/Button";
+import ToastNotifications from '../../components/admin/ToastNotifications';
+import { BreadCrumb } from '../../components/admin/BreadCrumb';
+import { CancelButton, Button } from "@/components/admin/Button";
 import { Plus, Pencil, Trash, MoreHorizontal } from "lucide-react";
-import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader';
-import { DataTable } from '../../components/DataTable';
-import { DynamicDropdown } from '@/components/DropDown';
-import { DynamicDialog } from '../../components/Dialog';
-import SubmitButton from '../../components/SubmitButton';
+import AdminTableSkeletonLoader from '../../components/admin/AdminTableSkeletonLoader';
+import { DataTable } from '../../components/admin/DataTable';
+import { DynamicDropdown } from '@/components/admin/DropDown';
+import { DynamicDialog } from '../../components/admin/Dialog';
+import SubmitButton from '../../components/admin/SubmitButton';
 
 const CategoriesPage = () => {
     const { categories, error, setError, loading, addCategory, updateCategory, deleteCategory } = useCategories();
+    const [localError, setLocalError] = useState(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [categoryToDelete, setCategoryToDelete] = useState(null);
@@ -22,19 +23,20 @@ const CategoriesPage = () => {
     const [formData, setFormData] = useState({ name: '', description: '' });
 
     useEffect(() => {
-        if (error) {
-            toast.error(error);
-            setError(null);
-        }
-    }, [error]);
-
-    useEffect(() => {
         if (categoryToEdit) {
             setFormData({ name: categoryToEdit.name, description: categoryToEdit.description });
         } else {
             setFormData({ name: '', description: '' });
         }
     }, [categoryToEdit]);
+
+    useEffect(() => {
+        if (error) {
+            toast.error(error);
+            setLocalError(error);
+            setError(null);
+        }
+    }, [error, setError]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -46,9 +48,6 @@ const CategoriesPage = () => {
 
     const handleAddOrUpdateCategory = async () => {
         setModalLoading(true);
-        console.log("Submit button clicked");
-        console.log("Submitted form data:", formData);
-
         let message;
         try {
             if (categoryToEdit) {
@@ -59,9 +58,6 @@ const CategoriesPage = () => {
             if (message) {
                 toast.success(message);
             }
-        } catch (error) {
-            console.error('Error adding/updating category:', error);
-            toast.error('An error occurred while saving the category.');
         } finally {
             setModalLoading(false);
             setIsCreateModalOpen(false);
@@ -80,6 +76,7 @@ const CategoriesPage = () => {
             }
         } catch (error) {
             console.error('Error deleting category:', error);
+            setLocalError('Failed to delete category.');
         } finally {
             setModalLoading(false);
             setIsDeleteModalOpen(false);
@@ -147,7 +144,7 @@ const CategoriesPage = () => {
                         { label: 'Daashboard', href: '/' },
                         { label: 'Categories', isDropdown: false }
                     ]} />
-                    <h1 className="text-2xl mb-4">Manage Categories</h1>
+                    <h1 className="text-2xl mb-4 text-deep-blue">Manage Categories</h1>
                 </div>
                 <Button
                     text="Add Category"

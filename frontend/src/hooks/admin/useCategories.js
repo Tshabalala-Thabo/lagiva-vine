@@ -1,63 +1,76 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios'; // Import axios
+import { useEffect, useState, useCallback } from 'react';
+import api from '../../config/axiosConfig'; // This imports your configured axios instance
 
 const useCategories = () => {
     const [categories, setCategories] = useState([]);
-    const [error, setError] = useState(null); // Add error state
+    const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const fetchCategories = useCallback(async () => {
+        try {
+            setLoading(true);
+            const token = localStorage.getItem('jwtToken');
+            const response = await api.get('/categories', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setCategories(response.data.data);
+        } catch (err) {
+            setError('Failed to fetch categories');
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await axios.get('/categories'); // Fetch categories from the backend
-                setCategories(response.data); // Set the data from the response
-            } catch (err) {
-                setError('Failed to fetch categories');
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchCategories();
-    }, []);
+    }, [fetchCategories]);
 
     const addCategory = async (category) => {
         try {
-            const response = await axios.post('/categories', category); // Send POST request to add a new category
-            setCategories((prevCategories) => [...prevCategories, response.data.category]); // Update state with the new category
-            setError(null); // Clear error on success
-            return response.data.message; // Return the success message
+            const token = localStorage.getItem('token');
+            const response = await api.post('/categories', category, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setCategories((prevCategories) => [...prevCategories, response.data.data]);
+            setError(null);
+            return response.data.message;
         } catch (err) {
-            setError(err.response?.data || 'Failed to add category. Please try again.'); // Set error state
+            setError('Failed to add category. Please try again.');
         }
     };
 
     const updateCategory = async (categoryId, category) => {
         try {
-            const response = await axios.put(`/categories/${categoryId}`, category); // Send PUT request to update the category
+            const token = localStorage.getItem('token');
+            const response = await api.put(`/categories/${categoryId}`, category, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             setCategories((prevCategories) =>
-                prevCategories.map((cat) => (cat._id === categoryId ? response.data.category : cat))
-            ); // Update the category in the state
-            setError(null); // Clear error on success
-            return response.data.message; // Return the success message
+                prevCategories.map((cat) => (cat._id === categoryId ? response.data.data : cat))
+            );
+            setError(null);
+            return response.data.message;
         } catch (err) {
-            setError(err.response?.data || 'Failed to update category. Please try again.'); // Set error state
+            setError(err.response?.data?.message || 'Failed to update category. Please try again.');
+            return null;
         }
     };
 
     const deleteCategory = async (categoryId) => {
         try {
-            const response = await axios.delete(`/categories/${categoryId}`); // Send DELETE request to the backend
-            setCategories((prevCategories) => prevCategories.filter(category => category._id !== categoryId)); // Update state to remove the deleted category
-            setError(null); // Clear error on success
-            return response.data.message; // Return the success message
+            const token = localStorage.getItem('token');
+            const response = await api.delete(`/categories/${categoryId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setCategories((prevCategories) => prevCategories.filter(category => category._id !== categoryId));
+            setError(null);
+            return response.data.message;
         } catch (err) {
-            setError(err.response?.data || 'Failed to delete category. Please try again.'); // Set error state
+            setError('Failed to delete category. Please try again.');
         }
     };
 
-    return { categories, error, setError, loading, addCategory, updateCategory, deleteCategory }; // Ensure error is returned
+    return { categories, error, setError, loading, addCategory, updateCategory, deleteCategory };
 };
 
 export default useCategories;

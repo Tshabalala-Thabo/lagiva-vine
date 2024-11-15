@@ -2,7 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import multerS3 from 'multer-s3';
 import s3 from '../config/awsConfig.js'; // Import the S3 client
-import { addProduct, getAllProducts, getProductById, updateProduct, deleteProduct, getPublishedProducts } from '../controllers/productController.js';
+import { addProduct, getAllProducts, getProductById, updateProduct, deleteProduct, getPublishedProducts, getPublishedProductById } from '../controllers/productController.js';
 
 const router = express.Router();
 
@@ -21,6 +21,7 @@ const upload = multer({
 // Define routes
 router.get('/', getAllProducts); // Get all products
 router.get('/published', getPublishedProducts); // Get all published products
+router.get('/published/:id', getPublishedProductById); // Get a published product by ID
 router.post('/', upload.single('image'), addProduct); // Use multer to handle image upload
 router.get('/:id', getProductById); // Get a product by ID
 router.put('/:id', upload.single('image'), updateProduct); // Use multer for updating product images

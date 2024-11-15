@@ -1,17 +1,17 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { toast } from 'react-toastify' // Import toast
-import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader'
+import AdminTableSkeletonLoader from '../../components/admin/AdminTableSkeletonLoader'
 import useProducts from '../../hooks/admin/useProducts' // Import the useProducts hook
-import ConfirmDeleteModal from '../../components/ConfirmDeleteModal' // Import the ConfirmDeleteModal
-import { DynamicDialog } from '@/components/Dialog' // Import DynamicDialog
-import ToastNotifications from '../../components/ToastNotifications' // Import ToastNotifications
-import { DataTable } from '@/components/DataTable'
-import { Button } from "@/components/Button"
+import ConfirmDeleteModal from '../../components/admin/ConfirmDeleteModal' // Import the ConfirmDeleteModal
+import { DynamicDialog } from '@/components/admin/Dialog' // Import DynamicDialog
+import ToastNotifications from '../../components/admin/ToastNotifications' // Import ToastNotifications
+import { DataTable } from '@/components/admin/DataTable'
+import { Button } from "@/components/admin/Button"
 import { MoreHorizontal, Pencil, Trash, Plus } from "lucide-react" // Add Plus to the imports
-import { DynamicDropdown } from '@/components/DropDown'
-import { BreadCrumb } from '../../components/BreadCrumb' // Add this import
-import SubmitButton from '@/components/SubmitButton'
-import CategorySelector from '../../components/CategorySelector' // Import the new CategorySelector component
+import { DynamicDropdown } from '@/components/admin/DropDown'
+import { BreadCrumb } from '../../components/admin/BreadCrumb' // Add this import
+import SubmitButton from '@/components/admin/SubmitButton'
+import CategorySelector from '../../components/admin/CategorySelector' // Import the new CategorySelector component
 import useCategories from '@/hooks/admin/useCategories'
 const AdminProducts = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -206,12 +206,12 @@ const AdminProducts = () => {
             { label: 'Dashboard', href: '/' },
             { label: 'Products', isDropdown: false }
           ]} />
-          <h2 className="text-2xl mb-4">Manage Products</h2>
+          <h2 className="text-2xl mb-4 text-deep-blue">Manage Products</h2>
         </div>
         <Button
           text="Add product"
           onClick={openModal}
-          className="mb-4 bg-blue-500"
+          className="mb-4 bg-primary-blue"
           icon={<Plus className="h-4 w-4 mr-2" />}
         />
       </div>

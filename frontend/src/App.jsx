@@ -9,7 +9,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminProducts from './pages/admin/AdminProducts';
 import ProtectedRoute from './components/ProtectedRoute';
-import AdminLayout from './components/AdminLayout';
+import AdminLayout from './components/admin/AdminLayout';
 import Layout from './components/Layout';
 import CategoriesPage from './pages/admin/CategoriesPage';
 import UsersPage from './pages/admin/UsersPage';

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from '../config/axiosConfig'; // Import the configured Axios instance
+import api from '../config/axiosConfig';
 
 const usePublishedProducts = () => {
   const [publishedProducts, setPublishedProducts] = useState([]);
@@ -9,11 +9,19 @@ const usePublishedProducts = () => {
   useEffect(() => {
     const fetchPublishedProducts = async () => {
       try {
-        const response = await axios.get('/products/published'); // Fetch published products from the backend
+        setIsLoading(true);
+        // Note the /api prefix for Express routes
+        const response = await api.get('/products/published');
         setPublishedProducts(response.data);
       } catch (err) {
+        if (err.response) {
+          console.error('Server error:', err.response.status, err.response.data);
+        } else if (err.request) {
+          console.error('Network error: No response received', err.request);
+        } else {
+          console.error('Error setting up request:', err.message);
+        }
         setError('Failed to fetch published products');
-        console.error('Error fetching published products:', err);
       } finally {
         setIsLoading(false);
       }
@@ -22,7 +30,19 @@ const usePublishedProducts = () => {
     fetchPublishedProducts();
   }, []);
 
-  return { publishedProducts, isLoading, error };
+  // Function to fetch a published product by ID
+  const fetchPublishedProductById = async (id) => {
+    try {
+      // Note the /api prefix for Express routes
+      const response = await api.get(`/products/published/${id}`);
+      return response.data;
+    } catch (err) {
+      console.error('Error fetching product:', err);
+      throw err;
+    }
+  };
+
+  return { publishedProducts, isLoading, error, fetchPublishedProductById };
 };
 
-export default usePublishedProducts; 
+export default usePublishedProducts;

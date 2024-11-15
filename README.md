@@ -38,6 +38,26 @@ Analytics Dashboard: In addition to user and revenue stats, you could add key pe
 Activity Logs: Track admin actions to keep a record of important activities for security and auditing.
 Help or Support Section: A place where admins can find resources, documentation, or contact support for assistance.
 
+Some additional recommendations:
+
+Rate Limiting:
+
+javascriptCopyimport rateLimit from 'express-rate-limit';
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+
+// Apply to auth routes
+router.use('/api/auth', authLimiter);
+
+Consider adding token expiration checking:
+
+javascriptCopyif (decoded.exp && Date.now() >= decoded.exp * 1000) {
+  return res.status(401).json({ message: 'Token has expired' });
+}
+
 BUG LIST
 - Products form doesnt validate empty input
 

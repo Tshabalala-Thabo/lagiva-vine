@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Area_Chart } from '@/components/charts/Area_Chart';
-import { Bar_Chart_Horizontal } from '@/components/charts/Bar_Chart_Horizontal';
+import { Area_Chart } from '@/components/admin/charts/Area_Chart';
+import { Bar_Chart_Horizontal } from '@/components/admin/charts/Bar_Chart_Horizontal';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Package, Grid, ShoppingCart, Users } from "lucide-react"
-import { DynamicDialog } from '@/components/Dialog';
+import { DynamicDialog } from '@/components/admin/Dialog';
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -75,7 +75,7 @@ const AdminDashboard = () => {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl">Dashboard</h2>
+        <h2 className="text-deep-blue text-2xl">Dashboard</h2>
         <DynamicDialog 
           trigger={<Button variant="outline" onClick={() => setIsDialogOpen(true)}>Edit Profile</Button>}
           title="Edit Profile"

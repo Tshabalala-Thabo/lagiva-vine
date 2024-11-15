@@ -3,18 +3,19 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingCart } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import useProducts from '../hooks/admin/useProducts'; // Import the custom hook
-
+import usePublishedProducts from '../hooks/usePublishedProducts'; // Import the custom hook
+import { useCart } from "@/components/CartProvider";
 export default function ProductPage() {
   const { id } = useParams(); // Get product ID from URL
-  const { fetchProductById } = useProducts(); // Destructure fetchProductById from the hook
+  const { fetchPublishedProductById } = usePublishedProducts(); // Use the new hook to fetch published product
+  const { addItemToCart } = useCart(); // Destructure addItemToCart from the useCart hook
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const productData = await fetchProductById(id); // Use the hook to fetch product details
+        const productData = await fetchPublishedProductById(id); // Use the new hook to fetch product details
         setProduct(productData);
       } catch (error) {
         console.error('Error fetching product:', error);
@@ -24,7 +25,18 @@ export default function ProductPage() {
     };
 
     fetchProduct();
-  }, [id, fetchProductById]);
+  }, [id]); // Only depend on 'id'
+
+  const handleAddToCart = async () => {
+    try {
+      if (product) { // Ensure product is defined before adding to cart
+        await addItemToCart(product._id, 1); // Add the product to the cart with a quantity of 1
+        alert('Product added to cart!'); // Notify the user
+      }
+    } catch (error) {
+      alert('Failed to add product to cart.'); // Handle error
+    }
+  };
 
   if (loading) return <div>Loading...</div>;
 
@@ -51,7 +63,7 @@ export default function ProductPage() {
             <h1 className="text-3xl font-bold">{product.name}</h1>
             <p className="text-2xl font-semibold">R{product.price.toFixed(2)}</p>
             <p className="text-gray-600">{product.description}</p>
-            <Button className="w-full sm:w-auto" size="lg">
+            <Button className="w-full sm:w-auto" size="lg" onClick={handleAddToCart}>
               <ShoppingCart className="mr-2 h-5 w-5" /> Add to Cart
             </Button>
           </div>

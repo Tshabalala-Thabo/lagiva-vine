@@ -23,7 +23,8 @@
     "recharts": "^2.13.0",
     "tabler-icons-react": "^1.56.0",
     "tailwind-merge": "^2.5.4",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vaul": "^1.1.1"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -47,7 +48,8 @@
     "@shadcn/ui": "^0.0.4",
     "autoprefixer": "^10.4.14",
     "customize-cra": "^1.0.0",
-    "postcss": "^8.4.24",
+    "postcss": "^8.4.48",
+    "postcss-loader": "^8.1.1",
     "react-app-rewired": "^2.2.1",
     "shadcn-ui": "^0.9.2",
     "tailwindcss": "^3.3.2"
