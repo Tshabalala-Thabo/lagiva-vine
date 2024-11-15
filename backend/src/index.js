@@ -20,43 +20,47 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Configure CORS with credentials
-app.use(
-  cors({
-    origin: [
+const corsOptions = {
+  origin: (origin, callback) => {
+    const allowedOrigins = [
       'https://mrn-b453f.vercel.app',
       'https://mrn-b453-frontend-m5un77xnd-tshabalala-thabos-projects.vercel.app',
       'https://mrn-b453-frontend-git-main-tshabalala-thabos-projects.vercel.app',
       'http://localhost:3000',
       'http://localhost:5637'
-    ],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'CSRF-Token',
-      'X-Requested-With',
-      'Access-Control-Allow-Origin'
-    ],
-    exposedHeaders: ['set-cookie', 'CSRF-Token']
-  })
-);
+    ];
+    
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token', 'X-Requested-With'],
+  exposedHeaders: ['set-cookie', 'CSRF-Token']
+};
+
+app.use(cors(corsOptions));
 
 
 
-// CSRF protection middleware
+// CSRF configuration
 const csrfProtection = csrf({
   cookie: {
+    key: '_csrf',
     httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-  },
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    path: '/'
+  }
 });
 
 // Connect to MongoDB
 connectDB();
 
-// CSRF Token endpoint (publicly accessible)
+// CSRF Token endpoint
 app.get('/api/csrf-token', csrfProtection, (req, res) => {
   res.json({ csrfToken: req.csrfToken() });
 });
