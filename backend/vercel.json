@@ -12,6 +12,6 @@
       }
     ],
     "routes": [
-      { "src": "/(.*)", "dest": "/index.js", "headers": {"Access-Control-Allow-Origin": "*"} }
+      { "src": "/(.*)", "dest": "/index.js", "headers": {"Access-Control-Allow-Origin": "https://mrn-b453f.vercel.app"} }
     ]
   }
