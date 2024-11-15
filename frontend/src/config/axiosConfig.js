@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
   // Use environment variable for API URL
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000',
+  baseURL: process.env.REACT_APP_API_URL || 'https://mrn-b453.vercel.app/api',
   withCredentials: true,
   timeout: 10000,
   headers: {
