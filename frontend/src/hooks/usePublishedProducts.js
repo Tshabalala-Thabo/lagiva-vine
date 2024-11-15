@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from '../config/axiosConfig'; // This imports your configured axios instance
+import api from '../config/axiosConfig';
 
 const usePublishedProducts = () => {
   const [publishedProducts, setPublishedProducts] = useState([]);
@@ -10,6 +10,7 @@ const usePublishedProducts = () => {
     const fetchPublishedProducts = async () => {
       try {
         setIsLoading(true);
+        // Note the /api prefix for Express routes
         const response = await api.get('/products/published');
         setPublishedProducts(response.data);
       } catch (err) {
@@ -32,6 +33,7 @@ const usePublishedProducts = () => {
   // Function to fetch a published product by ID
   const fetchPublishedProductById = async (id) => {
     try {
+      // Note the /api prefix for Express routes
       const response = await api.get(`/products/published/${id}`);
       return response.data;
     } catch (err) {
