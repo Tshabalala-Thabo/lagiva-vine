@@ -1,17 +1,18 @@
 import User from '../models/User.js';
-import { generateToken } from '../utils/jwt.js'; // Import the generateToken function
+import { generateToken } from '../utils/jwt.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; // Use a secure secret
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET must be defined in environment variables');
+}
 
-// Register a new user
 export const registerUser = async (req, res) => {
   const { email, password, firstName, lastName, phone } = req.body.formData;
   
   try {
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: 'User already exists with this email',
       });
     }
@@ -27,9 +28,21 @@ export const registerUser = async (req, res) => {
     });
 
     await newUser.save();
+
+    // Generate token immediately after registration
+    const token = generateToken(newUser);
     
-    res.status(201).json({ 
+    // Set HTTP-only cookie
+    res.cookie('auth_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    });
+
+    res.status(201).json({
       message: 'User registered successfully',
+      token, // Send token in response for client-side storage if needed
       user: {
         id: newUser._id,
         email: newUser.email,
@@ -40,36 +53,43 @@ export const registerUser = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(400).json({ 
-      message: 'Error registering user', 
+    res.status(400).json({
+      message: 'Error registering user',
       error: error.message,
     });
   }
 };
 
-// Login user
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ 
-        message: 'Email not registered',
-        requestBody: req.body // Return the request body
+      return res.status(401).json({
+        message: 'Email not registered'
       });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(401).json({ 
-        message: 'Incorrect password',
-        requestBody: req.body // Return the request body
+      return res.status(401).json({
+        message: 'Incorrect password'
       });
     }
 
     const token = generateToken(user);
-    res.status(200).json({ 
-      token,
+
+    // Set HTTP-only cookie
+    res.cookie('auth_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    });
+
+    res.status(200).json({
+      token, // Send token in response for client-side storage if needed
       user: {
         id: user._id,
         email: user.email,
@@ -80,20 +100,9 @@ export const loginUser = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ 
-      message: 'Error logging in', 
-      error: error.message,
-      requestBody: req.body // Return the request body
+    res.status(500).json({
+      message: 'Error logging in',
+      error: error.message
     });
   }
-};
-
-// Logout user
-export const logoutUser = (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error logging out', error: err });
-    }
-    res.status(200).json({ message: 'User logged out successfully' });
-  });
 };

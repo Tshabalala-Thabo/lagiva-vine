@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import api from '../config/axiosConfig'; // This imports your configured axios instance
+import api from '../config/axiosConfig';
 
 const useAuth = (fetchCart) => {
   const [error, setError] = useState(null);
@@ -9,11 +9,19 @@ const useAuth = (fetchCart) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axiosInstance.post('/auth/register', formData);
-      return response.data; // Return the response data
+      const response = await api.post('/auth/register', formData);
+      const { token } = response.data;
+      
+      // Store token in localStorage
+      localStorage.setItem('token', token);
+      
+      // Set token in Authorization header
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      return response.data;
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
-      throw err; // Rethrow the error for further handling
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -23,28 +31,45 @@ const useAuth = (fetchCart) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axiosInstance.post('/auth/login', { email, password });
-      const token = response.data.token;
-
+      const response = await api.post('/auth/login', { email, password });
+      const { token } = response.data;
+      
       // Store token in localStorage
       localStorage.setItem('token', token);
-
-      // Set token in Authorization header for future requests
-      api.setAuthToken(token);
-
-      // Fetch the latest cart information after successful login
-      await fetchCart() // Call fetchCart to update the cart
-
-      return response.data; // Return the response data
+      
+      // Set token in Authorization header
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      // Fetch cart after successful login
+      if (fetchCart) {
+        await fetchCart();
+      }
+      
+      return response.data;
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
-      throw err; // Rethrow the error for further handling
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  return { register, login, error, loading };
+  const logout = async () => {
+    try {
+      // Clear token from localStorage
+      localStorage.removeItem('token');
+      
+      // Remove token from Authorization header
+      delete api.defaults.headers.common['Authorization'];
+      
+      // Call logout endpoint
+      await api.post('/auth/logout');
+    } catch (err) {
+      setError('Error logging out');
+    }
+  };
+
+  return { register, login, logout, error, loading };
 };
 
 export default useAuth;

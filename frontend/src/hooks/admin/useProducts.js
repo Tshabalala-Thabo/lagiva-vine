@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from '../../config/axiosConfig'; // Import the configured Axios instance
+import api from '../../config/axiosConfig'; // This imports your configured axios instance
 
 const useProducts = () => {
   const [products, setProducts] = useState([]);
@@ -9,7 +9,7 @@ const useProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('/products'); // Fetch products from the backend
+        const response = await api.get('/products'); // Fetch products from the backend
         setProducts(response.data);
       } catch (err) {
         setError('Failed to fetch products');
@@ -24,7 +24,7 @@ const useProducts = () => {
 
   const fetchProductById = async (id) => {
     try {
-      const response = await axios.get(`/products/${id}`); // Fetch a single product by ID
+      const response = await api.get(`/products/${id}`); // Fetch a single product by ID
       return response.data;
     } catch (err) {
       console.error('Error fetching product:', err);
@@ -34,7 +34,7 @@ const useProducts = () => {
 
   const deleteProduct = async (productId) => {
     try {
-      const response = await axios.delete(`/products/${productId}`); // Delete the product from the backend
+      const response = await api.delete(`/products/${productId}`); // Delete the product from the backend
       setProducts((prevProducts) => prevProducts.filter((product) => product._id !== productId)); // Update state
       return response.data.message; // Return success message
     } catch (err) {
@@ -46,7 +46,7 @@ const useProducts = () => {
 
   const createProduct = async (newProductData) => {
     try {
-      const response = await axios.post('/products', newProductData, {
+      const response = await api.post('/products', newProductData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Set the content type for file upload
         },
@@ -62,7 +62,7 @@ const useProducts = () => {
 
   const updateProduct = async (productId, updatedProductData) => {
     try {
-      const response = await axios.put(`/products/${productId}`, updatedProductData, {
+      const response = await api.put(`/products/${productId}`, updatedProductData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Set the content type for file upload
         },
