@@ -1,15 +1,13 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import api from '../config/axiosConfig'; // This imports your configured axios instance
+import api from '../config/axiosConfig';
 
-// Create Context
 const CartContext = createContext();
 
-// Provider Component
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [cartItemCount, setCartItemCount] = useState(0);
-
-  // Function to fetch the cart items
+  
+  // Remove cart from fetchCart dependency array to prevent infinite loop
   const fetchCart = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
@@ -22,28 +20,30 @@ export const CartProvider = ({ children }) => {
       });
 
       setCart(response.data);
-      console.log('Retrieved cart object:', response.data);
-      console.log('Current cart state after fetch:', cart);
     } catch (error) {
       console.error('Error fetching cart:', error);
     }
-  }, [cart]);
+  }, []); // Empty dependency array since we don't need any dependencies
 
+  // Only fetch cart once on mount and when token changes
   useEffect(() => {
-    if (localStorage.getItem('token')) {
+    const token = localStorage.getItem('token');
+    if (token) {
       fetchCart();
     }
   }, [fetchCart]);
 
+  // Update cart count when cart changes
   useEffect(() => {
     const totalCount = cart.reduce((total, item) => total + item.quantity, 0);
     setCartItemCount(totalCount);
-    console.log('Updated cart state:', cart);
-  }, [cart]);
+  }, [cart]); // Only depend on cart changes
 
   const addItemToCart = useCallback(async (itemId, quantity) => {
     try {
       const token = localStorage.getItem('token');
+      if (!token) throw new Error('No authentication token found');
+
       const response = await api.post(
         '/cart/add',
         { itemId, quantity },
@@ -54,33 +54,34 @@ export const CartProvider = ({ children }) => {
         }
       );
 
-      const updatedCart = response.data;
-      setCart(updatedCart);
-      console.log('Current cart state after adding item:', updatedCart);
-
-      const totalCount = updatedCart.reduce((total, item) => total + item.quantity, 0);
-      setCartItemCount(totalCount);
-
-      return updatedCart;
+      setCart(response.data);
+      return response.data;
     } catch (error) {
       console.error('Error adding item to cart:', error);
       throw error;
     }
-  }, []);
+  }, []); // No dependencies needed
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setCart([]);
     setCartItemCount(0);
+  }, []);
+
+  const value = {
+    cart,
+    cartItemCount,
+    addItemToCart,
+    fetchCart,
+    clearCart
   };
 
   return (
-    <CartContext.Provider value={{ cart, cartItemCount, addItemToCart, fetchCart, clearCart }}>
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );
 };
 
-// Custom Hook for Cart Context
 export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) {

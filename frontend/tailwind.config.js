@@ -42,7 +42,10 @@ export default {
           800: '#1e293b',
           900: '#0f172a',
         },
-        secondary: {
+        danger: {
+          DEFAULT: "#FF4D4D ",
+          foreground: "hsl(var(--secondary-foreground))",
+        },secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },

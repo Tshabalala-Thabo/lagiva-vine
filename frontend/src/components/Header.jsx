@@ -22,6 +22,11 @@ const Header = () => {
     navigate('/login');
   };
 
+  const handleViewCart = ( ) => {
+    setIsMenuOpen(false)
+    navigate('/cart')
+  }
+
   const isLoggedIn = !!localStorage.getItem('token');
 
   const totalCost = cart.reduce((total, item) => total + item.productPrice * item.quantity, 0).toFixed(2)
@@ -103,7 +108,7 @@ const Header = () => {
 
                 <div className="flex justify-between">
                   <ButtonPrimary text={"Checkout"} onClick={() => navigate('/checkout')}>Checkout</ButtonPrimary>
-                  <Button className={'text-primary border border-primary'} text={"View cart"} variant="outline" onClick={() => navigate('/cart')}>View Cart</Button>
+                  <Button className={'text-primary border border-primary'} text={"View cart"} variant="outline" onClick={handleViewCart}>View Cart</Button>
                 </div>
               </div>
             </PopoverContent>

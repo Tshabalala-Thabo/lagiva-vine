@@ -42,7 +42,7 @@ export const registerUser = async (req, res) => {
 
     res.status(201).json({
       message: 'User registered successfully',
-      token, // Send token in response for client-side storage if needed
+      token, 
       user: {
         id: newUser._id,
         email: newUser.email,
@@ -105,4 +105,13 @@ export const loginUser = async (req, res) => {
       error: error.message
     });
   }
+};
+
+export const logoutUser = (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error logging out', error: err });
+    }
+    res.status(200).json({ message: 'User logged out successfully' });
+  });
 };

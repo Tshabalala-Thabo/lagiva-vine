@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import csrf from 'csurf';
 import connectDB from '../src/config/db.js';
 import productRoutes from '../src/routes/productRoutes.js';
-import authRoutes from '../src/routes/authRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 import categoryRoutes from '../src/routes/categoryRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
