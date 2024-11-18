@@ -1,17 +1,59 @@
-import React, { useState } from 'react'
-import AdminTableSkeletonLoader from '../../components/AdminTableSkeletonLoader'
-import useProducts from '../../hooks/useProducts' // Import the useProducts hook
-import ConfirmDeleteModal from '../../components/ConfirmDeleteModal' // Import the ConfirmDeleteModal
-import CreateModal from '../../components/CreateModal' // Import the CreateModal
-
-const Products = () => {
+import React, { useState, useMemo, useEffect } from 'react'
+import { toast } from 'react-toastify' // Import toast
+import AdminTableSkeletonLoader from '../../components/admin/AdminTableSkeletonLoader'
+import useProducts from '../../hooks/admin/useProducts' // Import the useProducts hook
+import ConfirmDeleteModal from '../../components/admin/ConfirmDeleteModal' // Import the ConfirmDeleteModal
+import { DynamicDialog } from '@/components/admin/Dialog' // Import DynamicDialog
+import ToastNotifications from '../../components/admin/ToastNotifications' // Import ToastNotifications
+import { DataTable } from '@/components/admin/DataTable'
+import { Button } from "@/components/admin/Button"
+import { MoreHorizontal, Pencil, Trash, Plus } from "lucide-react" // Add Plus to the imports
+import { DynamicDropdown } from '@/components/admin/DropDown'
+import { BreadCrumb } from '../../components/admin/BreadCrumb' // Add this import
+import SubmitButton from '@/components/admin/SubmitButton'
+import CategorySelector from '../../components/admin/CategorySelector' // Import the new CategorySelector component
+import useCategories from '@/hooks/admin/useCategories'
+const AdminProducts = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalLoading, setIsModalLoading] = useState(false)
   const [editingProduct, setEditingProduct] = useState(null)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [productToDelete, setProductToDelete] = useState(null)
-  const [error, setError] = useState(null)
-
   const { products, isLoading, error: fetchError, deleteProduct, createProduct, updateProduct } = useProducts()
+  const { categories }= useCategories()
+  const [formData, setFormData] = useState({
+    name: '',
+    type: '',
+    price: '',
+    description: '',
+    image: null,
+    published: false,
+  });
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+  useEffect(() => {
+    if (editingProduct) {
+      setFormData({
+        name: editingProduct.name || '',
+        type: editingProduct.type || '',
+        price: editingProduct.price || '',
+        description: editingProduct.description || '',
+        image: null,
+        published: editingProduct.published || false,
+      });
+      setSelectedCategories(editingProduct.categories || []);
+    } else {
+      setFormData({
+        name: '',
+        type: '',
+        price: '',
+        description: '',
+        image: null,
+        published: false,
+      });
+      setSelectedCategories([]);
+    }
+  }, [editingProduct]);
 
   const openModal = () => {
     setIsModalOpen(true)
@@ -20,26 +62,32 @@ const Products = () => {
   const closeModal = () => {
     setIsModalOpen(false)
     setEditingProduct(null)
-    setError(null)
   }
 
-  const handleSubmit = async (formData) => {
-    setError(null) // Reset error state
-
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+    const trimmedData = {
+      ...formData,
+      image: formData.image ? formData.image : null, // Handle image upload separately
+      categories: selectedCategories,
+    };
     try {
+      let message;
+      setIsModalLoading(true)
       if (editingProduct) {
-        // If editing, call updateProduct
-        await updateProduct(editingProduct._id, formData)
+        message = await updateProduct(editingProduct._id, trimmedData);
       } else {
-        // If adding, call createProduct
-        await createProduct(formData)
+        message = await createProduct(trimmedData);
       }
-      closeModal() // Close the modal after successful submission
+      toast.success(message);
     } catch (err) {
-      console.error(err) // Log the error for debugging
-      setError('Failed to save product. Please try again.') // Handle error
+      console.error(err);
+      toast.error(err.message);
+    } finally {
+      setIsModalLoading(false)
+      closeModal();
     }
-  }
+  };
 
   const handleEdit = (product) => {
     setEditingProduct(product)
@@ -56,81 +104,215 @@ const Products = () => {
     setProductToDelete(null)
   }
 
-  const handleDeleteProduct = () => {
+  const handleDeleteProduct = async () => {
     if (productToDelete) {
-      deleteProduct(productToDelete._id) // Call deleteProduct from the hook
+      try {
+        const message = await deleteProduct(productToDelete._id) // Call deleteProduct from the hook
+        toast.success(message) // Show success message
+      } catch (err) {
+        toast.error(err.message) // Show error message
+      }
       closeDeleteModal()
     }
   }
+
+  const columns = useMemo(() => [
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => (
+        <div className="flex items-center">
+          {row.original.imageUrl && (
+            <img src={row.original.imageUrl} alt={row.original.name} className="w-10 h-10 mr-2" />
+          )}
+          {row.getValue("name")}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "price",
+      header: "Price",
+      cell: ({ row }) => <div>R{row.getValue("price")}</div>,
+    },
+    {
+      accessorKey: "description",
+      header: "Description",
+    },
+    {
+      accessorKey: "published",
+      header: "Published",
+      cell: ({ row }) => (
+        <div className={`px-2 py-1 rounded-full w-min text-xs font-medium ${row.getValue("published")
+          ? "bg-green-100 text-green-800"
+          : "bg-red-100 text-red-800"
+          }`}>
+          {row.getValue("published") ? "Published" : "Draft"}
+        </div>
+      ),
+    },
+    {
+      header: "Action",
+      id: "actions",
+      cell: ({ row }) => {
+        const product = row.original
+
+        const dropdownItems = [
+          {
+            label: "Edit",
+            icon: Pencil,
+            onClick: () => handleEdit(product)
+          },
+          {
+            label: "Delete",
+            icon: Trash,
+            onClick: () => openDeleteModal(product)
+          }
+        ]
+
+        const handleItemClick = (item) => {
+          item.onClick()
+        }
+
+        return (
+          <div className="text-right">
+            <DynamicDropdown
+              items={dropdownItems}
+              onItemClick={handleItemClick}
+              buttonText={<MoreHorizontal className="h-4 w-4" />}
+            />
+          </div>
+        )
+      },
+    },
+  ], [])
 
   if (isLoading) { // Update loading check
     return (
       <div>
         <h2 className="text-2xl mb-4">Products</h2>
-        <AdminTableSkeletonLoader />
+        <AdminTableSkeletonLoader columns={5} />
       </div>
     )
   }
 
   if (fetchError) return <p className="text-red-500">{fetchError}</p>
 
-  const formFields = [
-    { name: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Enter product name' },
-    { name: 'type', label: 'Type', type: 'text', required: true, placeholder: 'Enter product type' },
-    { name: 'price', label: 'Price', type: 'number', required: true, placeholder: 'Enter product price' },
-    { name: 'description', label: 'Description', type: 'text', required: true, placeholder: 'Enter product description' },
-    { name: 'image', label: 'Image', type: 'file', required: false, placeholder: '' },
-  ]
-
   return (
     <div>
-      <h2 className="text-2xl mb-4">Products</h2>
-      <button onClick={openModal} className="mb-4 bg-blue-500 text-white p-2 rounded">Add New Product</button>
-      <table className="min-w-full border-collapse border border-gray-300">
-        <thead>
-          <tr>
-            <th className="border border-gray-300 p-2">Name</th>
-            <th className="border border-gray-300 p-2">Price</th>
-            <th className="border border-gray-300 p-2">Description</th>
-            <th className="border border-gray-300 p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product) => (
-            <tr key={product._id}>
-              <td className="border border-gray-300 p-2 flex items-center">
-                {product.imageUrl && <img src={product.imageUrl} alt={product.name} className="w-10 h-10 mr-2" />} {/* Display image */}
-                {product.name}
-              </td>
-              <td className="border border-gray-300 p-2">R{product.price}</td>
-              <td className="border border-gray-300 p-2">{product.description}</td>
-              <td className="border border-gray-300 p-2">
-                <button
-                  onClick={() => handleEdit(product)}
-                  className="bg-yellow-500 text-white p-1 rounded mr-2"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => openDeleteModal(product)}
-                  className="bg-red-500 text-white p-1 rounded"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <ToastNotifications /> {/* Include ToastNotifications component */}
+      <div className='flex justify-between'>
+        <div>
+          <BreadCrumb items={[
+            { label: 'Dashboard', href: '/' },
+            { label: 'Products', isDropdown: false }
+          ]} />
+          <h2 className="text-2xl mb-4 text-deep-blue">Manage Products</h2>
+        </div>
+        <Button
+          text="Add product"
+          onClick={openModal}
+          className="mb-4 bg-primary-blue"
+          icon={<Plus className="h-4 w-4 mr-2" />}
+        />
+      </div>
 
-      <CreateModal
+      <DataTable columns={columns} data={products} />
+
+      <DynamicDialog
         isOpen={isModalOpen}
-        onClose={closeModal}
-        onSubmit={handleSubmit}
-        formFields={formFields}
-        heading={editingProduct ? 'Edit Product' : 'Add New Product'}
-        initialData={editingProduct}
-      />
+        onOpenChange={closeModal}
+        title={editingProduct ? 'Edit Product' : 'Add New Product'}
+        footer={
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="text-gray-600 hover:text-gray-800 px-4 py-2 mr-2"
+              onClick={closeModal}
+            >
+              Cancel
+            </button>
+            <SubmitButton onClick={handleSubmit} loading={isModalLoading} text="Save" width="w-20" />
+          </div>
+        }
+      >
+        <form onSubmit={handleSubmit} className="flex flex-wrap">
+          <div className="mb-4 w-full md:w-1/2 pr-2"> {/* Updated for responsiveness */}
+            <label className="block mb-1" htmlFor="name">Name</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              required
+              placeholder="Enter product name"
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="border p-2 w-full"
+            />
+          </div>
+          <div className="mb-4 w-full md:w-1/2 pr-2"> {/* Updated for responsiveness */}
+            <label className="block mb-1" htmlFor="published">Published</label>
+            <input
+              type="checkbox"
+              name="published"
+              checked={formData.published}
+              onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+              className="h-4 w-4 text-blue-600"
+            />
+          </div>
+          {/* <div className="mb-4 w-full md:w-1/2 pr-2"> {/* Updated for responsiveness /}
+            <label className="block mb-1" htmlFor="type">Type</label>
+            <input
+              type="text"
+              name="type"
+              value={formData.type}
+              required
+              placeholder="Enter product type"
+              onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+              className="border p-2 w-full"
+            />
+          </div> */}
+
+          <div className="mb-4  w-full md:w-1/2 pr-2"> {/* Updated for responsiveness */}
+            <label className="block mb-1" htmlFor="description">Description</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              required
+              placeholder="Enter product description"
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="border p-2 w-full h-24"
+            />
+          </div>
+          <div className="mb-4 w-full md:w-1/2 pr-2"> {/* Updated for responsiveness */}
+            <label className="block mb-1" htmlFor="price">Price</label>
+            <input
+              type="number"
+              name="price"
+              value={formData.price}
+              required
+              placeholder="Enter product price"
+              onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+              className="border p-2 w-full"
+            />
+          </div>
+          <div className="mb-4 w-full md:w-1/2 pr-2"> {/* Updated for responsiveness */}
+            <label className="block mb-1" htmlFor="image">Image</label>
+            <input
+              type="file"
+              name="image"
+              onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
+              className="border p-2 w-full"
+            />
+          </div>
+          <div className="mb-4 w-full md:w-1/2 pr-2"> {/* New category selection */}
+            <label className="block mb-1">Categories</label>
+            <CategorySelector
+              categories={categories}
+              selectedCategories={selectedCategories}
+              setSelectedCategories={setSelectedCategories}
+            />          
+          </div>
+        </form>
+      </DynamicDialog>
 
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
@@ -143,4 +325,4 @@ const Products = () => {
   )
 }
 
-export default Products
+export default AdminProducts

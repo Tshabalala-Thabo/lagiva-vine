@@ -1,17 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import SubmitButton from './SubmitButton' // Import the new SubmitButton component
+import SubmitButton from './SubmitButton'
 
 const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialData }) => {
     const [formData, setFormData] = useState({})
     const [localData, setLocalData] = useState({})
-    const [loading, setLoading] = useState(false) // New loading state
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         if (isOpen) {
             const initialDataState = {};
             formFields.forEach(field => {
-                initialDataState[field.name] = initialData ? initialData[field.name] : ''
+                if (field.type === 'checkbox') {
+                    initialDataState[field.name] = initialData ? Boolean(initialData[field.name]) : false;
+                } else {
+                    initialDataState[field.name] = initialData ? initialData[field.name] : '';
+                }
             })
             setFormData(initialDataState)
             setLocalData(initialDataState)
@@ -19,24 +23,34 @@ const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialDa
     }, [formFields, initialData, isOpen])
 
     const handleInputChange = (e) => {
-        const { name, value, type, files } = e.target
+        const { name, value, type, files, checked } = e.target
         setLocalData(prevData => ({
             ...prevData,
-            [name]: type === 'file' ? files[0] : value
+            [name]: type === 'file' 
+                ? files[0] 
+                : type === 'checkbox'
+                    ? checked
+                    : value
         }))
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        setLoading(true) // Set loading to true when submission starts
-        setFormData(localData)
+        setLoading(true)
+        const trimmedData = Object.fromEntries(
+            Object.entries(localData).map(([key, value]) => [
+                key, 
+                typeof value === 'string' ? value.trim() : value
+            ])
+        )
+        setFormData(trimmedData)
         try {
-            await onSubmit(localData); // Await the submission
-            handleClose(); // Close the modal only if submission is successful
+            await onSubmit(trimmedData);
+            handleClose();
         } catch (error) {
-            console.error("Submission failed:", error) // Handle error if needed
+            console.error("Submission failed:", error)
         } finally {
-            setLoading(false) // Reset loading state
+            setLoading(false)
         }
     }
 
@@ -68,7 +82,9 @@ const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialDa
                             <form onSubmit={handleSubmit}>
                                 {formFields.map((field) => (
                                     <div key={field.name} className="mb-4">
-                                        <label className="block mb-1" htmlFor={field.name}>{field.label}</label>
+                                        <label className="block mb-1" htmlFor={field.name}>
+                                            {field.label}
+                                        </label>
                                         {field.type === 'file' ? (
                                             <div>
                                                 <input
@@ -78,8 +94,20 @@ const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialDa
                                                     required={field.required}
                                                     className="border p-2 w-full"
                                                 />
-                                                {localData[field.name] && <p className="mt-1 text-gray-600">{localData[field.name].name}</p>}
+                                                {localData[field.name] && 
+                                                    <p className="mt-1 text-gray-600">
+                                                        {localData[field.name].name}
+                                                    </p>
+                                                }
                                             </div>
+                                        ) : field.type === 'checkbox' ? (
+                                            <input
+                                                type="checkbox"
+                                                name={field.name}
+                                                checked={localData[field.name] || false}
+                                                onChange={handleInputChange}
+                                                className="h-4 w-4 text-blue-600"
+                                            />
                                         ) : (
                                             <input
                                                 type={field.type}
@@ -96,12 +124,12 @@ const CreateModal = ({ isOpen, onClose, onSubmit, formFields, heading, initialDa
                                 <div className="flex justify-end">
                                     <button
                                         type="button"
-                                        className="bg-gray-300 px-4 py-2 rounded mr-2"
+                                        className="text-gray-600 hover:text-gray-800 px-4 py-2 mr-2"
                                         onClick={handleClose}
                                     >
                                         Cancel
                                     </button>
-                                    <SubmitButton loading={loading} /> {/* Use the new SubmitButton component */}
+                                    <SubmitButton loading={loading} text="Save" width="w-20" />
                                 </div>
                             </form>
                         </div>
