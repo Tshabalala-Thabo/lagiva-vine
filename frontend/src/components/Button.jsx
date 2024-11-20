@@ -36,8 +36,6 @@ export const ButtonDanger = ({ text, onClick, className, icon }) => {
   )
 }
 
-
-
 export const CancelButton = ({ text, onClick, className }) => {
   return (
     <button
