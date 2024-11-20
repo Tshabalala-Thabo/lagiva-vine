@@ -20,11 +20,33 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Configure CORS with credentials
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? [
+      'https://mrn-b453f.vercel.app',
+      'https://mrn-b453-frontend-m5un77xnd-tshabalala-thabos-projects.vercel.app',
+      'https://mrn-b453-frontend-git-main-tshabalala-thabos-projects.vercel.app/'
+    ]
+  : process.env.NODE_ENV === 'staging'
+  ? [
+      'https://staging.example.com', // Add your staging URLs here
+      'https://another-staging-url.com'
+    ]
+  : [
+      'http://localhost:3000',
+      'http://localhost:5637'
+    ];
+
+// CORS middleware
 app.use(
   cors({
-    origin: process.env.NODE_ENV === 'production' 
-      ? ['https://lagivavine.vercel.app', 'https://mrn-b453-frontend-m5un77xnd-tshabalala-thabos-projects.vercel.app', 'https://mrn-b453-frontend-git-main-tshabalala-thabos-projects.vercel.app/']
-      : ['http://localhost:3000', 'http://localhost:5637'],
+    origin: function (origin, callback) {
+      // Allow requests with no origin (e.g., mobile apps or curl)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
@@ -36,6 +58,7 @@ app.use(
     exposedHeaders: ['set-cookie', 'CSRF-Token']
   })
 );
+
 
 
 // CSRF protection middleware
