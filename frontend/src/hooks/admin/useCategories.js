@@ -9,7 +9,7 @@ const useCategories = () => {
     const fetchCategories = useCallback(async () => {
         try {
             setLoading(true);
-            const token = localStorage.getItem('jwtToken');
+            const token = localStorage.getItem('token');
             const response = await api.get('/categories', {
                 headers: { Authorization: `Bearer ${token}` }
             });
