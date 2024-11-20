@@ -22,7 +22,7 @@ app.use(express.json());
 // Configure CORS with credentials
 const allowedOrigins = process.env.NODE_ENV === 'production'
   ? [
-      'https://mrn-lagivavine.vercel.app',
+      'https://lagivavine.vercel.app',
       'https://mrn-b453-frontend-m5un77xnd-tshabalala-thabos-projects.vercel.app',
       'https://mrn-b453-frontend-git-main-tshabalala-thabos-projects.vercel.app/'
     ]
