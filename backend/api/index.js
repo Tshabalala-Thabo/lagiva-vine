@@ -22,13 +22,13 @@ app.use(express.json());
 // Configure CORS with credentials
 const allowedOrigins = process.env.NODE_ENV === 'production'
   ? [
-      'https://mrn-b453f.vercel.app',
+      'https://mrn-lagivavine.vercel.app',
       'https://mrn-b453-frontend-m5un77xnd-tshabalala-thabos-projects.vercel.app',
       'https://mrn-b453-frontend-git-main-tshabalala-thabos-projects.vercel.app/'
     ]
   : process.env.NODE_ENV === 'staging'
   ? [
-      'https://staging.example.com', // Add your staging URLs here
+      'https://mrn-b453f.vercel.app', // Add your staging URLs here
       'https://another-staging-url.com'
     ]
   : [
