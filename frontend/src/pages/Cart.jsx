@@ -30,11 +30,11 @@ const CartPage = () => {
                         {cart.map((item) => (
                             <div key={item.itemId} className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-4 border-b pb-4">
                                 <div className='flex'>
-                                    <div className="w-full md:w-20 h-20">
+                                    <div className="flex items-center justify-center w-full md:w-20 h-20">
                                         <img
                                             src={item.productImage}
                                             alt={item.productName}
-                                            className="w-full h-full object-cover rounded"
+                                            className="w-full h-full object-contain rounded"
                                         />
                                     </div>
                                     <QuantitySelector
@@ -55,7 +55,7 @@ const CartPage = () => {
                             </div>
                         ))}
                     </div>
-                    <div className="w-full md:w-1/3 p-4 bg-gray-100 rounded-lg">
+                    <div className="w-full md:w-1/3 p-4 bg-gray-100 rounded-[1px]">
                         <h2 className="text-xl font-bold mb-4">Cart Summary</h2>
                         <p className="mb-2">Total Items: {cartItemCount}</p>
                         <p className="mb-4">Total Cost: R{calculateTotalCost()}</p>

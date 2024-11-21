@@ -62,15 +62,21 @@ const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, 
                         </Button>
                     </>
                 ) : (
-                    <Select onValueChange={handleQuantityChange} onOpenChange={(open) => {
-                        if (open) {
-                            console.log('Dropdown opened');
-                            setDropDownOpened(true);
-                        } else {
-                            console.log('Dropdown closed');
-                            setDropDownOpened(false);
-                        }
-                    }} value={getSelectValue()}>
+                    <Select 
+                        className={"bg-black"} 
+                        isWeb={true} 
+                        onValueChange={handleQuantityChange} 
+                        onOpenChange={(open) => {
+                            if (open) {
+                                console.log('Dropdown opened');
+                                setDropDownOpened(true);
+                            } else {
+                                console.log('Dropdown closed');
+                                setDropDownOpened(false);
+                            }
+                        }} 
+                        value={getSelectValue()}
+                    >
                         <SelectTrigger>
                             <SelectValue placeholder="select">{quantity}</SelectValue>
                         </SelectTrigger>
