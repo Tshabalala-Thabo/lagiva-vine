@@ -20,16 +20,36 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Configure CORS with credentials
+// At the top of your file, after dotenv.config():
+console.log('FRONTEND_URL:', process.env.FRONTEND_URL); // Debug log
+
+// Replace your current CORS configuration with this:
+app.use((req, res, next) => {
+  console.log('Incoming request from origin:', req.headers.origin); // Debug log
+  next();
+});
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL, // Single origin from env
+    origin: function(origin, callback) {
+      console.log('Checking origin:', origin); // Debug log
+      console.log('Allowed origin:', process.env.FRONTEND_URL); // Debug log
+      
+      if (!origin || origin === process.env.FRONTEND_URL) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS not allowed for origin: ${origin}`));
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token', 'X-Requested-With'],
-    exposedHeaders: ['set-cookie', 'CSRF-Token'],
+    exposedHeaders: ['Set-Cookie', 'CSRF-Token'],
   })
 );
 
+// Add a CORS pre-flight handler for OPTIONS requests
+app.options('*', cors());
 // CSRF protection middleware
 const csrfProtection = csrf({
   cookie: {
