@@ -61,6 +61,7 @@ export const registerUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
+  console.log("inside controller")
   const { email, password } = req.body;
   
   try {

@@ -50,7 +50,7 @@ const useAuth = (fetchCart) => {
       localStorage.setItem('token', token);
 
       // Set token in Authorization header
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      //api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
       // Fetch CSRF token
       await fetchCsrfToken();
