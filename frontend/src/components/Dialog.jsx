@@ -10,7 +10,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { SubmitButton, DialogCancelButton } from './Button';
+import { DialogSubmitButton, DialogCancelButton } from './Button';
 
 export function ConfirmDeleteDialog({ isOpen, onCancel, onConfirm, heading, text }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -41,11 +41,9 @@ export function ConfirmDeleteDialog({ isOpen, onCancel, onConfirm, heading, text
             text="Cancel"
             className="rounded-[1px]"
           />
-          <SubmitButton
+          <DialogSubmitButton
             onClick={handleConfirm}
             loading={isLoading}
-            text={"Delete"}
-            className="rounded-[1px]"
           />
         </AlertDialogFooter>
       </AlertDialogContent>

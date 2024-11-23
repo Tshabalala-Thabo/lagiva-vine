@@ -87,11 +87,26 @@ export const SubmitButton = ({ loading, text = 'Submit', width = 'w-24', onClick
   </button>
 )
 
+export const DialogSubmitButton = ({ loading, text = 'Yes, delete', disabled, onClick }) => ( // Added width prop with default value and onClick prop
+  <button
+      type="submit" // Ensure this is set to "button" to prevent form submission
+      className={`inline-flex h-10 items-center justify-center rounded-[1px]  px-4 py-2 text-sm font-medium ring-offset-white transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${disabled ? 'opacity-70 cursor-not-allowed' : ''}`} // Use the width prop
+      disabled={loading} // Disable button while loading
+      onClick={onClick} // Ensure onClick is passed to the button
+  >
+      {loading ? (
+          <PulseLoader size={10} color={"#b40100"} loading={loading} /> // Updated to use PulseLoader
+      ) : (
+          text// Use the text prop instead of hardcoded 'Submit'
+      )}
+  </button>
+)
+
 export const DialogCancelButton = ({ text, onClick, className, disabled }) => {
   return (
     <button
       onClick={disabled ? null : onClick}
-      className={`inline-flex h-10 items-center justify-center rounded-[1px]  px-4 py-2 text-sm font-medium ring-offset-white transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${className} ${disabled ? 'opacity-70 cursor-not-allowed' : ''}`}
+      className={`inline-flex h-10 items-center bg-primary justify-center rounded-[1px]  px-4 py-2 text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${className} ${disabled ? 'opacity-70 cursor-not-allowed' : ''}`}
     >
       {text ? text : 'Cancel'}
     </button>
