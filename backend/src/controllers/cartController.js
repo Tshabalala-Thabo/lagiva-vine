@@ -69,7 +69,9 @@ export const removeItemFromCart = async (req, res) => {
 
     user.cart = user.cart.filter(item => item.itemId.toString() !== itemId);
     await user.save();
-    res.status(200).json(user.cart);
+    
+    // Return the ID of the removed item and a success message
+    res.status(200).json({ message: 'Item removed successfully', itemId });
   } catch (err) {
     res.status(500).json({ message: 'Error removing item from cart', error: err.message });
   }

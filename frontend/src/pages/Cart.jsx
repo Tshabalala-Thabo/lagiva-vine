@@ -6,7 +6,7 @@ import { Button, ButtonPrimary, ButtonDanger, ButtonSecondaryOutline } from '@/c
 import QuantitySelector from '../components/QuantitySelector';
 
 const CartPage = () => {
-    const { cart, cartItemCount, clearCart, updateQuantity, removeItem } = useCart();
+    const { cart, cartItemCount, clearCart,updateQuantity, removeItemFromCart } = useCart();
     const navigate = useNavigate();
 
     const handleCheckout = () => {
@@ -15,6 +15,15 @@ const CartPage = () => {
 
     const handleClearCart = () => {
         clearCart();
+    };
+
+    const handleRemoveItem = async (itemId) => {
+        try {
+            await removeItemFromCart(itemId);
+            console.log(cart);
+        } catch (error) {
+            console.error('Failed to remove item:', error);
+        }
     };
 
     const calculateTotalCost = () => {
@@ -48,7 +57,7 @@ const CartPage = () => {
                                 <ButtonDanger
                                     variant="destructive"
                                     size="icon"
-                                    onClick={() => removeItem(item.itemId)}
+                                    onClick={() => handleRemoveItem(item.itemId)}
                                     icon={<Trash2 className="h-4 w-4" />}
                                     aria-label="Remove item"
                                 />
