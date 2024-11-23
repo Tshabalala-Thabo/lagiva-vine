@@ -6,6 +6,7 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [cartItemCount, setCartItemCount] = useState(0);
+  const [updatingItems, setUpdatingItems] = useState({});
 
   const fetchCart = useCallback(async () => {
     try {
@@ -108,13 +109,51 @@ export const CartProvider = ({ children }) => {
     setCartItemCount(0);
   }, []);
 
+  const updateItemQuantity = useCallback(async (itemId, quantity) => {
+    setUpdatingItems(prev => ({ ...prev, [itemId]: true }));
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No authentication token found');
+
+      const response = await api.put(
+        '/cart/update',
+        { itemId, quantity },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Ensure response data is an array
+      const cartData = Array.isArray(response.data) ? response.data : [];
+
+      // Update the quantity of the specific item in the cart state
+      setCart(prevCart => {
+        return prevCart.map(item => 
+          item.itemId.toString() === itemId ? { ...item, quantity } : item
+        );
+      });
+
+      console.log('Cart updated:', cartData); // Log the updated cart
+      return cartData;
+    } catch (error) {
+      console.error('Error updating item quantity:', error);
+      throw error;
+    } finally {
+      setUpdatingItems(prev => ({ ...prev, [itemId]: false }));
+    }
+  }, []);
+
   const value = {
     cart,
     cartItemCount,
     addItemToCart,
     fetchCart,
     clearCart,
-    removeItemFromCart
+    removeItemFromCart,
+    updateItemQuantity,
+    updatingItems
   };
 
   return (

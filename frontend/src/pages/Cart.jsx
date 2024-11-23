@@ -1,12 +1,12 @@
 import React from 'react';
 import { useCart } from '../components/CartProvider';
 import { Link, useNavigate } from 'react-router-dom';
-import { Minus, Plus, Trash2 } from 'lucide-react';
-import { Button, ButtonPrimary, ButtonDanger, ButtonSecondaryOutline } from '@/components/Button';
+import { Trash2 } from 'lucide-react';
+import { ButtonPrimary, ButtonDanger, ButtonSecondaryOutline } from '@/components/Button';
 import QuantitySelector from '../components/QuantitySelector';
 
 const CartPage = () => {
-    const { cart, cartItemCount, clearCart,updateQuantity, removeItemFromCart } = useCart();
+    const { cart, cartItemCount, clearCart, updateItemQuantity, removeItemFromCart, updatingItems } = useCart();
     const navigate = useNavigate();
 
     const handleCheckout = () => {
@@ -30,6 +30,8 @@ const CartPage = () => {
         return cart.reduce((total, item) => total + item.productPrice * item.quantity, 0).toFixed(2);
     };
 
+    const isUpdating = Object.values(updatingItems).some((updating) => updating);
+
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-2xl font-bold mb-4">Your Cart</h1>
@@ -51,7 +53,8 @@ const CartPage = () => {
                                         initialQuantity={item.quantity}
                                         productName={item.productName}
                                         productPrice={item.productPrice}
-                                        updateQuantity={updateQuantity}
+                                        updateQuantity={updateItemQuantity}
+                                        updatingItems={updatingItems}
                                     />
                                 </div>
                                 <ButtonDanger
@@ -68,8 +71,8 @@ const CartPage = () => {
                         <h2 className="text-xl font-bold mb-4">Cart Summary</h2>
                         <p className="mb-2">Total Items: {cartItemCount}</p>
                         <p className="mb-4">Total Cost: R{calculateTotalCost()}</p>
-                        <ButtonPrimary onClick={handleCheckout} className="bg-primary text-white px-4 py-2 rounded w-full" text={"Proceed to Checkout"} />
-                        <ButtonSecondaryOutline onClick={handleClearCart} text={"Clear Cart"} className={"mt-2 w-full"} />
+                        <ButtonPrimary onClick={handleCheckout} className="bg-primary text-white px-4 py-2 rounded w-full" text={"Proceed to Checkout"} disabled={isUpdating} />
+                        <ButtonSecondaryOutline onClick={handleClearCart} text={"Clear Cart"} className={"mt-2 w-full"} disabled={isUpdating} />
                     </div>
                 </div>
             ) : (

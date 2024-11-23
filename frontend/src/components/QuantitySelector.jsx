@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectLabel, SelectGroup, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { ButtonPrimary } from './Button';
+import { MoonLoader } from 'react-spinners';
 
-const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, updateQuantity }) => {
+const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, updateQuantity, updatingItems }) => {
     const [quantity, setQuantity] = useState(initialQuantity);
     const [showCustomInput, setShowCustomInput] = useState(false);
-    const [dropDownOpened, setDropDownOpened] = useState(false);
     const [customQuantity, setCustomQuantity] = useState('');
 
     useEffect(() => {
@@ -54,28 +54,19 @@ const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, 
                             type="number"
                             value={customQuantity}
                             onChange={(e) => setCustomQuantity(e.target.value)}
-                            className="w-20"
+                            className="w-20 rounded-[1px]"
                             min="1"
+                            disabled={updatingItems[itemId]}
                         />
-                        <Button onClick={handleCustomQuantityUpdate} size="sm">
-                            Update
-                        </Button>
+                        <ButtonPrimary onClick={handleCustomQuantityUpdate} text={"Update"} size="sm" disabled={updatingItems[itemId]} />
                     </>
                 ) : (
                     <Select 
                         className={"bg-black"} 
                         isWeb={true} 
                         onValueChange={handleQuantityChange} 
-                        onOpenChange={(open) => {
-                            if (open) {
-                                console.log('Dropdown opened');
-                                setDropDownOpened(true);
-                            } else {
-                                console.log('Dropdown closed');
-                                setDropDownOpened(false);
-                            }
-                        }} 
                         value={getSelectValue()}
+                        disabled={updatingItems[itemId]}
                     >
                         <SelectTrigger>
                             <SelectValue placeholder="select">{quantity}</SelectValue>
@@ -91,6 +82,11 @@ const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, 
                             </SelectGroup>
                         </SelectContent>
                     </Select>
+                )}
+                {updatingItems[itemId] && (
+                    <div className="flex items-center justify-center" style={{ width: '24px', height: '24px' }}>
+                        <MoonLoader size={20} color={"#b40100"} />
+                    </div>
                 )}
             </div>
         </div>
