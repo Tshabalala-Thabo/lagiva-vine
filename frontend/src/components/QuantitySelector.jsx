@@ -11,6 +11,7 @@ const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, 
 
     useEffect(() => {
         setQuantity(initialQuantity);
+        setShowCustomInput(false); // Reset custom input visibility when initialQuantity changes
     }, [initialQuantity]);
 
     const handleQuantityChange = (value) => {
@@ -32,15 +33,7 @@ const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, 
             setQuantity(newQuantity);
             updateQuantity(itemId, newQuantity);
             setShowCustomInput(false);
-            setCustomQuantity('');
         }
-    };
-
-    const getSelectValue = () => {
-        if (quantity <= 9) {
-            return quantity.toString();
-        }
-        return '10+';
     };
 
     return (
@@ -57,15 +50,25 @@ const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, 
                             className="w-20 rounded-[1px]"
                             min="1"
                             disabled={updatingItems[itemId]}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleCustomQuantityUpdate();
+                                }
+                            }}
                         />
-                        <ButtonPrimary onClick={handleCustomQuantityUpdate} text={"Update"} size="sm" disabled={updatingItems[itemId]} />
+                        <ButtonPrimary 
+                            onClick={handleCustomQuantityUpdate} 
+                            text="Update" 
+                            size="sm" 
+                            disabled={updatingItems[itemId]} 
+                        />
                     </>
                 ) : (
                     <Select 
-                        className={"bg-black"} 
-                        isWeb={true} 
-                        onValueChange={handleQuantityChange} 
-                        value={getSelectValue()}
+                        className="bg-black"
+                        isWeb={true}
+                        onValueChange={handleQuantityChange}
+                        value={quantity.toString()}
                         disabled={updatingItems[itemId]}
                     >
                         <SelectTrigger>
