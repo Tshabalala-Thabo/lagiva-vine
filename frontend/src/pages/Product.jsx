@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import usePublishedProducts from '../hooks/usePublishedProducts'; // Import the custom hook
 import { useCart } from "@/components/CartProvider";
+import Toast from "@/components/Toast";
+
 export default function ProductPage() {
   const { id } = useParams(); // Get product ID from URL
   const { fetchPublishedProductById } = usePublishedProducts(); // Use the new hook to fetch published product
@@ -26,15 +28,15 @@ export default function ProductPage() {
 
     fetchProduct();
   }, [id]); // Only depend on 'id'
-
+  
   const handleAddToCart = async () => {
     try {
-      if (product) { // Ensure product is defined before adding to cart
-        await addItemToCart(product._id, 1); // Add the product to the cart with a quantity of 1
-        alert('Product added to cart!'); // Notify the user
+      if (product) {
+        await addItemToCart(product._id, 1);
+        Toast.success('Success', 'Product added to your cart.');
       }
     } catch (error) {
-      alert('Failed to add product to cart.'); // Handle error
+      Toast.danger('Error', 'Failed to add product to cart.');
     }
   };
 
