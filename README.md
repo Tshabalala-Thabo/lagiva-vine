@@ -60,6 +60,7 @@ javascriptCopyif (decoded.exp && Date.now() >= decoded.exp * 1000) {
 
 BUG LIST
 - Products form doesnt validate empty input
+- when making a cart item to have 10 quantity, it cant be changed to 10+
 
 COMMANDS
 - Add component: npx shadcn add
