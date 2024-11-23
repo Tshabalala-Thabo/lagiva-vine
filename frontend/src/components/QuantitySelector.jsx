@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { ButtonPrimary } from './Button';
+import { ButtonPrimary, ButtonSecondaryOutline } from './Button';
 import { MoonLoader } from 'react-spinners';
 
 const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, updateQuantity, updatingItems }) => {
@@ -56,15 +56,21 @@ const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, 
                                 }
                             }}
                         />
-                        <ButtonPrimary 
-                            onClick={handleCustomQuantityUpdate} 
-                            text="Update" 
-                            size="sm" 
-                            disabled={updatingItems[itemId]} 
+                        <ButtonPrimary
+                            onClick={handleCustomQuantityUpdate}
+                            text="Update"
+                            size="sm"
+                            disabled={updatingItems[itemId]}
                         />
+                        <ButtonSecondaryOutline onClick={() => {
+                            setShowCustomInput(false);
+                            setCustomQuantity('');
+                        }}
+                            text="Cancel"
+                            size="sm" />
                     </>
                 ) : (
-                    <Select 
+                    <Select
                         className="bg-black"
                         isWeb={true}
                         onValueChange={handleQuantityChange}
