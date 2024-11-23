@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { ButtonPrimary, ButtonSecondaryOutline } from './Button';
-import { MoonLoader } from 'react-spinners';
+import { PulseLoader } from 'react-spinners';
 
 const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, updateQuantity, updatingItems }) => {
     const [quantity, setQuantity] = useState(initialQuantity);
@@ -94,7 +94,7 @@ const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, 
                 )}
                 {updatingItems[itemId] && (
                     <div className="flex items-center justify-center" style={{ width: '24px', height: '24px' }}>
-                        <MoonLoader size={20} color={"#b40100"} />
+                        <PulseLoader size={16} color={"#b40100"} />
                     </div>
                 )}
             </div>

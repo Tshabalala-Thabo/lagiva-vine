@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from '../components/CartProvider';
 import { Link, useNavigate } from 'react-router-dom';
 import { Trash2 } from 'lucide-react';
-import { ButtonPrimary, ButtonDanger, ButtonSecondaryOutline } from '@/components/Button';
+import { ButtonPrimary, ButtonDangerOutline,Button, ButtonSecondaryOutline } from '@/components/Button';
 import QuantitySelector from '../components/QuantitySelector';
+import { ConfirmDeleteDialog } from '../components/Dialog';
 
 const CartPage = () => {
     const { cart, cartItemCount, clearCart, updateItemQuantity, removeItemFromCart, updatingItems } = useCart();
     const navigate = useNavigate();
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
 
     const handleCheckout = () => {
         navigate('/checkout');
@@ -17,12 +20,20 @@ const CartPage = () => {
         clearCart();
     };
 
-    const handleRemoveItem = async (itemId) => {
+    const handleRemoveItem = (itemId) => {
+        setItemToDelete(itemId);
+        setIsDeleteDialogOpen(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!itemToDelete) return;
         try {
-            await removeItemFromCart(itemId);
-            console.log(cart);
+            await removeItemFromCart(itemToDelete);
         } catch (error) {
             console.error('Failed to remove item:', error);
+        } finally {
+            setIsDeleteDialogOpen(false);
+            setItemToDelete(null);
         }
     };
 
@@ -57,14 +68,13 @@ const CartPage = () => {
                                         updatingItems={updatingItems}
                                     />
                                 </div>
-                                <ButtonDanger
-                                    variant="destructive"
-                                    size="icon"
+                                <ButtonDangerOutline
+                                    className="inline-flex items-center justify-center rounded-[1px] font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background h-12 w-12 hover:bg-red-50 group"
                                     onClick={() => handleRemoveItem(item.itemId)}
-                                    icon={<Trash2 className="h-4 w-4" />}
                                     aria-label="Remove item"
+                                    icon={<Trash2 className="h-8 w-8 text-red-500 group-hover:text-red-600 transition-colors" />}
                                 />
-                            </div>
+                                </div>
                         ))}
                     </div>
                     <div className="w-full md:w-1/3 p-4 bg-gray-100 rounded-[1px]">
@@ -86,6 +96,13 @@ const CartPage = () => {
                     />
                 </div>
             )}
+            <ConfirmDeleteDialog 
+                isOpen={isDeleteDialogOpen}
+                heading="Remove Item"
+                text="Are you sure you want to remove this item from your cart?"
+                onCancel={() => setIsDeleteDialogOpen(false)}
+                onConfirm={handleConfirmDelete}
+            />
         </div>
     );
 };
