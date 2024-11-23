@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart } from "lucide-react";
 import { useEffect, useState } from 'react';
@@ -6,13 +5,14 @@ import { useParams } from 'react-router-dom';
 import usePublishedProducts from '../hooks/usePublishedProducts'; // Import the custom hook
 import { useCart } from "@/components/CartProvider";
 import Toast from "@/components/Toast";
-
+import { SubmitButton } from "@/components/Button";
 export default function ProductPage() {
   const { id } = useParams(); // Get product ID from URL
   const { fetchPublishedProductById } = usePublishedProducts(); // Use the new hook to fetch published product
   const { addItemToCart } = useCart(); // Destructure addItemToCart from the useCart hook
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [addingToCart, setAddingToCart] = useState(false); // New state for button loading
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -32,11 +32,14 @@ export default function ProductPage() {
   const handleAddToCart = async () => {
     try {
       if (product) {
+        setAddingToCart(true); // Start loading
         await addItemToCart(product._id, 1);
         Toast.success('Success', 'Product added to your cart.');
       }
     } catch (error) {
       Toast.danger('Error', 'Failed to add product to cart.');
+    } finally {
+      setAddingToCart(false); // Stop loading regardless of outcome
     }
   };
 
@@ -65,9 +68,14 @@ export default function ProductPage() {
             <h1 className="text-3xl font-bold">{product.name}</h1>
             <p className="text-2xl font-semibold">R{product.price.toFixed(2)}</p>
             <p className="text-gray-600">{product.description}</p>
-            <Button className="w-full sm:w-auto" size="lg" onClick={handleAddToCart}>
-              <ShoppingCart className="mr-2 h-5 w-5" /> Add to Cart
-            </Button>
+            <SubmitButton 
+              text="Add to Cart"
+              icon={<ShoppingCart className="h-5 w-5" />}
+              width="w-[300px] sm:w-auto"
+              height="h-12"
+              onClick={handleAddToCart}
+              loading={addingToCart}
+            />
           </div>
         </div>
       ) : (

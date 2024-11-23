@@ -72,32 +72,42 @@ export const ButtonSecondaryOutline = ({ text, onClick, className, icon, disable
   )
 }
 
-export const SubmitButton = ({ loading, text = 'Submit', width = 'w-24', onClick }) => ( // Added width prop with default value and onClick prop
+export const SubmitButton = ({ 
+  loading, 
+  text = 'Submit', 
+  width = 'w-24', 
+  height = 'h-10',
+  onClick, 
+  icon 
+}) => (
   <button
-      type="submit" // Ensure this is set to "button" to prevent form submission
-      className={`bg-primary text-white px-4 py-2 rounded-[1px] ${loading ? 'opacity-50 cursor-not-allowed' : ''} ${width}`} // Use the width prop
-      disabled={loading} // Disable button while loading
-      onClick={onClick} // Ensure onClick is passed to the button
+      type="submit"
+      className={`bg-primary text-white px-4 py-2 rounded-[1px] flex items-center justify-center gap-2 ${loading ? 'opacity-50 cursor-not-allowed' : ''} ${width} ${height}`}
+      disabled={loading}
+      onClick={onClick}
   >
       {loading ? (
-          <PulseLoader size={10} color={"#ffffff"} loading={loading} /> // Updated to use PulseLoader
+          <PulseLoader size={10} color={"#ffffff"} loading={loading} />
       ) : (
-          text // Use the text prop instead of hardcoded 'Submit'
+          <>
+              {icon && icon}
+              {text}
+          </>
       )}
   </button>
 )
 
-export const DialogSubmitButton = ({ loading, text = 'Yes, delete', disabled, onClick }) => ( // Added width prop with default value and onClick prop
+export const DialogSubmitButton = ({ loading, text = 'Yes, delete', disabled, onClick }) => (
   <button
-      type="submit" // Ensure this is set to "button" to prevent form submission
-      className={`inline-flex h-10 items-center justify-center rounded-[1px]  px-4 py-2 text-sm font-medium ring-offset-white transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${disabled ? 'opacity-70 cursor-not-allowed' : ''}`} // Use the width prop
-      disabled={loading} // Disable button while loading
-      onClick={onClick} // Ensure onClick is passed to the button
+      type="submit"
+      className={`inline-flex h-10 items-center justify-center rounded-[1px]  px-4 py-2 text-sm font-medium ring-offset-white transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${disabled ? 'opacity-70 cursor-not-allowed' : ''}`}
+      disabled={loading}
+      onClick={onClick}
   >
       {loading ? (
-          <PulseLoader size={10} color={"#b40100"} loading={loading} /> // Updated to use PulseLoader
+          <PulseLoader size={10} color={"#b40100"} loading={loading} />
       ) : (
-          text// Use the text prop instead of hardcoded 'Submit'
+          text
       )}
   </button>
 )
