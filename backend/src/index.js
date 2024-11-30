@@ -31,19 +31,20 @@ app.use((req, res, next) => {
 
 app.use(
   cors({
-    origin: function(origin, callback) {
-      console.log('Checking origin:', origin); // Debug log
-      console.log('Allowed origin:', process.env.FRONTEND_URL); // Debug log
-      
-      if (!origin || origin === process.env.FRONTEND_URL) {
-        callback(null, true);
-      } else {
-        callback(new Error(`CORS not allowed for origin: ${origin}`));
-      }
-    },
+    origin: [
+      process.env.FRONTEND_URL,
+      'https://mrn-b453f.vercel.app/', // Add your exact Vercel deployment URL
+      'http://localhost:3000' // For local development
+    ],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token', 'X-Requested-With'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: [
+      'Content-Type', 
+      'Authorization', 
+      'CSRF-Token', 
+      'X-Requested-With',
+      'X-CSRF-Token'
+    ],
     exposedHeaders: ['Set-Cookie', 'CSRF-Token'],
   })
 );
@@ -100,6 +101,10 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+export default app;
+
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
