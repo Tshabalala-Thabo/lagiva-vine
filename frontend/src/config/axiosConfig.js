@@ -6,7 +6,6 @@ const api = axios.create({
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
   },
 });
 
