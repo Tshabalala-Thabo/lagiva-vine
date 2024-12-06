@@ -6,6 +6,7 @@ const api = axios.create({
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
+    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content,
   },
 });
 

@@ -9,7 +9,6 @@ import authRoutes from './routes/authRoutes.js';
 import categoryRoutes from '../src/routes/categoryRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
-import corsConfig from './middleware/corsConfig.js';
 
 dotenv.config();
 
@@ -20,9 +19,10 @@ const PORT = process.env.PORT || 5000;
 app.use(cookieParser());
 app.use(express.json());
 
-// Use the imported corsConfig
+// CORS configuration
 app.use(cors({
-  ...corsConfig,
+  origin: process.env.FRONTEND_URL,
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: [
     'Content-Type',
