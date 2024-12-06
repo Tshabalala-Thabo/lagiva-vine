@@ -27,6 +27,7 @@ app.use(cors({
   allowedHeaders: [
     'Content-Type',
     'Authorization',
+    'Access-Control-Allow-Headers',
     'CSRF-Token',
     'X-Requested-With'
   ],
@@ -37,7 +38,7 @@ app.use(cors({
 const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: true,
     sameSite: 'strict',
   },
 });
