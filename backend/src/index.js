@@ -9,6 +9,7 @@ import authRoutes from './routes/authRoutes.js';
 import categoryRoutes from '../src/routes/categoryRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
+import corsConfig from './middleware/corsConfig.js';
 
 dotenv.config();
 
@@ -19,24 +20,18 @@ const PORT = process.env.PORT || 5000;
 app.use(cookieParser());
 app.use(express.json());
 
-// Configure CORS with credentials
-app.use(
-  cors({
-    origin: process.env.NODE_ENV === 'production' 
-      ? ['https://mrn-b453f.vercel.app', 'https://mrn-b453-frontend-m5un77xnd-tshabalala-thabos-projects.vercel.app', 'https://mrn-b453-frontend-git-main-tshabalala-thabos-projects.vercel.app/']
-      : ['http://localhost:3000', 'http://localhost:5637'],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'CSRF-Token',
-      'X-Requested-With'
-    ],
-    exposedHeaders: ['set-cookie', 'CSRF-Token']
-  })
-);
-
+// Use the imported corsConfig
+app.use(cors({
+  ...corsConfig,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'CSRF-Token',
+    'X-Requested-With'
+  ],
+  exposedHeaders: ['set-cookie', 'CSRF-Token']
+}));
 
 // CSRF protection middleware
 const csrfProtection = csrf({
