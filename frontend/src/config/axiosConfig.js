@@ -1,11 +1,9 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'https://mrn-b453.vercel.app/api',
+  baseURL: process.env.REACT_APP_API_URL,
   withCredentials: true,
-  timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
     "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content,
   },
 });
