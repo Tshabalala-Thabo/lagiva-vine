@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import corsConfig from './middleware/corsConfig.js';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import csrf from 'csurf';
@@ -18,21 +19,8 @@ const PORT = process.env.PORT || 5000;
 // Middleware setup
 app.use(cookieParser());
 app.use(express.json());
+app.use(cors(corsConfig));
 
-// CORS configuration
-app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: [
-    'Content-Type',
-    'Authorization',
-    'Access-Control-Allow-Headers',
-    'CSRF-Token',
-    'X-Requested-With'
-  ],
-  exposedHeaders: ['set-cookie', 'CSRF-Token']
-}));
 
 // CSRF protection middleware
 const csrfProtection = csrf({
