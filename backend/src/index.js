@@ -10,11 +10,15 @@ import authRoutes from './routes/authRoutes.js';
 import categoryRoutes from '../src/routes/categoryRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
+import logger, {requestOriginLogger} from './utils/logger.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+app.use(requestOriginLogger);
+
 
 // Middleware setup
 app.use(cookieParser());
