@@ -60,11 +60,14 @@ javascriptCopyif (decoded.exp && Date.now() >= decoded.exp * 1000) {
 
 BUG LIST
 - Products form doesnt validate empty input
+- when making a cart item to have 10 quantity, it cant be changed to 10+
 
 COMMANDS
 - Add component: npx shadcn add
 - Create mongo migration file: npx migrate-mongo create add-published-field-to-products -f migrate-mongo-wrapper.cjs
 - Run mongo migration: npx migrate-mongo up
+- Start backend with nodemon: npm run start:dev
+
 
 BUSINESS RULES
 - Names are optional on registration

@@ -22,14 +22,21 @@ const Header = () => {
     navigate('/login');
   };
 
-  const handleViewCart = ( ) => {
-    setIsMenuOpen(false)
-    navigate('/cart')
-  }
+  const handleViewCart = () => {
+    setIsMenuOpen(false);
+    navigate('/cart');
+  };
 
   const isLoggedIn = !!localStorage.getItem('token');
 
-  const totalCost = cart.reduce((total, item) => total + item.productPrice * item.quantity, 0).toFixed(2)
+  // Calculate total cost only for valid items
+  const totalCost = cart
+    .filter(item => item && typeof item.productPrice === 'number' && typeof item.quantity === 'number')
+    .reduce((total, item) => {
+      return total + (item.productPrice * item.quantity);
+    }, 0);
+
+  const formattedTotalCost = isNaN(totalCost) ? '0.00' : totalCost.toFixed(2);
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
@@ -58,7 +65,7 @@ const Header = () => {
           </ul>
         </nav>
         <div className="md:flex items-center space-x-4">
-          <Popover>
+        <Popover>
             <PopoverTrigger asChild>
               <button
                 variant="outline"
@@ -86,29 +93,54 @@ const Header = () => {
                 </div>
                 <ul className="grid gap-2">
                   {cart.length > 0 ? (
-                    cart.slice(0, 3).map((item) => (
-                      <li key={item.itemId} className="flex items-center space-x-2">
-                        <img src={item.productImage} alt={item.productName} className="w-10 h-10 rounded object-contain" />
-                        <div className='flex w-full items-center justify-between'>
-                          <div>
-                            <p className="text-sm text-primary font-medium">{item.productName}</p>
-                            <p className="text-xs text-muted-foreground">Quantity: {item.quantity}</p>
+                    cart
+                      .filter(item => item && item.productName && item.productPrice)
+                      .slice(0, 3)
+                      .map((item) => (
+                        <li key={item.itemId} className="flex items-center space-x-2">
+                          <img 
+                            src={item.productImage} 
+                            alt={item.productName} 
+                            className="w-10 h-10 rounded object-contain"
+                            onError={(e) => {
+                              e.target.src = '/assets/placeholder.png'; // Fallback image
+                            }}
+                          />
+                          <div className='flex w-full items-center justify-between'>
+                            <div>
+                              <p className="text-sm text-primary font-medium">{item.productName}</p>
+                              <p className="text-xs text-muted-foreground">Quantity: {item.quantity}</p>
+                            </div>
+                            <p className='text-sm font-medium'>
+                              R{Number(item.productPrice).toFixed(2)}
+                            </p>
                           </div>
-                          <p className='text-sm font-medium'>R{item.productPrice.toFixed(2)}</p>
-                        </div>
-                      </li>
-                    ))
+                        </li>
+                      ))
                   ) : (
                     <li className="text-gray-500">No items in cart.</li>
                   )}
                 </ul>
-                <hr className=" border-gray-300" />
-                <p className="w-fill text-end font-medium">Total: R{totalCost}</p>
-                <hr className=" border-gray-300" />
+                <hr className="border-gray-300" />
+                <p className="w-fill text-end font-medium">Total: R{formattedTotalCost}</p>
+                <hr className="border-gray-300" />
 
                 <div className="flex justify-between">
-                  <ButtonPrimary text={"Checkout"} onClick={() => navigate('/checkout')}>Checkout</ButtonPrimary>
-                  <Button className={'text-primary border border-primary'} text={"View cart"} variant="outline" onClick={handleViewCart}>View Cart</Button>
+                  <ButtonPrimary 
+                    text="Checkout" 
+                    onClick={() => navigate('/checkout')}
+                    disabled={cart.length === 0}
+                  >
+                    Checkout
+                  </ButtonPrimary>
+                  <Button 
+                    className='text-primary border border-primary' 
+                    text="View cart" 
+                    variant="outline" 
+                    onClick={handleViewCart}
+                  >
+                    View Cart
+                  </Button>
                 </div>
               </div>
             </PopoverContent>
@@ -124,8 +156,7 @@ const Header = () => {
         </div>
       </div>
       <div
-        className={`absolute top-full left-0 right-0 bg-white shadow-md md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-48' : 'max-h-0'
-          }`}
+        className={`absolute top-full left-0 right-0 bg-white shadow-md md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-48' : 'max-h-0'}`}
       >
         <nav className="container mx-auto px-4 py-2">
           <ul className="space-y-2">

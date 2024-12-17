@@ -1,35 +1,12 @@
-import axios from 'axios';
+import axios from "axios";
 
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'https://mrn-b453.vercel.app/api',
-  withCredentials: true,
-  timeout: 10000,
+const axiosInstance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL, // Access from .env file
+  withCredentials: true, // Include credentials in requests
   headers: {
-    'Content-Type': 'application/json'
-  }
+    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content,
+  },
 });
 
-api.interceptors.request.use(
-  async (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+export default axiosInstance;
 
-api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-    }
-    return Promise.reject(error);
-  }
-);
-
-export default api;

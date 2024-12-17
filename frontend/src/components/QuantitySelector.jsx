@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectLabel, SelectGroup, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { ButtonPrimary, ButtonSecondaryOutline } from './Button';
+import { PulseLoader } from 'react-spinners';
 
-const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, updateQuantity }) => {
+const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, updateQuantity, updatingItems }) => {
     const [quantity, setQuantity] = useState(initialQuantity);
     const [showCustomInput, setShowCustomInput] = useState(false);
-    const [dropDownOpened, setDropDownOpened] = useState(false);
     const [customQuantity, setCustomQuantity] = useState('');
 
     useEffect(() => {
         setQuantity(initialQuantity);
+        setShowCustomInput(false); // Reset custom input visibility when initialQuantity changes
     }, [initialQuantity]);
 
     const handleQuantityChange = (value) => {
@@ -32,15 +33,7 @@ const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, 
             setQuantity(newQuantity);
             updateQuantity(itemId, newQuantity);
             setShowCustomInput(false);
-            setCustomQuantity('');
         }
-    };
-
-    const getSelectValue = () => {
-        if (quantity <= 9) {
-            return quantity.toString();
-        }
-        return '10+';
     };
 
     return (
@@ -54,23 +47,36 @@ const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, 
                             type="number"
                             value={customQuantity}
                             onChange={(e) => setCustomQuantity(e.target.value)}
-                            className="w-20"
+                            className="w-20 rounded-[1px]"
                             min="1"
+                            disabled={updatingItems[itemId]}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleCustomQuantityUpdate();
+                                }
+                            }}
                         />
-                        <Button onClick={handleCustomQuantityUpdate} size="sm">
-                            Update
-                        </Button>
+                        <ButtonPrimary
+                            onClick={handleCustomQuantityUpdate}
+                            text="Update"
+                            size="sm"
+                            disabled={updatingItems[itemId]}
+                        />
+                        <ButtonSecondaryOutline onClick={() => {
+                            setShowCustomInput(false);
+                            setCustomQuantity('');
+                        }}
+                            text="Cancel"
+                            size="sm" />
                     </>
                 ) : (
-                    <Select onValueChange={handleQuantityChange} onOpenChange={(open) => {
-                        if (open) {
-                            console.log('Dropdown opened');
-                            setDropDownOpened(true);
-                        } else {
-                            console.log('Dropdown closed');
-                            setDropDownOpened(false);
-                        }
-                    }} value={getSelectValue()}>
+                    <Select
+                        className="bg-black"
+                        isWeb={true}
+                        onValueChange={handleQuantityChange}
+                        value={quantity.toString()}
+                        disabled={updatingItems[itemId]}
+                    >
                         <SelectTrigger>
                             <SelectValue placeholder="select">{quantity}</SelectValue>
                         </SelectTrigger>
@@ -85,6 +91,11 @@ const QuantitySelector = ({ itemId, initialQuantity, productName, productPrice, 
                             </SelectGroup>
                         </SelectContent>
                     </Select>
+                )}
+                {updatingItems[itemId] && (
+                    <div className="flex items-center justify-center" style={{ width: '24px', height: '24px' }}>
+                        <PulseLoader size={16} color={"#b40100"} />
+                    </div>
                 )}
             </div>
         </div>

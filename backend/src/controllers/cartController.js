@@ -69,7 +69,9 @@ export const removeItemFromCart = async (req, res) => {
 
     user.cart = user.cart.filter(item => item.itemId.toString() !== itemId);
     await user.save();
-    res.status(200).json(user.cart);
+    
+    // Return the ID of the removed item and a success message
+    res.status(200).json({ message: 'Item removed successfully', itemId });
   } catch (err) {
     res.status(500).json({ message: 'Error removing item from cart', error: err.message });
   }
@@ -107,6 +109,28 @@ export const getCart = async (req, res) => {
     res.status(200).json(cartWithDetails);
   } catch (err) {
     res.status(500).json({ message: 'Error retrieving cart', error: err.message });
+  }
+};
+
+// Update item quantity in cart
+export const updateItemQuantity = async (req, res) => {
+  const { itemId, quantity } = req.body;
+  try {
+    // Get userId from JWT token (set by auth middleware)
+    const userId = req.user.id;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const existingItem = user.cart.find(item => item.itemId.toString() === itemId);
+    if (!existingItem) return res.status(404).json({ message: 'Item not found in cart' });
+
+    existingItem.quantity = quantity; // Update the quantity
+    await user.save();
+
+    res.status(200).json({ message: 'Item quantity updated successfully', itemId, quantity });
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating item quantity in cart', error: err.message });
   }
 };
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from '../config/axiosConfig';
+import axios from '../config/axiosConfig';
 
 const usePublishedProducts = () => {
   const [publishedProducts, setPublishedProducts] = useState([]);
@@ -11,7 +11,7 @@ const usePublishedProducts = () => {
       try {
         setIsLoading(true);
         // Note the /api prefix for Express routes
-        const response = await api.get('/products/published');
+        const response = await axios.get('/products/published');
         setPublishedProducts(response.data);
       } catch (err) {
         if (err.response) {
@@ -30,11 +30,11 @@ const usePublishedProducts = () => {
     fetchPublishedProducts();
   }, []);
 
-  // Function to fetch a published product by ID
+  // Function to fetch a published product by Id
   const fetchPublishedProductById = async (id) => {
     try {
       // Note the /api prefix for Express routes
-      const response = await api.get(`/products/published/${id}`);
+      const response = await axios.get(`/products/published/${id}`);
       return response.data;
     } catch (err) {
       console.error('Error fetching product:', err);
