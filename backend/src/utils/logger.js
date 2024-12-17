@@ -27,7 +27,7 @@ const logger = winston.createLogger({
 
 // Middleware to log request origins
 export const requestOriginLogger = (req, res, next) => {
-  const origin = req.get('origin') || 'No origin';
+  const origin = req.get('host') || 'No origin';
   const allowedOrigin = process.env.FRONTEND_URL || 'No allowed origin set';
 
   logger.info('Incoming Request', {
