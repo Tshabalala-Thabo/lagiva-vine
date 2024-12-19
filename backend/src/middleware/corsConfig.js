@@ -4,7 +4,7 @@ dotenv.config();
 const corsConfig = {
   //origin: process.env.FRONTEND_URL,
   origin: "*",
-  credentials: true,
+  credentials: false,
 };
 
 export default corsConfig;
