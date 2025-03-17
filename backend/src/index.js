@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import corsConfig from './middleware/corsConfig.js';
+// remove the corsConfig import since we won't use it
+// import corsConfig from './middleware/corsConfig.js';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import csrf from 'csurf';
@@ -17,13 +18,17 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(requestOriginLogger);
+//app.use(requestOriginLogger);
 
 
 // Middleware setup
 app.use(cookieParser());
 app.use(express.json());
-app.use(cors(corsConfig));
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  credentials: true
+}));
 
 
 // CSRF protection middleware
